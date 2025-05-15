@@ -1,0 +1,3 @@
+{
+  imports = [./example-user.nix];
+}
