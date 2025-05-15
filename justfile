@@ -33,3 +33,13 @@ deadcode:
 
 formatter:
     nix run github:kamadorueda/alejandra 
+
+
+install-flake:
+    export NIX_CONFIG="experimental-features = nix-command flakes"
+    nix-shell -p git --run "git clone https://github.com/nickhartjes/nixos-config.git"
+
+
+# Build the custom NixOS ISO for installation
+build-iso:
+    nix build ./installation/iso#nixosConfigurations.installationIso.config.system.build.isoImage --out-link installation/iso-result

@@ -25,6 +25,9 @@ agenix is a declarative secret management tool for NixOS and other systems using
 
 It’s built on top of age, a simple, modern encryption tool by Filippo Valsorda, designed to replace GPG with a more minimal and secure design.
 
+## Getting Started
+
+
 ## Resources and Information
 
 ### Helpful Links
@@ -55,5 +58,9 @@ nix flake init --template github:edolstra/nix-flake-template
 nix run github:nix-community/nixos-anywhere -- --flake  .#blackhawk-vm --vm-test
 ```
 ```shell
-nix run github:nix-community/nixos-anywhere -- --flake  .#blackhawk-vm --target-host root@192.168.122.110
+nix run github:nix-community/nixos-anywhere -- --flake  .#blackhawk-vm --target-host nh@192.168.122.110
+```
+
+```shell
+nix-shell -p curl just --run "curl -s https://raw.githubusercontent.com/nickhartjes/nixos-config/refs/heads/main/justfile | just -f - install-flake"
 ```
