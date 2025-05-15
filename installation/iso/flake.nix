@@ -39,6 +39,8 @@
 
             # Optionally, allow passwordless sudo for wheel group
             security.sudo.wheelNeedsPassword = false;
+
+            nix.settings.experimental-features = ["nix-command" "flakes"];
           }
         )
       ];

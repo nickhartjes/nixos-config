@@ -64,3 +64,12 @@ nix run github:nix-community/nixos-anywhere -- --flake  .#blackhawk-vm --target-
 ```shell
 nix-shell -p curl just --run "curl -s https://raw.githubusercontent.com/nickhartjes/nixos-config/refs/heads/main/justfile | just -f - install-flake"
 ```
+
+```shell
+sudo nix run 'github:nix-community/disko/latest#disko-install' -- --flake github.com/nickhartjes/nixos-config#blackhawk-vm --disk main /dev/vda
+```
+
+
+```shell
+sudo nix run 'github:nix-community/disko/latest#disko-install' -- --flake .#blackhawk-vm --disk nixos /dev/vda
+```

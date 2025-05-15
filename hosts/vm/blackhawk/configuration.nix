@@ -78,7 +78,7 @@
   # Or disable the firewall altogether.
   #security.sudo.wheelNeedsPassword = false;
 
-  security.sudo.extraConfig = "m3tam3re ALL=(ALL) NOPASSWD: ALL";
+  security.sudo.extraConfig = "nh ALL=(ALL) NOPASSWD: ALL";
 
   # networking.firewall.enable = false;
   # This value determines the NixOS release from which the default
