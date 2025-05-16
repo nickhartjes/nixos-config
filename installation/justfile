@@ -1,0 +1,16 @@
+
+# List available commands
+default:
+    @just --list
+
+# Build the minimal NixOS ISO for installation
+build-iso-minimal:
+    cd iso-minimal && \
+    nix build .#nixosConfigurations.installationIso.config.system.build.isoImage && \
+    cp -f result/iso/*.iso nixos-24-05-iso-minimal.iso && \
+    rm -Rf result
+
+# Build a custom NixOS image in the desired format (iso, vmware, virtualbox, hyperv, qcow)
+build-iso-custom FORMAT:
+    cd iso-custom && \
+    nix build .#{{FORMAT}}

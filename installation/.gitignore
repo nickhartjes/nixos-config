@@ -1,1 +1,5 @@
-/iso-result
+/iso-minimal/result/
+/iso-custom/result/
+*.iso
+*.vmdk
+*.qcow
