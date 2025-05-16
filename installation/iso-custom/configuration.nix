@@ -28,8 +28,10 @@
 
   services.openssh = {
     enable = true;
-    settings.PermitRootLogin = "yes";
-    settings.PasswordAuthentication = true;
+    settings = {
+      PermitRootLogin = "yes";
+      PasswordAuthentication = true;
+    };
   };
 
   # Allow passwordless sudo for the "wheel" group
@@ -41,6 +43,8 @@
     vim
     wget
   ];
+
+  nix.settings.experimental-features = ["nix-command" "flakes"];
 
   # Enable networking with NetworkManager
   networking.networkmanager.enable = true;
