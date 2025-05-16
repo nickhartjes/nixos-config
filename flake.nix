@@ -90,12 +90,12 @@
       #   ];
       # };
 
-      # NixOS configuration for 'blackhawk-vm'
-      blackhawk-vm = nixpkgs.lib.nixosSystem {
+      # NixOS configuration for 'vm-blackhawk'
+      vm-blackhawk = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux"; # Specify the system architecture
         specialArgs = {inherit inputs outputs;}; # Pass inputs and flake outputs to the modules
         modules = [
-          ./hosts/vm/blackhawk # Host-specific configuration
+          ./hosts/vm-blackhawk # Host-specific configuration
           inputs.disko.nixosModules.disko # Disko module
           agenix.nixosModules.default # Agenix module
         ];

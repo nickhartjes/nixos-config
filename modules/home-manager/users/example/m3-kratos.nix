@@ -2,6 +2,7 @@
   imports = [
     ../../common
     ../../features/cli
+    ../../features/desktop
   ];
 
   features = {
@@ -11,7 +12,7 @@
       neofetch.enable = true;
     };
     desktop = {
-      plasma.enable = true;
+      # plasma.enable = true;
       hyprland.enable = false;
     };
   };

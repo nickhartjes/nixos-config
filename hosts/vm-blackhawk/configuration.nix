@@ -78,7 +78,7 @@
   # Or disable the firewall altogether.
   #security.sudo.wheelNeedsPassword = false;
 
-  security.sudo.extraConfig = "nh ALL=(ALL) NOPASSWD: ALL";
+  security.sudo.extraConfig = "nixos ALL=(ALL) NOPASSWD: ALL";
 
   # networking.firewall.enable = false;
 

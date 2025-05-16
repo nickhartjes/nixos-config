@@ -73,3 +73,7 @@ sudo nix run 'github:nix-community/disko/latest#disko-install' -- --flake github
 ```shell
 sudo nix run 'github:nix-community/disko/latest#disko-install' -- --flake .#blackhawk-vm --disk nixos /dev/vda
 ```
+
+```shell
+nix-shell -p just curl --run 'just --justfile <(curl -s https://raw.githubusercontent.com/username/repo/main/justfile) clean-install vm-blackhawk'
+```
