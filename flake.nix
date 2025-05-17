@@ -101,6 +101,16 @@
         ];
       };
 
+      vm-desktop = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux"; # Specify the system architecture
+        specialArgs = {inherit inputs outputs;}; # Pass inputs and flake outputs to the modules
+        modules = [
+          ./hosts/vm-desktop # Host-specific configuration
+          inputs.disko.nixosModules.disko # Disko module
+          agenix.nixosModules.default # Agenix module
+        ];
+      };
+
       # NixOS configuration for 'm3-hermes-hetzner'
       m3-hermes-hetzner = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux"; # Specify the system architecture

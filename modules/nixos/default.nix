@@ -1,5 +1,7 @@
 {
   imports = [
-    ./podman.nix
+    ./desktop-manager
+    ./display-manager
+    ./virtualization
   ];
 }

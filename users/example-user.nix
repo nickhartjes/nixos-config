@@ -29,14 +29,14 @@
     packages = [inputs.home-manager.packages.${pkgs.system}.default];
   };
 
-  home-manager = {
-    users.example = {
-      imports = [../modules/home-manager/users/example/${config.networking.hostName}.nix];
-      home = {
-        username = "example";
-        homeDirectory = "/home/example";
-        stateVersion = "24.05";
-      };
-    };
-  };
+  # home-manager = {
+  #   users.example = {
+  #     imports = [../modules/home-manager/users/example/${config.networking.hostName}.nix];
+  #     home = {
+  #       username = "example";
+  #       homeDirectory = "/home/example";
+  #       stateVersion = "24.05";
+  #     };
+  #   };
+  # };
 }

@@ -37,5 +37,20 @@
     ../common
     ./configuration.nix
   ];
-  # extraServices.podman.enable = true;
+
+
+  extraServices = {
+    desktopManager = {
+      plasma.enable = true;
+      cinnamon.enable = true;
+    };
+    displayManager = {
+      gdm.enable = true;
+      lightdm.enable = false;
+      sddm.enable = false;
+    };
+    virtualization = {
+      podman.enable = true;
+    };
+  };
 }

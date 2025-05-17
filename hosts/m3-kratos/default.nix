@@ -40,5 +40,5 @@
     ./services
     ./specialisations.nix
   ];
-  extraServices.podman.enable = true;
+  # extraServices.podman.enable = true;
 }
