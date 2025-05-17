@@ -5,15 +5,14 @@
   ...
 }:
 with lib; let
-  cfg = config.components.virtualization.podman;
+  cfg = config.components.virtualization.docker;
 in {
-  options.components.virtualization.podman.enable = mkEnableOption "enable podman";
+  options.components.virtualization.docker.enable = mkEnableOption "enable docker";
 
   config = mkIf cfg.enable {
     virtualisation = {
-      podman = {
+      docker = {
         enable = true;
-        dockerCompat = true;
         autoPrune = {
           enable = true;
           dates = "weekly";
@@ -22,11 +21,10 @@ in {
             "--filter=label!=important"
           ];
         };
-        defaultNetwork.settings.dns_enabled = true;
       };
     };
     environment.systemPackages = with pkgs; [
-      podman-compose
+      docker-compose
     ];
   };
 }

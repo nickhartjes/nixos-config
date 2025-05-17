@@ -1,5 +1,7 @@
 {
   imports = [
-    ./features/cli
+    ./development/editor
+    ./cli
+    ./terminal
   ];
 }

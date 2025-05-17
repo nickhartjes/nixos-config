@@ -19,7 +19,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
     # Stable Nixpkgs (specific version, e.g., for certain packages or modules)
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05";
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.11";
 
     # Agenix for managing secrets
     agenix.url = "github:ryantm/agenix";
@@ -75,7 +75,7 @@
 
     # Home Manager modules provided by this flake
     # These can be imported by Home Manager configurations
-    homeManagerModules = import ./modules/home-manager;
+    # homeManagerModules = import ./modules/home-manager;
 
     # NixOS configurations provided by this flake
     # Each attribute in this set is a complete NixOS system configuration
