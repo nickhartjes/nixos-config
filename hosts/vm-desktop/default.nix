@@ -44,11 +44,15 @@
       cinnamon.enable = true;
     };
     display = {
-      gdm.enable = true;
-      lightdm.enable = false;
+      gdm.enable = false;
+      lightdm.enable = true;
       sddm.enable = false;
     };
+    hardware = {
+      displaylink.enable = false;
+    };
     virtualization = {
+      docker.enable = false;
       podman.enable = true;
     };
   };
