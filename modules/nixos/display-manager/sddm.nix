@@ -10,14 +10,11 @@ in {
   options.extraServices.displayManager.sddm.enable = mkEnableOption "enable Simple Desktop Display Manager (SDDM)";
 
   config = mkIf cfg.enable {
-      services.xserver.displayManager = {
-      
+    services.xserver.displayManager = {
       sddm = {
         enable = true;
         wayland.enable = true;
       };
-
-    
     };
   };
 }

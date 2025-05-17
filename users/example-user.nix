@@ -29,14 +29,32 @@
     packages = [inputs.home-manager.packages.${pkgs.system}.default];
   };
 
-  # home-manager = {
-  #   users.example = {
-  #     imports = [../modules/home-manager/users/example/${config.networking.hostName}.nix];
-  #     home = {
-  #       username = "example";
-  #       homeDirectory = "/home/example";
-  #       stateVersion = "24.05";
-  #     };
-  #   };
-  # };
+  home-manager.users.example = {
+    config,
+    pkgs,
+    ...
+  }: {
+    imports = [
+      ../modules/home-manager
+    ];
+    home.stateVersion = "24.11";
+    home.packages = with pkgs; [
+      bat
+      fd
+    ];
+
+    features = {
+      cli = {
+        fish.enable = true;
+        fzf.enable = true;
+        neofetch.enable = true;
+      };
+    };
+
+    programs.git = {
+      enable = true;
+      userName = "Your Name";
+      userEmail = "your@email.com";
+    };
+  };
 }

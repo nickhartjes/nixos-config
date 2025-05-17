@@ -1,3 +1,5 @@
 {
-  zellij-ps = import ./zellij-ps.nix;
+  imports = [
+    ./features/cli
+  ];
 }

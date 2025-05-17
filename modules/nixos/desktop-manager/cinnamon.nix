@@ -12,7 +12,7 @@ in {
   config = mkIf cfg.enable {
     services = {
       xserver = {
-        desktopManager= {
+        desktopManager = {
           cinnamon = {
             enable = true;
           };

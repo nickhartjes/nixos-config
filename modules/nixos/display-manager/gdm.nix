@@ -10,14 +10,11 @@ in {
   options.extraServices.displayManager.gdm.enable = mkEnableOption "enable GDM (GNOME Display Manager)";
 
   config = mkIf cfg.enable {
-      services.xserver.displayManager = {
-      
+    services.xserver.displayManager = {
       gdm = {
         enable = true;
         wayland = true;
       };
-
-    
     };
   };
 }

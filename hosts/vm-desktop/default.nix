@@ -38,7 +38,6 @@
     ./configuration.nix
   ];
 
-
   extraServices = {
     desktopManager = {
       plasma.enable = true;

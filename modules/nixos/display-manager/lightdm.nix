@@ -10,13 +10,10 @@ in {
   options.extraServices.displayManager.lightdm.enable = mkEnableOption "enable Lightdm";
 
   config = mkIf cfg.enable {
-      services.xserver.displayManager = {
-      
+    services.xserver.displayManager = {
       lightdm = {
         enable = true;
       };
-
-    
     };
   };
 }
