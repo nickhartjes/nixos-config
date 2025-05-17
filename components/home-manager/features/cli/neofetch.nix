@@ -5,9 +5,9 @@
   ...
 }:
 with lib; let
-  cfg = config.features.cli.neofetch;
+  cfg = config.components.cli.neofetch;
 in {
-  options.features.cli.neofetch.enable = mkEnableOption "enable neofetch";
+  options.components.cli.neofetch.enable = mkEnableOption "enable neofetch";
 
   config = mkIf cfg.enable {
     home.packages = with pkgs; [neofetch];

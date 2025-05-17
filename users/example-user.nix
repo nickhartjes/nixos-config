@@ -35,7 +35,7 @@
     ...
   }: {
     imports = [
-      ../modules/home-manager
+      ../components/home-manager
     ];
     home.stateVersion = "24.11";
     home.packages = with pkgs; [
@@ -43,7 +43,7 @@
       fd
     ];
 
-    features = {
+    components = {
       cli = {
         fish.enable = true;
         fzf.enable = true;

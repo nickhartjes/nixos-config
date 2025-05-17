@@ -5,9 +5,9 @@
   ...
 }:
 with lib; let
-  cfg = config.features.desktop.fonts;
+  cfg = config.components.desktop.fonts;
 in {
-  options.features.desktop.fonts.enable =
+  options.components.desktop.fonts.enable =
     mkEnableOption "install additional fonts for desktop apps";
 
   config = mkIf cfg.enable {

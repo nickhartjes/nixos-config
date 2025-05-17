@@ -38,12 +38,12 @@
     ./configuration.nix
   ];
 
-  extraServices = {
-    desktopManager = {
+  components = {
+    desktop = {
       plasma.enable = true;
       cinnamon.enable = true;
     };
-    displayManager = {
+    display = {
       gdm.enable = true;
       lightdm.enable = false;
       sddm.enable = false;

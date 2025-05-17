@@ -4,9 +4,9 @@
   ...
 }:
 with lib; let
-  cfg = config.features.desktop.plasma;
+  cfg = config.components.desktop.plasma;
 in {
-  options.features.desktop.plasma.enable = mkEnableOption "KDE plasma config";
+  options.components.desktop.plasma.enable = mkEnableOption "KDE plasma config";
 
   config = mkIf cfg.enable {
     services = {

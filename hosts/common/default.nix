@@ -8,7 +8,7 @@
   ...
 }: {
   imports = [
-    ../../modules/nixos
+    ../../components/nixos
     ../../users
     inputs.home-manager.nixosModules.home-manager
   ];

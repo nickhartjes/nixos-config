@@ -5,9 +5,9 @@
   ...
 }:
 with lib; let
-  cfg = config.features.desktop.wayland;
+  cfg = config.components.desktop.wayland;
 in {
-  options.features.desktop.wayland.enable = mkEnableOption "wayland extra tools and config";
+  options.components.desktop.wayland.enable = mkEnableOption "wayland extra tools and config";
 
   config = mkIf cfg.enable {
     programs.waybar = {
