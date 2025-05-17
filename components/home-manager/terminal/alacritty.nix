@@ -5,9 +5,9 @@
   ...
 }:
 with lib; let
-  cfg = config.components.alacritty.foot;
+  cfg = config.components.terminal.alacritty;
 in {
-  options.components.alacritty.foot.enable = mkEnableOption "enable displaylink";
+  options.components.terminal.alacritty.enable = mkEnableOption "enable displaylink";
 
   config = mkIf cfg.enable {
     programs = {

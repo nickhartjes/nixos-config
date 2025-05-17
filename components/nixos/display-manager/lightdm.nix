@@ -10,9 +10,12 @@ in {
   options.components.display.lightdm.enable = mkEnableOption "enable Lightdm";
 
   config = mkIf cfg.enable {
-    services.xserver.displayManager = {
-      lightdm = {
-        enable = true;
+    services.xserver = {
+      enable = true;
+      displayManager = {
+        lightdm = {
+          enable = true;
+        };
       };
     };
   };

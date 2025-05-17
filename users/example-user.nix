@@ -49,6 +49,13 @@
         fzf.enable = true;
         neofetch.enable = true;
       };
+      terminal = {
+        alacritty.enable = true;
+        foot.enable = true;
+        ghostty.enable = true;
+        kitty.enable = true;
+        wezterm.enable = true;
+      };
     };
 
     programs.git = {

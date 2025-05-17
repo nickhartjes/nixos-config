@@ -18,13 +18,16 @@ in {
       };
     };
     environment.systemPackages = with pkgs; [
-      catppuccin-kde
-      catppuccin-cursors
-      kdePackages.yakuake
-      kdePackages.kpmcore
-      kdePackages.partitionmanager
-      kdePackages.kio-admin
-      kdePackages.plasma-thunderbolt
+      catppuccin-kde # Catppuccin theme for KDE
+      catppuccin-cursors # Catppuccin cursors for KDE
+
+      kdePackages.plasma-thunderbolt # Thunderbolt support
+    ];
+    environment.plasma6.excludePackages = with pkgs; [
+      kdePackages.plasma-browser-integration # Browser integration
+      kdePackages.konsole # Terminal emulator
+      kdePackages.elisa # Music player
+      kdePackages.khelpcenter # Help center
     ];
   };
 }

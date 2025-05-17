@@ -39,9 +39,13 @@
   ];
 
   components = {
+    # Multple desktops can lead to conficts during builds
     desktop = {
-      plasma.enable = true;
-      cinnamon.enable = true;
+      cinnamon.enable = false;
+      cosmic.enable = true;
+      gnome.enable = true;
+      pantheon.enable = false;
+      plasma.enable = false;
     };
     display = {
       gdm.enable = false;
