@@ -1,6 +1,6 @@
 {pkgs, ...}: {
   imports = [
     ./vscode.nix
-    ./zed-editor.nix
+    ./zed.nix
   ];
 }

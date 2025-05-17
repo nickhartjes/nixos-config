@@ -44,6 +44,18 @@
     ];
 
     components = {
+      application = {
+        browser = {
+          chromium.enable = true;
+          firefox.enable = true;
+        };
+      };
+      development = {
+        editor = {
+          vscode.enable = true;
+          zed.enable = true;
+        };
+      };
       cli = {
         fish.enable = true;
         fzf.enable = true;

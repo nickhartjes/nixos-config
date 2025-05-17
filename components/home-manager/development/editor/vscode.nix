@@ -16,8 +16,8 @@ in {
     programs = {
       vscode = {
         enable = true;
-        package = pkgs.vscode;
-        extensions = with pkgs; [
+        package = pkgs.vscodium;
+        profiles.default.extensions = with pkgs; [
           vscode-extensions.redhat.java
         ];
       };
