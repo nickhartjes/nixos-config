@@ -11,6 +11,7 @@
     # In this example, the password is "password"
     initialHashedPassword = "$y$j9T$SWeufZ9NrHX0.d.w72nc20$1zKkVcJHZfIvS5VMqhdP5RwQ7wQHzbsIi.ArDYRXDK7";
     isNormalUser = true;
+    shell = pkgs.zsh;
     description = "example";
     extraGroups = [
       "wheel" # Allows the user to execute commands with elevated privileges using sudo
