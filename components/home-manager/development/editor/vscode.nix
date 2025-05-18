@@ -19,8 +19,18 @@ in {
         package = pkgs.vscode;
         profiles.default.extensions = with pkgs; [
           vscode-extensions.redhat.java
+          vscode-extensions.jnoortheen.nix-ide
+          vscode-extensions.nefrob.vscode-just-syntax
+
+          vscode-extensions.catppuccin.catppuccin-vsc
+          vscode-extensions.catppuccin.catppuccin-vsc-icons
         ];
       };
     };
+
+    # Application needed for the vscode configuration to work properly
+    home.packages = with pkgs; [
+      nixfmt-rfc-style
+    ];
   };
 }

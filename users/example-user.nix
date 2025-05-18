@@ -68,9 +68,11 @@
         };
       };
       cli = {
-        fish.enable = true;
+        fish.enable = false;
         fzf.enable = true;
         neofetch.enable = true;
+        nh.enable = true;
+        zsh.enable = true;
       };
       terminal = {
         alacritty.enable = true;
