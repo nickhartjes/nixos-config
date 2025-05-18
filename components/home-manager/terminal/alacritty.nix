@@ -13,6 +13,22 @@ in {
     programs = {
       alacritty = {
         enable = true;
+        settings = {
+          window = {
+            opacity = 0.9;
+            padding = {
+              x = 0;
+              y = 0;
+            };
+          };
+          font = {
+            size = 7.0;
+            normal = {
+              family = "ComicCodeLigatures Nerd Font";
+              style = "Regular";
+            };
+          };
+        };
       };
     };
   };

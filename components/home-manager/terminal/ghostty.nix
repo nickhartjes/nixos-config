@@ -13,6 +13,14 @@ in {
     programs = {
       ghostty = {
         enable = true;
+        enableZshIntegration = true;
+        enableFishIntegration = true;
+        enableBashIntegration = true;
+        settings = {
+          font-family = "ComicCodeLigatures Nerd Font";
+          theme = "catppuccin-mocha";
+          font-size = 10;
+        };
       };
     };
   };
