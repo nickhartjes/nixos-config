@@ -78,6 +78,7 @@
         neofetch.enable = false;
         nh.enable = true;
         zsh.enable = true;
+        neovim.enable = true;
       };
       terminal = {
         alacritty.enable = true;
