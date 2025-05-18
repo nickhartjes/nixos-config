@@ -2,6 +2,7 @@
   config,
   pkgs,
   inputs,
+  lib,
   ...
 }: {
   users.users.example = {
@@ -38,6 +39,14 @@
       ../components/home-manager
     ];
     home.stateVersion = "24.11";
+
+    # nixpkgs.config.allowUnfree = true;
+    nixpkgs.config.allowUnfreePredicate = pkg:
+      builtins.elem (lib.getName pkg) [
+        "obsidian"
+        "vscode"
+      ];
+
     home.packages = with pkgs; [
       bat
       fd
