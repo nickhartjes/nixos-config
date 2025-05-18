@@ -41,6 +41,8 @@
     home.packages = with pkgs; [
       bat
       fd
+
+      obsidian
     ];
 
     components = {
