@@ -27,13 +27,18 @@ in {
         htop = "btop";
         ps = "procs";
       };
-      envExtra = ''
-        export NIX_PATH=nixpkgs=channel:nixos-unstable
-        export NIX_LOG=info
-
-        # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-        [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-      '';
+      initContent = let
+        zshEarlyInit = lib.mkOrder 500 ''
+          export NIX_PATH=nixpkgs=channel:nixos-unstable
+          export NIX_LOG=info
+        '';
+        zshGeneralConfig = lib.mkOrder 1000 ''
+          # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+          [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+          fastfetch
+        '';
+      in
+        lib.mkMerge [zshEarlyInit zshGeneralConfig];
     };
 
     # Application needed for the zsh configuration to work properly

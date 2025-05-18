@@ -68,9 +68,10 @@
         };
       };
       cli = {
+        fastfetch.enable = true;
         fish.enable = false;
         fzf.enable = true;
-        neofetch.enable = true;
+        neofetch.enable = false;
         nh.enable = true;
         zsh.enable = true;
       };
