@@ -39,6 +39,7 @@ It’s built on top of age, a simple, modern encryption tool by Filippo Valsorda
 - https://github.com/Misterio77/nix-starter-configs
 - https://github.com/Misterio77/nix-config
 - https://code.m3ta.dev/m3tam3re/nixcfg
+- https://github.com/khaneliman/khanelinix
 
 ### Youtube
 #### Nix / NixOs related channels
