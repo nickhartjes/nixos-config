@@ -5,6 +5,7 @@
     ./neofetch.nix
     ./nh.nix
     ./zsh.nix
+    ./fastfetch.nix
   ];
 
   programs.zoxide = {
