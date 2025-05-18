@@ -47,6 +47,7 @@
       pantheon.enable = false;
       plasma.enable = false;
     };
+    system.fonts.enable = true;
     display = {
       gdm.enable = false;
       lightdm.enable = true;
