@@ -13,12 +13,12 @@ in {
     programs.neovim = {
       vimAlias = true;
       enable = true;
-      plugins = with pkgs.vimPlugins; [
-        LazyVim
-        nvchad
-        nvchad-ui
-        vim-nix
-      ];
+      # plugins = with pkgs.vimPlugins; [
+      #   LazyVim
+      #   nvchad
+      #   nvchad-ui
+      #   vim-nix
+      # ];
     };
     home.packages = with pkgs; [
       ripgrep # For use with Telescope
