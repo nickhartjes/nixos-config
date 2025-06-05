@@ -24,6 +24,9 @@
     # Agenix for managing secrets
     agenix.url = "github:ryantm/agenix";
 
+    # NixOS profiles to optimize settings for different hardware.
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+
     # Disko for declarative disk partitioning
     disko = {
       url = "github:nix-community/disko";
@@ -46,6 +49,7 @@
     nix-darwin, # Nix-darwin input (though not used in the current systems list)
     nixpkgs, # Nixpkgs input
     nixpkgs-stable, # Nixpkgs stable input
+    nixos-hardware,
     ... # Catches any other inputs
   } @ inputs: let
     # `@ inputs` makes all inputs available under the `inputs` attribute set
@@ -110,6 +114,18 @@
           agenix.nixosModules.default # Agenix module
         ];
       };
+
+      framework-13 = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux"; # Specify the system architecture
+        specialArgs = {inherit inputs outputs;}; # Pass inputs and flake outputs to the modules
+        modules = [
+          ./hosts/framework-13 # Host-specific configuration
+          inputs.disko.nixosModules.disko # Disko module
+          agenix.nixosModules.default # Agenix module
+          nixos-hardware.nixosModules.framework-amd-ai-300-series # NixOS hardware module for framework-13
+        ];
+      };
+
 
       # NixOS configuration for 'm3-hermes-hetzner'
       m3-hermes-hetzner = nixpkgs.lib.nixosSystem {
