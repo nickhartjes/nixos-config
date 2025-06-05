@@ -7,9 +7,7 @@
     disk = {
       nvme0n1 = {
         type = "disk";
-        # TODO: change this to your actual device
-        device = "/dev/vda";
-        #device = "/dev/nvme0n1";
+        device = "/dev/nvme0n1";
         content = {
           type = "gpt";
           partitions = {
