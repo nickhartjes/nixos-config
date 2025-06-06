@@ -16,8 +16,11 @@ in {
       antidote = {
         enable = true;
         plugins = [
+          "zsh-users/zsh-syntax-highlighting"
           "zsh-users/zsh-autosuggestions"
+          "zsh-users/zsh-completions"
           "romkatv/powerlevel10k"
+          "Aloxaf/fzf-tab"
         ];
       };
       shellAliases = {

@@ -15,19 +15,13 @@
   # };
   boot.loader.systemd-boot.enable = true;
 
+  # Framework firmware updates
+  services.fwupd.enable = true;
 
+  hardware.bluetooth.enable = true; # enables support for Bluetooth
+  hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
 
-  # boot = {
-  #   kernelParams = [
-  #     "resume_offset=533760"
-  #   ];
-  #   supportedFilesystems = lib.mkForce ["btrfs"];
-  #   kernelPackages = pkgs.linuxPackages_latest;
-  #   resumeDevice = "/dev/disk/by-label/nixos";
-  # };
-
-
-
+  
   networking.hostName = "framework-13"; # Define your hostname.
   # networking.wireless.enable = true; # Enables wireless support via wpa_supplicant.
 
@@ -91,7 +85,7 @@
   # Or disable the firewall altogether.
   #security.sudo.wheelNeedsPassword = false;
 
-  security.sudo.extraConfig = "nixos ALL=(ALL) NOPASSWD: ALL";
+  security.sudo.extraConfig = "nh ALL=(ALL) NOPASSWD: ALL";
 
   # networking.firewall.enable = false;
 

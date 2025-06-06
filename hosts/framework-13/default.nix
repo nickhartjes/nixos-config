@@ -42,16 +42,16 @@
     # Multple desktops can lead to conficts during builds
     desktop = {
       cinnamon.enable = false;
-      cosmic.enable = true;
-      gnome.enable = true;
+      cosmic.enable = false;
+      gnome.enable = false;
       pantheon.enable = false;
-      plasma.enable = false;
+      plasma.enable = true;
     };
     system.fonts.enable = true;
     display = {
       gdm.enable = false;
-      lightdm.enable = true;
-      sddm.enable = false;
+      lightdm.enable = false;
+      sddm.enable = true;
     };
     hardware = {
       displaylink.enable = false;

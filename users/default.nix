@@ -1,3 +1,6 @@
 {
-  imports = [./example-user.nix];
+  imports = [
+    ./example-user.nix
+    ./nh.nix
+  ];
 }
