@@ -47,7 +47,7 @@
       pantheon.enable = false;
       plasma.enable = true;
     };
-    system.fonts.enable = true;
+
     display = {
       gdm.enable = false;
       lightdm.enable = false;
@@ -59,6 +59,10 @@
     virtualization = {
       docker.enable = false;
       podman.enable = true;
+    };
+    system = {
+      fonts.enable = true;
+      yubikey.enable = true;
     };
   };
 }

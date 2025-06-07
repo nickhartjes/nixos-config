@@ -14,6 +14,32 @@
   #   efiInstallAsRemovable = true;
   # };
   boot.loader.systemd-boot.enable = true;
+  boot.kernelParams = [
+    "resume_offset=533760"
+  ];
+  boot.resumeDevice = "/dev/disk/by-label/nixos";
+
+  # powerManagement.enable = true;
+  # swapDevices = [
+  #   {
+  #     device = "/swap/swapfile";
+  #     size = 96 * 1024; # 96GB in MB
+  #   }
+  # ];
+
+  # services.power-profiles-daemon.enable = true;
+  # # Suspend first then hibernate when closing the lid
+  # services.logind.lidSwitch = "suspend-then-hibernate";
+  # # Hibernate on power button pressed
+  # services.logind.powerKey = "hibernate";
+  # services.logind.powerKeyLongPress = "poweroff";
+
+  # # Define time delay for hibernation
+  # systemd.sleep.extraConfig = ''
+  #   HibernateDelaySec=30m
+  #   SuspendState=mem
+  # '';
+
 
   # Framework firmware updates
   services.fwupd.enable = true;
@@ -72,9 +98,9 @@
 
   # Enable the OpenSSH daemon.
   services.openssh = {
-    enable = true;
+    enable = false;
     settings.PermitRootLogin = "no";
-    allowSFTP = true;
+    allowSFTP = false;
   };
 
   programs.zsh.enable = true;

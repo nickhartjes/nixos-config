@@ -80,6 +80,7 @@
         nh.enable = true;
         zsh.enable = true;
         neovim.enable = true;
+        ssh.enable = true;  
       };
       terminal = {
         alacritty.enable = true;
@@ -92,8 +93,8 @@
 
     programs.git = {
       enable = true;
-      userName = "Your Name";
-      userEmail = "your@email.com";
+      userName = "Nick Hartjes";
+      userEmail = "nick@hartj.es";
     };
   };
 }

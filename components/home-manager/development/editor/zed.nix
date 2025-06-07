@@ -17,6 +17,14 @@ in {
       enable = true;
       # https://github.com/zed-industries/extensions/tree/main/extensions
       extensions = ["nix"];
+      userKeymaps = [
+        {
+          context = "Workspace";
+          bindings = {
+            ctrl-shift-t = "workspace::NewTerminal";
+          };
+        }
+      ];
     };
   };
 }

@@ -8,6 +8,7 @@
     ./neovim.nix
     ./nh.nix
     ./zsh.nix
+    ./ssh.nix
   ];
 
   programs.zoxide = {

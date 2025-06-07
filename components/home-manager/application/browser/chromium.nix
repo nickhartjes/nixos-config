@@ -14,8 +14,8 @@ in {
       enable = true;
       extensions = [
         "blipmdconlkpinefehnmjammfjpmpbjk" # Lighthouse
-        "bcjindcccaagfpapjjmafapmmgkkhgoa" # JSON Formatter
-        "cjpalhdlnbpafiamejdnhcphjbkeiagm" # ublock origin
+        "eifflpmocdbdmepbjaopkkhbfmdgijcc" # JSON Formatter
+        "gighmmpiobklfepjocnamgkkbiglidom" # AdBlocker
         "nngceckbapebfimnlniiiahkandclblb" # Bitwarden
         "mlomiejdfkolichcflejclcbmpeaniij" # Ghostery
         "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
