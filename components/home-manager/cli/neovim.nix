@@ -13,6 +13,7 @@ in {
     programs.neovim = {
       vimAlias = true;
       enable = true;
+      defaultEditor = true;
       # plugins = with pkgs.vimPlugins; [
       #   LazyVim
       #   nvchad

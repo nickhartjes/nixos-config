@@ -5,6 +5,11 @@
   lib,
   ...
 }: {
+
+
+  imports = [
+    ./nh/secrets.nix
+  ];
   users.users.nh = {
     # To create a user with a hashed password, use the following command:
     # $ nix-shell -p mkpasswd --run 'mkpasswd <password>'
@@ -34,6 +39,14 @@
       "sh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII8Fzq/ktI9g9FYsADc8NkaYDhHuXIPPPxwRjXT7Gcwk info@nickhartjes.nl"
     ];
     packages = [inputs.home-manager.packages.${pkgs.system}.default];
+  };
+
+  environment = {
+    variables = {
+      TERMINAL = "ghostty";
+      EDITOR = "nvim";
+      VISUAL = "nvim";
+    };
   };
 
   home-manager.users.nh = {
