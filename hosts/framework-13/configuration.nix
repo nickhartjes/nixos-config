@@ -1,23 +1,27 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{pkgs, ...}: {
+{lib,pkgs, ...}: {
   imports = [
     # Include the results of the hardware scan.
     ./disko-config.nix
     ./hardware-configuration.nix
   ];
 
-  # # Bootloader
-  # boot.loader.grub = {
-  #   efiSupport = true;
-  #   efiInstallAsRemovable = true;
-  # };
-  boot.loader.systemd-boot.enable = true;
+  # Lanzaboote currently replaces the systemd-boot module.
+  # This setting is usually set to true in configuration.nix
+  # generated at installation time. So we force it to false
+  # for now.
+  boot.loader.systemd-boot.enable = lib.mkForce false;
   boot.kernelParams = [
     "resume_offset=533760"
   ];
   boot.resumeDevice = "/dev/disk/by-label/nixos";
+    
+  boot.lanzaboote = {
+    enable = true;
+    pkiBundle = "/var/lib/sbctl";
+  };
 
   # powerManagement.enable = true;
   # swapDevices = [
@@ -83,6 +87,7 @@
   environment.systemPackages = with pkgs; [
     wget
     vim
+    sbctl  # Secure Boot Control 
     git
   ];
 

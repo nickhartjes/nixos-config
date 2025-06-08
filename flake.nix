@@ -38,6 +38,11 @@
       url = "git+https://github.com/nickhartjes/dotfiles-flake-demo.git";
       flake = false; # Indicates this is not a flake
     };
+
+    lanzaboote = {
+      url = "github:nix-community/lanzaboote/v0.4.2";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   # --- Outputs ---
@@ -123,6 +128,7 @@
           inputs.disko.nixosModules.disko # Disko module
           agenix.nixosModules.default # Agenix module
           nixos-hardware.nixosModules.framework-amd-ai-300-series # NixOS hardware module for framework-13
+          inputs.lanzaboote.nixosModules.lanzaboote
         ];
       };
 

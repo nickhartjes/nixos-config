@@ -69,6 +69,7 @@
     home.packages = with pkgs; [
       fd
       obsidian
+      alejandra
     ];
 
     components = {
