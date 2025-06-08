@@ -1,7 +1,11 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{lib,pkgs, ...}: {
+{
+  lib,
+  pkgs,
+  ...
+}: {
   imports = [
     # Include the results of the hardware scan.
     ./disko-config.nix
@@ -17,7 +21,7 @@
     "resume_offset=533760"
   ];
   boot.resumeDevice = "/dev/disk/by-label/nixos";
-    
+
   boot.lanzaboote = {
     enable = true;
     pkiBundle = "/var/lib/sbctl";
@@ -44,14 +48,12 @@
   #   SuspendState=mem
   # '';
 
-
   # Framework firmware updates
   services.fwupd.enable = true;
 
   hardware.bluetooth.enable = true; # enables support for Bluetooth
   hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
 
-  
   networking.hostName = "framework-13"; # Define your hostname.
   # networking.wireless.enable = true; # Enables wireless support via wpa_supplicant.
 
@@ -87,7 +89,7 @@
   environment.systemPackages = with pkgs; [
     wget
     vim
-    sbctl  # Secure Boot Control 
+    sbctl # Secure Boot Control
     git
   ];
 

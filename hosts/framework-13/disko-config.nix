@@ -1,7 +1,6 @@
 # https://haseebmajid.dev/posts/2024-07-30-how-i-setup-btrfs-and-luks-on-nixos-using-disko/
 # https://0pointer.net/blog/unlocking-luks2-volumes-with-tpm2-fido2-pkcs11-security-hardware-on-systemd-248.html
 # https://wiki.archlinux.org/title/Systemd-cryptenroll
-
 {
   disko.devices = {
     disk = {

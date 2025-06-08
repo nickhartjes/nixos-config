@@ -132,7 +132,6 @@
         ];
       };
 
-
       # NixOS configuration for 'm3-hermes-hetzner'
       m3-hermes-hetzner = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux"; # Specify the system architecture
