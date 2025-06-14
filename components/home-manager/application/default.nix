@@ -5,5 +5,8 @@
     ./ai
     ./communication
     ./graphics
+    ./database
+    ./office
+    ./security
   ];
 }

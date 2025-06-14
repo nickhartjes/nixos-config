@@ -71,6 +71,8 @@
         "claude-code"
         "slack"
         "discord"
+        "dbeaver-bin"
+        "corefonts"
       ];
 
     home.packages = with pkgs; [
@@ -100,6 +102,16 @@
         graphics = {
           gimp.enable = true;
           inkscape.enable = true;
+        };
+        database = {
+          dbeaver.enable = true;
+          pgadmin.enable = true;
+        };
+        office = {
+          libreoffice.enable = true;
+        };
+        security = {
+          lynis.enable = true;
         };
       };
       development = {
