@@ -51,8 +51,8 @@
 
     display = {
       gdm.enable = false;
-      lightdm.enable = false;
-      sddm.enable = true;
+      lightdm.enable = true;
+      sddm.enable = false;
     };
     hardware = {
       displaylink.enable = false;

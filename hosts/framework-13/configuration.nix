@@ -55,7 +55,8 @@
   # Enable the UCodeNix service for CPU microcode updates
   services.ucodenix = {
     enable = true;
-    cpuModelId = ./facter.json;
+    cpuModelId = "00B60F00"; #  AMD Ryzen AI 5 340
+    # cpuModelId = ./facter.json;
   };
   # old: [    0.437076] microcode: Current revision: 0x0b60000e
 
@@ -137,4 +138,17 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "24.11"; # Did you read the comment?
+
+  system = {
+    # Allow auto update
+    autoUpgrade = {
+      enable = true;
+      flake = "path:/home/nh/.config/nixos-config";
+      flags = [
+        "--commit-lock-file"
+        "--recreate-lock-file"
+      ];
+      dates = "daily";
+    };
+  };
 }

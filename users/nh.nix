@@ -66,6 +66,7 @@
       builtins.elem (lib.getName pkg) [
         "obsidian"
         "vscode"
+        "idea-ultimate"
       ];
 
     home.packages = with pkgs; [
@@ -86,6 +87,7 @@
         editor = {
           vscode.enable = true;
           zed.enable = true;
+          intellij.enable = true;
         };
       };
       cli = {
