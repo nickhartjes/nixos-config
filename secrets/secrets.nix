@@ -8,4 +8,6 @@ in {
 
   "nh/ssh-framework-13.age".publicKeys = [framework-13 framework-13-2] ++ systems;
   "nh/ssh-framework-13.pub.age".publicKeys = [framework-13 framework-13-2] ++ systems;
+  "nh/gpg-private-key.age".publicKeys = [framework-13 framework-13-2] ++ systems;
+  "nh/gpg-public-key.age".publicKeys = [framework-13 framework-13-2] ++ systems;
 }

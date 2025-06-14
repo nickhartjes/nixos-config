@@ -2,5 +2,6 @@
   imports = [
     ./editor
     ./infrastructure
+    ./git.nix
   ];
 }

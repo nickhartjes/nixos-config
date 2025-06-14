@@ -129,6 +129,10 @@
           terraform.enable = true;
           kubernetes.enable = true;
         };
+        git = {
+          enable = true;
+          gpgSigning.enable = true;
+        };
       };
       cli = {
         bat.enable = true;
@@ -148,12 +152,6 @@
         kitty.enable = true;
         wezterm.enable = true;
       };
-    };
-
-    programs.git = {
-      enable = true;
-      userName = "Nick Hartjes";
-      userEmail = "nick@hartj.es";
     };
   };
 }
