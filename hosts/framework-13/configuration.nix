@@ -53,11 +53,11 @@
   services.fwupd.enable = true;
 
   # Enable the UCodeNix service for CPU microcode updates
-  services.ucodenix = {
-    enable = true;
-    cpuModelId = "00B60F00"; #  AMD Ryzen AI 5 340
-    # cpuModelId = ./facter.json;
-  };
+  # services.ucodenix = {
+  #   enable = true;
+  #   cpuModelId = "00B60F00"; #  AMD Ryzen AI 5 340
+  #   # cpuModelId = ./facter.json;
+  # };
   # old: [    0.437076] microcode: Current revision: 0x0b60000e
 
   hardware.bluetooth.enable = true; # enables support for Bluetooth

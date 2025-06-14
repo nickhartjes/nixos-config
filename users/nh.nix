@@ -67,6 +67,10 @@
         "obsidian"
         "vscode"
         "idea-ultimate"
+        "spotify"
+        "claude-code"
+        "slack"
+        "discord"
       ];
 
     home.packages = with pkgs; [
@@ -81,6 +85,21 @@
         browser = {
           chromium.enable = true;
           firefox.enable = true;
+        };
+        music = {
+          spotify.enable = true;
+        };
+        ai = {
+          claude-code.enable = true;
+          ollama.enable = true;
+        };
+        communication = {
+          slack.enable = true;
+          discord.enable = true;
+        };
+        graphics = {
+          gimp.enable = true;
+          inkscape.enable = true;
         };
       };
       development = {
