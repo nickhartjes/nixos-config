@@ -45,6 +45,9 @@
   nix = let
     flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
   in {
+    ##################
+    ## Nix settings
+    ##################
     settings = {
       experimental-features = "nix-command flakes";
       trusted-users = [
@@ -53,10 +56,17 @@
       ];
     };
     gc = {
+      # Automatic garbage collection
       automatic = true;
-      options = "--delete-older-than 30d";
+      dates = "weekly";
+      options = "--delete-older-than 7d";
     };
+    # Automatically run the nix store optimiser at a specific time.
     optimise.automatic = true;
+    settings = {
+      auto-optimise-store = true; # Optimise syslinks
+    };
+
     registry = lib.mapAttrs (_: flake: {inherit flake;}) flakeInputs;
     nixPath = ["/etc/nix/path"] ++ lib.mapAttrsToList (flakeName: _: "${flakeName}=flake:${flakeName}") flakeInputs;
   };
