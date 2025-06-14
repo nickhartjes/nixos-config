@@ -10,8 +10,10 @@ in {
   options.components.cli.ssh.enable = mkEnableOption "enable ssh";
 
   config = mkIf cfg.enable {
+    services.ssh-agent.enable = true;
     programs.ssh = {
       enable = true;
+      addKeysToAgent = "yes";
     };
   };
 }

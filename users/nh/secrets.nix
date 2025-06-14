@@ -1,6 +1,6 @@
 {
   age = {
-    identityPaths = ["/home/nh/.ssh/id_framework-13_2025-06-07"];
+    identityPaths = ["/home/nh/.ssh/id_ed25519"];
 
     secrets = {
       secret2 = {
