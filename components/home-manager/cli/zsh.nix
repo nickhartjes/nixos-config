@@ -29,6 +29,20 @@ in {
         grep = "rg";
         htop = "btop";
         ps = "procs";
+        # Security
+        audit = "sudo lynis audit system";
+
+        # Shutdown or reboot
+        ssn = "sudo shutdown now";
+        sr = "sudo reboot";
+
+        # Information
+        myip = "curl http://ipecho.net/plain; echo";
+        speed = "speedtest-cli --simple";
+
+        # Clipboard (macOS-like commands for Linux)
+        pbcopy = "xsel --clipboard --input";
+        pbpaste = "xsel --clipboard --output";
       };
       initContent = let
         zshEarlyInit = lib.mkOrder 500 ''
@@ -48,6 +62,9 @@ in {
     home.packages = with pkgs; [
       btop
       procs
+      curl # For myip alias
+      speedtest-cli # For speed alias
+      xsel # For pbcopy/pbpaste aliases
     ];
 
     home.file.".config/.p10k.zsh".source = ./files/.p10k.zsh;

@@ -74,6 +74,8 @@
         "dbeaver-bin"
         "corefonts"
         "terraform"
+        "protonvpn-gui"
+        "protonvpn-cli"
       ];
 
     home.packages = with pkgs; [
@@ -113,6 +115,7 @@
         };
         security = {
           lynis.enable = true;
+          protonvpn.enable = true;
         };
       };
       development = {
