@@ -39,10 +39,14 @@
       flake = false; # Indicates this is not a flake
     };
 
+    # Nix-darwin for managing macOS configurations (not used in this flake)
     lanzaboote = {
       url = "github:nix-community/lanzaboote/v0.4.2";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Microcode updates for Intel and AMD CPUs
+    ucodenix.url = "github:e-tho/ucodenix";
   };
 
   # --- Outputs ---
@@ -55,6 +59,8 @@
     nixpkgs, # Nixpkgs input
     nixpkgs-stable, # Nixpkgs stable input
     nixos-hardware,
+    lanzaboote,
+    ucodenix,
     ... # Catches any other inputs
   } @ inputs: let
     # `@ inputs` makes all inputs available under the `inputs` attribute set
@@ -129,6 +135,7 @@
           agenix.nixosModules.default # Agenix module
           nixos-hardware.nixosModules.framework-amd-ai-300-series # NixOS hardware module for framework-13
           inputs.lanzaboote.nixosModules.lanzaboote
+          inputs.ucodenix.nixosModules.default
         ];
       };
 

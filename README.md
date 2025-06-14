@@ -78,3 +78,7 @@ sudo nix run 'github:nix-community/disko/latest#disko-install' -- --flake .#blac
 ```shell
 nix-shell -p just curl --run 'just --justfile <(curl -s https://raw.githubusercontent.com/nickhartjes/nixos-config/refs/heads/main/justfile) clean-install vm-blackhawk'
 ```
+
+```shell
+sudo nix run nixpkgs#nixos-facter -- -o facter.json
+```

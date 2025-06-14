@@ -19,6 +19,7 @@
   boot.loader.systemd-boot.enable = lib.mkForce false;
   boot.kernelParams = [
     "resume_offset=533760"
+    "microcode.amd_sha_check=off"
   ];
   boot.resumeDevice = "/dev/disk/by-label/nixos";
 
@@ -50,6 +51,13 @@
 
   # Framework firmware updates
   services.fwupd.enable = true;
+
+  # Enable the UCodeNix service for CPU microcode updates
+  services.ucodenix = {
+    enable = true;
+    cpuModelId = ./facter.json;
+  };
+  # old: [    0.437076] microcode: Current revision: 0x0b60000e
 
   hardware.bluetooth.enable = true; # enables support for Bluetooth
   hardware.bluetooth.powerOnBoot = true; # powers up the default Bluetooth controller on boot
