@@ -8,6 +8,7 @@
   imports = [
     ./nh/secrets.nix
   ];
+
   users.users.nh = {
     # To create a user with a hashed password, use the following command:
     # $ nix-shell -p mkpasswd --run 'mkpasswd <password>'
@@ -36,7 +37,10 @@
     openssh.authorizedKeys.keys = [
       "sh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII8Fzq/ktI9g9FYsADc8NkaYDhHuXIPPPxwRjXT7Gcwk info@nickhartjes.nl"
     ];
-    packages = [inputs.home-manager.packages.${pkgs.system}.default];
+    packages = [
+      inputs.home-manager.packages.${pkgs.system}.default
+      inputs.agenix.packages.${pkgs.system}.default
+    ];
   };
 
   environment = {
@@ -67,7 +71,8 @@
     home.packages = with pkgs; [
       fd
       obsidian
-      alejandra
+      alejandra # A code formatter for various languages
+      wl-clipboard # Clipboard management for Wayland
     ];
 
     components = {

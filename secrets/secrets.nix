@@ -5,4 +5,7 @@ let
   systems = [framework-13];
 in {
   "secret1.age".publicKeys = [framework-13 framework-13-2] ++ systems;
+
+  "nh/ssh-framework-13.age".publicKeys = [framework-13 framework-13-2] ++ systems;
+  "nh/ssh-framework-13.pub.age".publicKeys = [framework-13 framework-13-2] ++ systems;
 }
