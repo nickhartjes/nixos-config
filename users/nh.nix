@@ -73,6 +73,7 @@
         "discord"
         "dbeaver-bin"
         "corefonts"
+        "terraform"
       ];
 
     home.packages = with pkgs; [
@@ -119,6 +120,11 @@
           vscode.enable = true;
           zed.enable = true;
           intellij.enable = true;
+        };
+        infrastructure = {
+          opentofu.enable = true;
+          terraform.enable = true;
+          kubernetes.enable = true;
         };
       };
       cli = {

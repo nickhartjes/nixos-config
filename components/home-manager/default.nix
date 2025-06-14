@@ -1,7 +1,7 @@
 {
   imports = [
     ./application
-    ./development/editor
+    ./development
     ./cli
     ./terminal
   ];
