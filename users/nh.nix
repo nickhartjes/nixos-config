@@ -131,7 +131,12 @@
         };
         git = {
           enable = true;
-          gpgSigning.enable = true;
+          userName = "Nick Hartjes";
+          userEmail = "nick@hartj.es";
+          gpgSigning = {
+            enable = true;
+            key = "18D6E129BCC96ED3";
+          };
         };
       };
       cli = {
