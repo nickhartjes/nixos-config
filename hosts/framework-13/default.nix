@@ -32,12 +32,15 @@
 # Please also change your hostname accordingly:
 #:w
 # networking.hostName = "nixos"; # Define your hostname.
-{
+{lib, ...}: {
   imports = [
     ../common
     ./configuration.nix
     ./secrets.nix
   ];
+
+  # Fix conflicting default session definitions
+  services.displayManager.defaultSession = lib.mkForce "hyprland";
 
   components = {
     # Multple desktops can lead to conficts during builds
@@ -45,19 +48,20 @@
       cinnamon.enable = false;
       cosmic.enable = true;
       gnome.enable = false;
-      hyprland.enable = false;
+      hyprland.enable = true;
       pantheon.enable = false;
-      plasma.enable = false;
-      sway.enable = true;
+      plasma.enable = true;
+      sway.enable = false;
     };
 
     display = {
-      gdm.enable = true;
+      gdm.enable = false;
       lightdm.enable = false;
-      sddm.enable = false;
+      sddm.enable = true;
       cosmic-greeter.enable = false;
       greetd.enable = false;
     };
+
     hardware = {
       displaylink.enable = false;
     };

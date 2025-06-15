@@ -42,9 +42,7 @@
     # Fonts
     fonts.packages = with pkgs; [
       font-awesome
-      noto-fonts
-      noto-fonts-emoji
-      nerdfonts
+      nerd-fonts.noto
     ];
 
     # Environment variables for Hyprland
@@ -94,7 +92,7 @@
 
       # File manager
       xfce.thunar
-      dolphin
+      kdePackages.dolphin
 
       # Image viewer
       imv
@@ -122,10 +120,8 @@
     ];
 
     # Enable hardware acceleration
-    hardware.opengl = {
+    hardware.graphics = {
       enable = true;
-      driSupport = true;
-      driSupport32Bit = true;
     };
 
     # Bluetooth support (common for modern desktop setups)

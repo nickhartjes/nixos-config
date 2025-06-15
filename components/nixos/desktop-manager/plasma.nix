@@ -11,8 +11,8 @@
   config = lib.mkIf config.components.desktop.plasma.enable {
     services.xserver = {
       enable = true;
-      desktopManager.plasma5.enable = true;
     };
+    services.desktopManager.plasma6.enable = true;
 
     # Enable sound
     services.pulseaudio.enable = false;
@@ -28,9 +28,7 @@
     networking.networkmanager.enable = true;
 
     # Basic system packages
-    environment.systemPackages = with pkgs; [
-      firefox
-      thunderbird
+    environment.systemPackages = with pkgs.kdePackages; [
       kate
       dolphin
       konsole
