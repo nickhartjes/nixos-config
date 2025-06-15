@@ -3,19 +3,32 @@
   lib,
   pkgs,
   ...
-}:
-with lib; let
-  cfg = config.components.desktop.cosmic;
-in {
-  options.components.desktop.cosmic.enable = mkEnableOption "enable cinnamon";
+}: {
+  options.components.desktop.cosmic = {
+    enable = lib.mkEnableOption "COSMIC desktop environment";
+  };
 
-  config = mkIf cfg.enable {
-    services = {
-      desktopManager = {
-        cosmic = {
-          enable = true;
-        };
-      };
+  config = lib.mkIf config.components.desktop.cosmic.enable {
+    services.desktopManager.cosmic.enable = true;
+    services.displayManager.cosmic-greeter.enable = true;
+
+    # Enable sound
+    services.pulseaudio.enable = false;
+    security.rtkit.enable = true;
+    services.pipewire = {
+      enable = lib.mkDefault true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
     };
+
+    # Enable NetworkManager
+    networking.networkmanager.enable = true;
+
+    # Basic system packages
+    environment.systemPackages = with pkgs; [
+      firefox
+      thunderbird
+    ];
   };
 }

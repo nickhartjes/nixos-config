@@ -1,11 +1,6 @@
-{pkgs, ...}: {
+{
   imports = [
-    ./fonts.nix
+    ./sway.nix
     ./hyprland.nix
-    ./wayland.nix
-    # ./plasma.nix
-  ];
-
-  home.packages = with pkgs; [
   ];
 }

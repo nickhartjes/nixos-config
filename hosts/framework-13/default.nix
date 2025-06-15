@@ -43,10 +43,12 @@
     # Multple desktops can lead to conficts during builds
     desktop = {
       cinnamon.enable = false;
-      cosmic.enable = false;
+      cosmic.enable = true;
       gnome.enable = false;
+      hyprland.enable = false;
       pantheon.enable = false;
-      plasma.enable = true;
+      plasma.enable = false;
+      sway.enable = false;
     };
 
     display = {

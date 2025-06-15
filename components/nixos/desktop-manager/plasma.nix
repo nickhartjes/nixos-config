@@ -3,31 +3,47 @@
   lib,
   pkgs,
   ...
-}:
-with lib; let
-  cfg = config.components.desktop.plasma;
-in {
-  options.components.desktop.plasma.enable = mkEnableOption "enable plasma";
+}: {
+  options.components.desktop.plasma = {
+    enable = lib.mkEnableOption "KDE Plasma desktop environment";
+  };
 
-  config = mkIf cfg.enable {
-    services = {
-      desktopManager = {
-        plasma6 = {
-          enable = true;
-        };
-      };
+  config = lib.mkIf config.components.desktop.plasma.enable {
+    services.xserver = {
+      enable = true;
+      desktopManager.plasma5.enable = true;
     };
-    environment.systemPackages = with pkgs; [
-      catppuccin-kde # Catppuccin theme for KDE
-      catppuccin-cursors # Catppuccin cursors for KDE
 
-      kdePackages.plasma-thunderbolt # Thunderbolt support
+    # Enable sound
+    hardware.pulseaudio.enable = false;
+    security.rtkit.enable = true;
+    services.pipewire = {
+      enable = lib.mkDefault true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+    };
+
+    # Enable NetworkManager
+    networking.networkmanager.enable = true;
+
+    # Basic system packages
+    environment.systemPackages = with pkgs; [
+      firefox
+      thunderbird
+      kate
+      dolphin
+      konsole
+      spectacle
+      okular
     ];
-    environment.plasma6.excludePackages = with pkgs; [
-      kdePackages.plasma-browser-integration # Browser integration
-      kdePackages.konsole # Terminal emulator
-      kdePackages.elisa # Music player
-      kdePackages.khelpcenter # Help center
+
+    # Exclude some default KDE applications if desired
+    environment.plasma5.excludePackages = with pkgs.libsForQt5; [
+      # Add packages to exclude here if needed
+      # elisa
+      # gwenview
+      # khelpcenter
     ];
   };
 }

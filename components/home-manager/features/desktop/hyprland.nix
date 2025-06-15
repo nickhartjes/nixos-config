@@ -1,78 +1,73 @@
 {
   config,
   lib,
+  pkgs,
   ...
-}:
-with lib; let
-  cfg = config.components.desktop.hyprland;
-in {
-  options.components.desktop.hyprland.enable = mkEnableOption "hyprland config";
+}: {
+  options.home-manager.features.desktop.hyprland = {
+    enable = lib.mkEnableOption "Hyprland user configuration";
+  };
 
-  config = mkIf cfg.enable {
+  config = lib.mkIf config.home-manager.features.desktop.hyprland.enable {
     wayland.windowManager.hyprland = {
       enable = true;
       settings = {
-        xwayland = {
-          force_zero_scaling = true;
-        };
+        # Monitor configuration
+        monitor = ",preferred,auto,auto";
 
-        exec-once = [
-          "waybar"
-          "hyprpaper"
-          "hypridle"
-          "wl-paste -p -t text --watch clipman store -P --histpath=\"~/.local/share/clipman-primary.json\""
-        ];
-
-        env = [
-          "XCURSOR_SIZE,32"
-          "WLR_NO_HARDWARE_CURSORS,1"
-          "GTK_THEME,Dracula"
-        ];
-
+        # Input configuration
         input = {
           kb_layout = "us";
           kb_variant = "";
           kb_model = "";
+          kb_options = "";
           kb_rules = "";
-          kb_options = "ctrl:nocaps";
+
           follow_mouse = 1;
 
           touchpad = {
-            natural_scroll = true;
+            natural_scroll = "yes";
+            tap-to-click = "yes";
           };
 
           sensitivity = 0;
         };
 
+        # General settings
         general = {
           gaps_in = 5;
-          gaps_out = 5;
-          border_size = 1;
-          "col.active_border" = "rgba(9742b5ee) rgba(9742b5ee) 45deg";
+          gaps_out = 20;
+          border_size = 2;
+          "col.active_border" = "rgba(33ccffee) rgba(00ff99ee) 45deg";
           "col.inactive_border" = "rgba(595959aa)";
+
           layout = "dwindle";
+
+          allow_tearing = false;
         };
 
+        # Decoration settings
         decoration = {
-          "col.shadow" = "rgba(1E202966)";
-          drop_shadow = true;
-          shadow_range = 60;
-          shadow_offset = "1 2";
-          shadow_render_power = 3;
-          shadow_scale = 0.97;
-          rounding = 8;
+          rounding = 10;
+
           blur = {
             enabled = true;
             size = 3;
-            passes = 3;
+            passes = 1;
           };
-          active_opacity = 0.9;
-          inactive_opacity = 0.5;
+
+          drop_shadow = "yes";
+          shadow_range = 4;
+          shadow_render_power = 3;
+          "col.shadow" = "rgba(1a1a1aee)";
         };
 
+        # Animation settings
         animations = {
-          enabled = true;
+          enabled = "yes";
+
           bezier = "myBezier, 0.05, 0.9, 0.1, 1.05";
+
           animation = [
             "windows, 1, 7, myBezier"
             "windowsOut, 1, 7, default, popin 80%"
@@ -83,106 +78,222 @@ in {
           ];
         };
 
+        # Layout settings
         dwindle = {
-          pseudotile = true;
-          preserve_split = true;
+          pseudotile = "yes";
+          preserve_split = "yes";
         };
 
-        master = {};
+        master = {
+          new_is_master = true;
+        };
 
+        # Gestures
         gestures = {
           workspace_swipe = false;
         };
 
-        windowrule = [
-          "float, file_progress"
-          "float, confirm"
-          "float, dialog"
-          "float, download"
-          "float, notification"
-          "float, error"
-          "float, splash"
-          "float, confirmreset"
-          "float, title:Open File"
-          "float, title:branchdialog"
-          "float, Lxappearance"
-          "float, Wofi"
-          "float, dunst"
-          "animation none,Wofi"
-          "float,viewnior"
-          "float,feh"
-          "float, pavucontrol-qt"
-          "float, pavucontrol"
-          "float, file-roller"
-          "fullscreen, wlogout"
-          "float, title:wlogout"
-          "fullscreen, title:wlogout"
-          "idleinhibit focus, mpv"
-          "idleinhibit fullscreen, firefox"
-          "float, title:^(Media viewer)$"
-          "float, title:^(Volume Control)$"
-          "float, title:^(Picture-in-Picture)$"
-          "size 800 600, title:^(Volume Control)$"
-          "move 75 44%, title:^(Volume Control)$"
+        # Misc settings
+        misc = {
+          force_default_wallpaper = -1;
+        };
+
+        # Window rules
+        windowrulev2 = [
+          "suppressevent maximize, class:.*"
+          "float,class:^(pavucontrol)$"
+          "float,class:^(nm-applet)$"
         ];
 
-        "$mainMod" = "SUPER";
+        # Key bindings
+        "$mod" = "SUPER";
 
         bind = [
-          "$mainMod, return, exec, kitty -e zellij-ps"
-          "$mainMod, t, exec, kitty -e fish -c 'neofetch; exec fish'"
-          "$mainMod SHIFT, e, exec, kitty -e zellij_nvim"
-          "$mainMod, o, exec, thunar"
-          "$mainMod, Escape, exec, wlogout -p layer-shell"
-          "$mainMod, Space, togglefloating"
-          "$mainMod, q, killactive"
-          "$mainMod, M, exit"
-          "$mainMod, F, fullscreen"
-          "$mainMod, V, togglefloating"
-          "$mainMod, D, exec, wofi --show drun --allow-images"
-          "$mainMod SHIFT, S, exec, bemoji"
-          "$mainMod, P, exec, wofi-pass"
-          "$mainMod SHIFT, P, pseudo"
-          "$mainMod, J, togglesplit"
-          "$mainMod, left, movefocus, l"
-          "$mainMod, right, movefocus, r"
-          "$mainMod, up, movefocus, u"
-          "$mainMod, down, movefocus, d"
-          "$mainMod, 1, workspace, 1"
-          "$mainMod, 2, workspace, 2"
-          "$mainMod, 3, workspace, 3"
-          "$mainMod, 4, workspace, 4"
-          "$mainMod, 5, workspace, 5"
-          "$mainMod, 6, workspace, 6"
-          "$mainMod, 7, workspace, 7"
-          "$mainMod, 8, workspace, 8"
-          "$mainMod, 9, workspace, 9"
-          "$mainMod, 0, workspace, 10"
-          "$mainMod SHIFT, 1, movetoworkspace, 1"
-          "$mainMod SHIFT, 2, movetoworkspace, 2"
-          "$mainMod SHIFT, 3, movetoworkspace, 3"
-          "$mainMod SHIFT, 4, movetoworkspace, 4"
-          "$mainMod SHIFT, 5, movetoworkspace, 5"
-          "$mainMod SHIFT, 6, movetoworkspace, 6"
-          "$mainMod SHIFT, 7, movetoworkspace, 7"
-          "$mainMod SHIFT, 8, movetoworkspace, 8"
-          "$mainMod SHIFT, 9, movetoworkspace, 9"
-          "$mainMod SHIFT, 0, movetoworkspace, 10"
-          "$mainMod, mouse_down, workspace, e+1"
-          "$mainMod, mouse_up, workspace, e-1"
+          # Application bindings
+          "$mod, Return, exec, ${pkgs.foot}/bin/foot"
+          "$mod, Q, killactive,"
+          "$mod, M, exit,"
+          "$mod, E, exec, ${pkgs.thunar}/bin/thunar"
+          "$mod, V, togglefloating,"
+          "$mod, D, exec, ${pkgs.wofi}/bin/wofi --show drun"
+          "$mod, P, pseudo,"
+          "$mod, J, togglesplit,"
+
+          # Move focus
+          "$mod, left, movefocus, l"
+          "$mod, right, movefocus, r"
+          "$mod, up, movefocus, u"
+          "$mod, down, movefocus, d"
+
+          # Switch workspaces
+          "$mod, 1, workspace, 1"
+          "$mod, 2, workspace, 2"
+          "$mod, 3, workspace, 3"
+          "$mod, 4, workspace, 4"
+          "$mod, 5, workspace, 5"
+          "$mod, 6, workspace, 6"
+          "$mod, 7, workspace, 7"
+          "$mod, 8, workspace, 8"
+          "$mod, 9, workspace, 9"
+          "$mod, 0, workspace, 10"
+
+          # Move active window to workspace
+          "$mod SHIFT, 1, movetoworkspace, 1"
+          "$mod SHIFT, 2, movetoworkspace, 2"
+          "$mod SHIFT, 3, movetoworkspace, 3"
+          "$mod SHIFT, 4, movetoworkspace, 4"
+          "$mod SHIFT, 5, movetoworkspace, 5"
+          "$mod SHIFT, 6, movetoworkspace, 6"
+          "$mod SHIFT, 7, movetoworkspace, 7"
+          "$mod SHIFT, 8, movetoworkspace, 8"
+          "$mod SHIFT, 9, movetoworkspace, 9"
+          "$mod SHIFT, 0, movetoworkspace, 10"
+
+          # Special workspace
+          "$mod, S, togglespecialworkspace, magic"
+          "$mod SHIFT, S, movetoworkspace, special:magic"
+
+          # Scroll through workspaces
+          "$mod, mouse_down, workspace, e+1"
+          "$mod, mouse_up, workspace, e-1"
+
+          # Screenshot bindings
+          ", Print, exec, ${pkgs.grim}/bin/grim"
+          "SHIFT, Print, exec, ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\""
         ];
 
+        # Mouse bindings
         bindm = [
-          "$mainMod, mouse:272, movewindow"
-          "$mainMod, mouse:273, resizewindow"
+          "$mod, mouse:272, movewindow"
+          "$mod, mouse:273, resizewindow"
         ];
 
-        windowrulev2 = [
-          "workspace 1,class:(Emacs)"
-          "workspace 3,opacity 1.0, class:(brave-browser)"
-          "workspace 4,class:(com.obsproject.Studio)"
+        # Execute on startup
+        exec-once = [
+          "${pkgs.waybar}/bin/waybar"
+          "${pkgs.mako}/bin/mako"
+          "${pkgs.networkmanagerapplet}/bin/nm-applet"
+          "${pkgs.hyprpaper}/bin/hyprpaper"
         ];
       };
+    };
+
+    # Waybar configuration for Hyprland
+    programs.waybar = {
+      enable = true;
+      settings = {
+        mainBar = {
+          layer = "top";
+          position = "top";
+          height = 30;
+          modules-left = ["hyprland/workspaces" "hyprland/mode"];
+          modules-center = ["hyprland/window"];
+          modules-right = ["pulseaudio" "network" "battery" "clock"];
+
+          "hyprland/workspaces" = {
+            disable-scroll = true;
+            all-outputs = true;
+          };
+
+          clock = {
+            format = "{:%Y-%m-%d %H:%M}";
+            tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
+          };
+
+          battery = {
+            states = {
+              warning = 30;
+              critical = 15;
+            };
+            format = "{capacity}% {icon}";
+            format-icons = ["" "" "" "" ""];
+          };
+
+          network = {
+            format-wifi = "{essid} ({signalStrength}%) ";
+            format-ethernet = "{ifname}: {ipaddr}/{cidr} ";
+            format-disconnected = "Disconnected ⚠";
+          };
+
+          pulseaudio = {
+            format = "{volume}% {icon}";
+            format-muted = "";
+            format-icons = {
+              headphone = "";
+              hands-free = "";
+              headset = "";
+              phone = "";
+              portable = "";
+              car = "";
+              default = ["" "" ""];
+            };
+            on-click = "${pkgs.pavucontrol}/bin/pavucontrol";
+          };
+        };
+      };
+    };
+
+    # Hyprpaper configuration for wallpapers
+    services.hyprpaper = {
+      enable = true;
+      settings = {
+        ipc = "on";
+        splash = false;
+        splash_offset = 2.0;
+
+        preload = [
+          "~/.config/wallpaper"
+        ];
+
+        wallpaper = [
+          ",~/.config/wallpaper"
+        ];
+      };
+    };
+
+    # Additional Hyprland-related packages
+    home.packages = with pkgs; [
+      # Core Hyprland tools
+      hyprpaper
+      hyprlock
+      hypridle
+      hyprpicker
+      hyprshot
+
+      # Wayland utilities
+      wl-clipboard
+      wf-recorder
+      grim
+      slurp
+
+      # Application launcher
+      wofi
+      rofi-wayland
+
+      # Terminal
+      foot
+      kitty
+
+      # Notification daemon
+      mako
+
+      # Image viewer
+      imv
+
+      # File manager
+      thunar
+    ];
+
+    # Mako notification daemon configuration
+    services.mako = {
+      enable = true;
+      backgroundColor = "#2e3440";
+      borderColor = "#88c0d0";
+      borderRadius = 5;
+      borderSize = 2;
+      defaultTimeout = 5000;
+      font = "Noto Sans 10";
+      textColor = "#eceff4";
     };
   };
 }

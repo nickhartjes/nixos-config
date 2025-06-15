@@ -48,6 +48,16 @@ in {
         zshEarlyInit = lib.mkOrder 500 ''
           export NIX_PATH=nixpkgs=channel:nixos-unstable
           export NIX_LOG=info
+
+          # SSH Agent configuration - respect existing SSH_AUTH_SOCK
+          if [ -z "$SSH_AUTH_SOCK" ]; then
+            # Try to find ssh-agent socket in standard locations
+            if [ -S "$XDG_RUNTIME_DIR/ssh-agent" ]; then
+              export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent"
+            elif [ -S "/run/user/$(id -u)/ssh-agent" ]; then
+              export SSH_AUTH_SOCK="/run/user/$(id -u)/ssh-agent"
+            fi
+          fi
         '';
         zshGeneralConfig = lib.mkOrder 1000 ''
           # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.

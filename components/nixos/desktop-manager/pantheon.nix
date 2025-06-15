@@ -3,22 +3,39 @@
   lib,
   pkgs,
   ...
-}:
-with lib; let
-  cfg = config.components.desktop.pantheon;
-in {
-  options.components.desktop.pantheon.enable = mkEnableOption "enable pantheon";
+}: {
+  options.components.desktop.pantheon = {
+    enable = lib.mkEnableOption "Pantheon desktop environment";
+  };
 
-  config = mkIf cfg.enable {
-    services = {
-      xserver = {
-        desktopManager = {
-          pantheon = {
-            enable = true;
-          };
-        };
-      };
-      pantheon.apps.enable = true;
+  config = lib.mkIf config.components.desktop.pantheon.enable {
+    services.xserver = {
+      enable = true;
+      desktopManager.pantheon.enable = true;
     };
+
+    # Enable sound
+    hardware.pulseaudio.enable = false;
+    security.rtkit.enable = true;
+    services.pipewire = {
+      enable = lib.mkDefault true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+    };
+
+    # Enable NetworkManager
+    networking.networkmanager.enable = true;
+
+    # Basic system packages
+    environment.systemPackages = with pkgs; [
+      firefox
+      thunderbird
+    ];
+
+    # Exclude some default Pantheon applications if desired
+    environment.pantheon.excludePackages = with pkgs.pantheon; [
+      # Add packages to exclude here if needed
+    ];
   };
 }

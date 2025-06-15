@@ -3,22 +3,30 @@
   lib,
   pkgs,
   ...
-}:
-with lib; let
-  cfg = config.components.desktop.cinnamon;
-in {
-  options.components.desktop.cinnamon.enable = mkEnableOption "enable cinnamon";
+}: {
+  options.components.desktop.cinnamon = {
+    enable = lib.mkEnableOption "Cinnamon desktop environment";
+  };
 
-  config = mkIf cfg.enable {
-    services = {
-      xserver = {
-        desktopManager = {
-          cinnamon = {
-            enable = true;
-          };
-        };
-      };
-      cinnamon.apps.enable = true;
+  config = lib.mkIf config.components.desktop.cinnamon.enable {
+    services.xserver = {
+      enable = true;
+      desktopManager.cinnamon.enable = true;
     };
+
+    # Enable sound
+    sound.enable = lib.mkDefault true;
+    hardware.pulseaudio.enable = true;
+
+    # Enable NetworkManager
+    networking.networkmanager.enable = true;
+
+    # Basic system packages
+    environment.systemPackages = with pkgs; [
+      firefox
+      thunderbird
+      libreoffice
+      vlc
+    ];
   };
 }
