@@ -18,36 +18,52 @@
   # for now.
   boot.loader.systemd-boot.enable = lib.mkForce false;
   boot.kernelParams = [
-    "resume_offset=533760"
+    "resume=/dev/mapper/cryptroot"
+    "resume_offset=2957497"
     "microcode.amd_sha_check=off"
+    "mem_sleep_default=deep"
   ];
-  boot.resumeDevice = "/dev/disk/by-label/nixos";
+  boot.resumeDevice = "/dev/mapper/cryptroot";
 
   boot.lanzaboote = {
     enable = true;
     pkiBundle = "/var/lib/sbctl";
   };
 
-  # powerManagement.enable = true;
-  # swapDevices = [
-  #   {
-  #     device = "/swap/swapfile";
-  #     size = 96 * 1024; # 96GB in MB
-  #   }
-  # ];
+  # Enable hibernation support
+  boot.kernelModules = ["btrfs"];
+  boot.initrd.supportedFilesystems = ["btrfs"];
 
-  # services.power-profiles-daemon.enable = true;
-  # # Suspend first then hibernate when closing the lid
-  # services.logind.lidSwitch = "suspend-then-hibernate";
-  # # Hibernate on power button pressed
-  # services.logind.powerKey = "hibernate";
-  # services.logind.powerKeyLongPress = "poweroff";
+  powerManagement.enable = true;
+  powerManagement.powertop.enable = true;
+  powerManagement.cpuFreqGovernor = "powersave";
+  powerManagement.scsiLinkPolicy = "med_power_with_dipm";
 
-  # # Define time delay for hibernation
-  # systemd.sleep.extraConfig = ''
-  #   HibernateDelaySec=30m
-  #   SuspendState=mem
-  # '';
+  services.power-profiles-daemon.enable = true;
+  # Suspend first then hibernate when closing the lid
+  services.logind.lidSwitch = "suspend-then-hibernate";
+  # Hibernate on power button pressed
+  services.logind.powerKey = "hibernate";
+  services.logind.powerKeyLongPress = "poweroff";
+
+  # Define time delay for hibernation
+  systemd.sleep.extraConfig = ''
+    HibernateDelaySec=30m
+    SuspendState=mem
+  '';
+
+  # Additional hibernation and power optimizations
+  services.logind.extraConfig = ''
+    HandleSuspendKey=suspend-then-hibernate
+    HandleHibernateKey=hibernate
+    IdleAction=suspend-then-hibernate
+    IdleActionSec=2h
+  '';
+
+  # Optimize for Framework laptop
+  services.tlp = {
+    enable = false; # Disabled since we're using power-profiles-daemon
+  };
 
   # Framework firmware updates
   services.fwupd.enable = true;

@@ -56,8 +56,8 @@
 
     display = {
       gdm.enable = false;
-      lightdm.enable = false;
-      sddm.enable = true;
+      lightdm.enable = true;
+      sddm.enable = false;
       cosmic-greeter.enable = false;
       greetd.enable = false;
     };
