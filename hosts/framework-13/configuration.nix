@@ -17,6 +17,7 @@
   # generated at installation time. So we force it to false
   # for now.
   boot.loader.systemd-boot.enable = lib.mkForce false;
+  boot.loader.systemd-boot.configurationLimit = 15;
   boot.kernelParams = [
     "resume=/dev/mapper/cryptroot"
     "resume_offset=2957497"

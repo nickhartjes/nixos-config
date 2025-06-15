@@ -14,9 +14,15 @@
       desktopManager.cinnamon.enable = true;
     };
 
-    # Enable sound
-    sound.enable = lib.mkDefault true;
-    services.pulseaudio.enable = true;
+    # Enable sound with PipeWire (modern audio system)
+    services.pulseaudio.enable = false;
+    security.rtkit.enable = true;
+    services.pipewire = {
+      enable = lib.mkDefault true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+    };
 
     # Enable NetworkManager
     networking.networkmanager.enable = true;

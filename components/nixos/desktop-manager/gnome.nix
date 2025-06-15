@@ -45,9 +45,7 @@
 
     # Basic system packages
     environment.systemPackages = with pkgs; [
-      firefox
-      thunderbird
-      gnome.gnome-tweaks
+      gnome-tweaks
       gnomeExtensions.appindicator
     ];
   };

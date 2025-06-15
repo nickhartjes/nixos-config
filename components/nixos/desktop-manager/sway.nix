@@ -59,7 +59,7 @@
     # Enable XDG portal for Wayland
     xdg.portal = {
       enable = true;
-      wlr.enable = true;
+      wlr.enable = lib.mkDefault true;
     };
 
     # Security services

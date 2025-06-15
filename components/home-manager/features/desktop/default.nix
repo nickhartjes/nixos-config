@@ -1,6 +1,8 @@
 {
   imports = [
-    ./sway.nix
+    ./fonts.nix
     ./hyprland.nix
+    ./sway.nix
+    ./wayland.nix
   ];
 }

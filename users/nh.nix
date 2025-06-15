@@ -33,6 +33,7 @@
       "input" # Allows interaction with input devices such as keyboards and mice
       "kvm" # Enables usage of hardware virtualization features via KVM
       "qemu-libvirtd" # Associated with QEMU instances managed by libvirt
+      "docker" # Docker daemon access
     ];
     openssh.authorizedKeys.keys = [
       "sh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII8Fzq/ktI9g9FYsADc8NkaYDhHuXIPPPxwRjXT7Gcwk info@nickhartjes.nl"
@@ -76,6 +77,10 @@
         "terraform"
         "protonvpn-gui"
         "protonvpn-cli"
+        "steam"
+        "steam-original"
+        "steam-unwrapped"
+        "lutris"
       ];
 
     home.packages = with pkgs; [
@@ -117,6 +122,10 @@
           lynis.enable = true;
           protonvpn.enable = true;
         };
+        gaming = {
+          steam.enable = true;
+          lutris.enable = true;
+        };
       };
       development = {
         editor = {
@@ -142,9 +151,9 @@
       cli = {
         bat.enable = true;
         fastfetch.enable = true;
-        fish.enable = false;
+        fish.enable = true; # Enable fish as well
         fzf.enable = true;
-        neofetch.enable = false;
+        neofetch.enable = true; # Enable neofetch too
         nh.enable = true;
         zsh.enable = true;
         neovim.enable = true;
@@ -156,6 +165,16 @@
         ghostty.enable = true;
         kitty.enable = true;
         wezterm.enable = true;
+      };
+      features = {
+        desktop = {
+          hyprland.enable = false;
+          sway.enable = false;
+        };
+      };
+      desktop = {
+        fonts.enable = true;
+        wayland.enable = false;
       };
     };
   };

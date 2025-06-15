@@ -4,11 +4,11 @@
   pkgs,
   ...
 }: {
-  options.home-manager.features.desktop.hyprland = {
+  options.components.features.desktop.hyprland = {
     enable = lib.mkEnableOption "Hyprland user configuration";
   };
 
-  config = lib.mkIf config.home-manager.features.desktop.hyprland.enable {
+  config = lib.mkIf config.components.features.desktop.hyprland.enable {
     wayland.windowManager.hyprland = {
       enable = true;
       settings = {
@@ -113,7 +113,7 @@
           "$mod, Return, exec, ${pkgs.foot}/bin/foot"
           "$mod, Q, killactive,"
           "$mod, M, exit,"
-          "$mod, E, exec, ${pkgs.thunar}/bin/thunar"
+          "$mod, E, exec, ${pkgs.xfce.thunar}/bin/thunar"
           "$mod, V, togglefloating,"
           "$mod, D, exec, ${pkgs.wofi}/bin/wofi --show drun"
           "$mod, P, pseudo,"
@@ -251,37 +251,14 @@
       };
     };
 
-    # Additional Hyprland-related packages
+    # Additional Hyprland-related packages (minimal set - others should be in system config)
     home.packages = with pkgs; [
-      # Core Hyprland tools
-      hyprpaper
-      hyprlock
-      hypridle
+      # User-specific Hyprland tools only
       hyprpicker
-      hyprshot
-
-      # Wayland utilities
       wl-clipboard
-      wf-recorder
-      grim
-      slurp
 
-      # Application launcher
-      wofi
-      rofi-wayland
-
-      # Terminal
-      foot
-      kitty
-
-      # Notification daemon
-      mako
-
-      # Image viewer
-      imv
-
-      # File manager
-      thunar
+      # Note: Other packages like foot, kitty, wofi, etc. should be
+      # installed via their respective component modules for better modularity
     ];
 
     # Mako notification daemon configuration

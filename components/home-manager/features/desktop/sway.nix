@@ -4,11 +4,11 @@
   pkgs,
   ...
 }: {
-  options.home-manager.features.desktop.sway = {
+  options.components.features.desktop.sway = {
     enable = lib.mkEnableOption "Sway user configuration";
   };
 
-  config = lib.mkIf config.home-manager.features.desktop.sway.enable {
+  config = lib.mkIf config.components.features.desktop.sway.enable {
     wayland.windowManager.sway = {
       enable = true;
       config = rec {

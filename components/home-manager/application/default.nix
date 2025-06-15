@@ -8,5 +8,6 @@
     ./database
     ./office
     ./security
+    ./gaming
   ];
 }

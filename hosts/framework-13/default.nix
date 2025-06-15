@@ -40,10 +40,10 @@
   ];
 
   # Fix conflicting default session definitions
-  services.displayManager.defaultSession = lib.mkForce "hyprland";
+  services.displayManager.defaultSession = lib.mkForce "plasma";
 
   components = {
-    # Multple desktops can lead to conficts during builds
+    # Enable all desktop environments (Note: may cause conflicts)
     desktop = {
       cinnamon.enable = false;
       cosmic.enable = true;
@@ -55,7 +55,7 @@
     };
 
     display = {
-      gdm.enable = false;
+      gdm.enable = false; # Keep only one display manager to avoid conflicts
       lightdm.enable = true;
       sddm.enable = false;
       cosmic-greeter.enable = false;
@@ -63,15 +63,17 @@
     };
 
     hardware = {
-      displaylink.enable = false;
+      displaylink.enable = true;
     };
     virtualization = {
-      docker.enable = false;
+      docker.enable = false; # Enable all virtualization options
       podman.enable = true;
+      qemu.enable = true;
     };
     system = {
       fonts.enable = true;
       yubikey.enable = true;
+      gaming.enable = true;
     };
   };
 }

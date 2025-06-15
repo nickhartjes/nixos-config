@@ -18,7 +18,7 @@
     # XDG portal configuration for Hyprland
     xdg.portal = {
       enable = true;
-      wlr.enable = false; # Disable wlr portal as Hyprland has its own
+      wlr.enable = lib.mkDefault false; # Disable wlr portal as Hyprland has its own
       extraPortals = with pkgs; [
         xdg-desktop-portal-hyprland
         xdg-desktop-portal-gtk

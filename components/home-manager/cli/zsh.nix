@@ -40,9 +40,9 @@ in {
         myip = "curl http://ipecho.net/plain; echo";
         speed = "speedtest-cli --simple";
 
-        # Clipboard (macOS-like commands for Linux)
-        pbcopy = "xsel --clipboard --input";
-        pbpaste = "xsel --clipboard --output";
+        # Clipboard (cross-platform commands)
+        pbcopy = "wl-copy || xsel --clipboard --input";
+        pbpaste = "wl-paste || xsel --clipboard --output";
       };
       initContent = let
         zshEarlyInit = lib.mkOrder 500 ''
@@ -68,13 +68,14 @@ in {
         lib.mkMerge [zshEarlyInit zshGeneralConfig];
     };
 
-    # Application needed for the zsh configuration to work properly
+    # Applications needed for the zsh configuration to work properly
     home.packages = with pkgs; [
       btop
       procs
       curl # For myip alias
       speedtest-cli # For speed alias
-      xsel # For pbcopy/pbpaste aliases
+      xsel # For X11 clipboard
+      wl-clipboard # For Wayland clipboard
     ];
 
     home.file.".config/.p10k.zsh".source = ./files/.p10k.zsh;
