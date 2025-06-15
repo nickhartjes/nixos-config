@@ -62,17 +62,6 @@
       wlr.enable = true;
     };
 
-    # Enable seat management
-    services.greetd = {
-      enable = lib.mkDefault true;
-      settings = {
-        default_session = {
-          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd sway";
-          user = "greeter";
-        };
-      };
-    };
-
     # Security services
     security.polkit.enable = true;
     security.pam.services.swaylock = {};

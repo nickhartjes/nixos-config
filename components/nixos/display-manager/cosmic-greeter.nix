@@ -3,17 +3,18 @@
   lib,
   pkgs,
   ...
-}:
-with lib; let
-  cfg = config.components.display.cosmicGreeter;
-in {
-  options.components.display.cosmicGreeter.enable = mkEnableOption "enable Cosmic Greeter";
+}: {
+  options.components.display.cosmic-greeter = {
+    enable = lib.mkEnableOption "COSMIC greeter display manager";
+  };
 
-  config = mkIf cfg.enable {
-    services.displayManager = {
-      cosmic-greeter = {
-        enable = true;
-      };
-    };
+  config = lib.mkIf config.components.display.cosmic-greeter.enable {
+    services.displayManager.cosmic-greeter.enable = true;
+
+    # Ensure other display managers are disabled
+    services.xserver.displayManager.gdm.enable = lib.mkForce false;
+    services.xserver.displayManager.lightdm.enable = lib.mkForce false;
+    services.xserver.displayManager.sddm.enable = lib.mkForce false;
+    services.greetd.enable = lib.mkForce false;
   };
 }

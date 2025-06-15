@@ -30,6 +30,14 @@ components = {
     plasma.enable = false;
     sway.enable = false;       # Enable Sway
   };
+  
+  display = {
+    gdm.enable = false;
+    lightdm.enable = false;
+    sddm.enable = false;
+    cosmic-greeter.enable = false;
+    greetd.enable = true;      # Use greetd for Wayland compositors
+  };
 };
 ```
 
@@ -73,6 +81,40 @@ Hyprland includes:
 - `Super + M`: Exit Hyprland
 - `Print`: Screenshot
 - `Shift + Print`: Screenshot selection
+## Display Managers
+
+Display managers handle user login and session management. The configuration includes separate display manager options:
+
+### Available Display Managers
+- **GDM**: GNOME Display Manager (best for GNOME)
+- **LightDM**: Lightweight display manager (good for traditional desktops)
+- **SDDM**: Simple Desktop Display Manager (best for KDE Plasma)
+- **COSMIC Greeter**: System76's display manager for COSMIC desktop
+- **greetd**: Minimal display manager for Wayland compositors (Sway, Hyprland)
+
+### Display Manager Configuration
+
+Configure display managers in the `components.display` section:
+
+```nix
+components.display = {
+  gdm.enable = false;           # For GNOME
+  lightdm.enable = false;       # For traditional desktops
+  sddm.enable = false;          # For KDE Plasma
+  cosmic-greeter.enable = true; # For COSMIC desktop
+  greetd.enable = false;        # For Sway/Hyprland
+};
+```
+
+### Recommended Combinations
+
+- **COSMIC Desktop**: Use `cosmic-greeter.enable = true`
+- **Sway/Hyprland**: Use `greetd.enable = true`
+- **GNOME**: Use `gdm.enable = true`
+- **KDE Plasma**: Use `sddm.enable = true`
+- **Other desktops**: Use `lightdm.enable = true`
+
+**Important**: Only enable one display manager at a time to avoid conflicts.
 
 ## User Configuration
 

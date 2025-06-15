@@ -10,10 +10,9 @@
 
   config = lib.mkIf config.components.desktop.cosmic.enable {
     services.desktopManager.cosmic.enable = true;
-    services.displayManager.cosmic-greeter.enable = true;
 
     # Enable sound
-    services.pulseaudio.enable = false;
+    hardware.pulseaudio.enable = false;
     security.rtkit.enable = true;
     services.pipewire = {
       enable = lib.mkDefault true;

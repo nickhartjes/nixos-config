@@ -48,13 +48,15 @@
       hyprland.enable = false;
       pantheon.enable = false;
       plasma.enable = false;
-      sway.enable = false;
+      sway.enable = true;
     };
 
     display = {
-      gdm.enable = false;
-      lightdm.enable = true;
+      gdm.enable = true;
+      lightdm.enable = false;
       sddm.enable = false;
+      cosmic-greeter.enable = false;
+      greetd.enable = false;
     };
     hardware = {
       displaylink.enable = false;

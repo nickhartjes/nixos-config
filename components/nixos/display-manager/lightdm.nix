@@ -3,20 +3,18 @@
   lib,
   pkgs,
   ...
-}:
-with lib; let
-  cfg = config.components.display.lightdm;
-in {
-  options.components.display.lightdm.enable = mkEnableOption "enable Lightdm";
+}: {
+  options.components.display.lightdm = {
+    enable = lib.mkEnableOption "LightDM display manager";
+  };
 
-  config = mkIf cfg.enable {
-    services.xserver = {
-      enable = true;
-      displayManager = {
-        lightdm = {
-          enable = true;
-        };
-      };
-    };
+  config = lib.mkIf config.components.display.lightdm.enable {
+    services.xserver.displayManager.lightdm.enable = true;
+
+    # Ensure other display managers are disabled
+    services.xserver.displayManager.gdm.enable = lib.mkForce false;
+    services.xserver.displayManager.sddm.enable = lib.mkForce false;
+    services.displayManager.cosmic-greeter.enable = lib.mkForce false;
+    services.greetd.enable = lib.mkForce false;
   };
 }

@@ -3,16 +3,18 @@
   lib,
   pkgs,
   ...
-}:
-with lib; let
-  cfg = config.components.display.sddm;
-in {
-  options.components.display.sddm.enable = mkEnableOption "enable Simple Desktop Display Manager (SDDM)";
+}: {
+  options.components.display.sddm = {
+    enable = lib.mkEnableOption "SDDM display manager";
+  };
 
-  config = mkIf cfg.enable {
-    services.displayManager.sddm = {
-      enable = true;
-      wayland.enable = true;
-    };
+  config = lib.mkIf config.components.display.sddm.enable {
+    services.xserver.displayManager.sddm.enable = true;
+
+    # Ensure other display managers are disabled
+    services.xserver.displayManager.gdm.enable = lib.mkForce false;
+    services.xserver.displayManager.lightdm.enable = lib.mkForce false;
+    services.displayManager.cosmic-greeter.enable = lib.mkForce false;
+    services.greetd.enable = lib.mkForce false;
   };
 }
