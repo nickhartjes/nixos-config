@@ -30,7 +30,7 @@
     security.pam.services.hyprlock = {};
 
     # Audio support
-    hardware.pulseaudio.enable = false;
+    services.pulseaudio.enable = false;
     security.rtkit.enable = true;
     services.pipewire = {
       enable = lib.mkDefault true;
@@ -93,7 +93,7 @@
       networkmanagerapplet
 
       # File manager
-      thunar
+      xfce.thunar
       dolphin
 
       # Image viewer

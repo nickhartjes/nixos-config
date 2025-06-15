@@ -12,7 +12,7 @@
     services.desktopManager.cosmic.enable = true;
 
     # Enable sound
-    hardware.pulseaudio.enable = false;
+    services.pulseaudio.enable = false;
     security.rtkit.enable = true;
     services.pipewire = {
       enable = lib.mkDefault true;

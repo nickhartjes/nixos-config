@@ -140,7 +140,7 @@
       imv
 
       # File manager
-      thunar
+      xfce.thunar
     ];
 
     # Swaylock configuration

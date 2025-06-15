@@ -43,7 +43,7 @@
         networkmanagerapplet
 
         # File manager
-        thunar
+        xfce.thunar
 
         # Image viewer
         imv
@@ -67,7 +67,7 @@
     security.pam.services.swaylock = {};
 
     # Audio support
-    hardware.pulseaudio.enable = false;
+    services.pulseaudio.enable = false;
     security.rtkit.enable = true;
     services.pipewire = {
       enable = lib.mkDefault true;

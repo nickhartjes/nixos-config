@@ -16,7 +16,7 @@
 
     # Enable sound
     sound.enable = lib.mkDefault true;
-    hardware.pulseaudio.enable = true;
+    services.pulseaudio.enable = true;
 
     # Enable NetworkManager
     networking.networkmanager.enable = true;
