@@ -110,6 +110,7 @@
         ai = {
           claude-code.enable = true;
           ollama.enable = true;
+          alpaca.enable = true;
         };
         communication = {
           slack.enable = true;
@@ -135,6 +136,9 @@
         gaming = {
           steam.enable = true;
           lutris.enable = true;
+        };
+        system = {
+          mission-center.enable = true;
         };
       };
       development = {

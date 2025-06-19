@@ -9,5 +9,6 @@
     ./office
     ./security
     ./gaming
+    ./system
   ];
 }
