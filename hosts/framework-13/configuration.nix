@@ -21,7 +21,6 @@
   boot.kernelParams = [
     "resume=/dev/mapper/cryptroot"
     "resume_offset=2957497"
-    "microcode.amd_sha_check=off"
     "mem_sleep_default=deep"
   ];
   boot.resumeDevice = "/dev/mapper/cryptroot";

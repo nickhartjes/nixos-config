@@ -12,9 +12,8 @@ in {
 
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
-      fira-code
-      fira-code-symbols
-      fira-code-nerdfont
+      nerd-fonts.fira-code
+      nerd-fonts.inconsolata
       font-manager
       font-awesome_5
       noto-fonts

@@ -72,6 +72,8 @@
         "claude-code"
         "slack"
         "discord"
+        "signal-desktop"
+        "telegram-desktop"
         "dbeaver-bin"
         "corefonts"
         "terraform"
@@ -106,6 +108,8 @@
         communication = {
           slack.enable = true;
           discord.enable = true;
+          signal.enable = true;
+          telegram.enable = true;
         };
         graphics = {
           gimp.enable = true;

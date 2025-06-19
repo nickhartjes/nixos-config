@@ -127,47 +127,47 @@ in {
       };
     };
 
-    # Ensure SSH_AUTH_SOCK is available in desktop sessions
-    systemd.user.services.ssh-agent-env = {
-      Unit = {
-        Description = "Set SSH_AUTH_SOCK environment variable for desktop session";
-        After = ["ssh-agent.service"];
-        Wants = ["ssh-agent.service"];
-        PartOf = ["graphical-session.target"];
-      };
+    # # Ensure SSH_AUTH_SOCK is available in desktop sessions
+    # systemd.user.services.ssh-agent-env = {
+    #   Unit = {
+    #     Description = "Set SSH_AUTH_SOCK environment variable for desktop session";
+    #     After = ["ssh-agent.service"];
+    #     Wants = ["ssh-agent.service"];
+    #     PartOf = ["graphical-session.target"];
+    #   };
 
-      Service = {
-        Type = "oneshot";
-        ExecStart = "${pkgs.writeShellScript "set-ssh-env" ''
-          # Set SSH_AUTH_SOCK for desktop environment
-          if [ -n "$XDG_RUNTIME_DIR" ] && [ -S "$XDG_RUNTIME_DIR/ssh-agent" ]; then
-            ${pkgs.systemd}/bin/systemctl --user set-environment SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent"
-            echo "SSH_AUTH_SOCK set to: $XDG_RUNTIME_DIR/ssh-agent"
-          fi
-        ''}";
-        RemainAfterExit = true;
-      };
+    #   Service = {
+    #     Type = "oneshot";
+    #     ExecStart = "${pkgs.writeShellScript "set-ssh-env" ''
+    #       # Set SSH_AUTH_SOCK for desktop environment
+    #       if [ -n "$XDG_RUNTIME_DIR" ] && [ -S "$XDG_RUNTIME_DIR/ssh-agent" ]; then
+    #         ${pkgs.systemd}/bin/systemctl --user set-environment SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent"
+    #         echo "SSH_AUTH_SOCK set to: $XDG_RUNTIME_DIR/ssh-agent"
+    #       fi
+    #     ''}";
+    #     RemainAfterExit = true;
+    #   };
 
-      Install = {
-        WantedBy = ["graphical-session.target"];
-      };
-    };
+    #   Install = {
+    #     WantedBy = ["graphical-session.target"];
+    #   };
+    # };
 
-    # Timer to retry loading keys if they fail initially
-    systemd.user.timers.ssh-add-keys-retry = {
-      Unit = {
-        Description = "Retry loading SSH keys";
-      };
+    # # Timer to retry loading keys if they fail initially
+    # systemd.user.timers.ssh-add-keys-retry = {
+    #   Unit = {
+    #     Description = "Retry loading SSH keys";
+    #   };
 
-      Timer = {
-        OnStartupSec = "30s";
-        OnUnitActiveSec = "5m";
-        Unit = "ssh-add-keys.service";
-      };
+    #   Timer = {
+    #     OnStartupSec = "30s";
+    #     OnUnitActiveSec = "5m";
+    #     Unit = "ssh-add-keys.service";
+    #   };
 
-      Install = {
-        WantedBy = ["timers.target"];
-      };
-    };
+    #   Install = {
+    #     WantedBy = ["timers.target"];
+    #   };
+    # };
   };
 }
