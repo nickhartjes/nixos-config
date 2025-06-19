@@ -148,6 +148,7 @@
           terraform.enable = true;
           kubernetes.enable = true;
           aws.enable = true;
+          k9s.enable = true;
         };
         languages = {
           nodejs.enable = true;
