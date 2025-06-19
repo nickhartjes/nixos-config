@@ -141,6 +141,12 @@
           opentofu.enable = true;
           terraform.enable = true;
           kubernetes.enable = true;
+          aws.enable = true;
+        };
+        languages = {
+          nodejs.enable = true;
+          java.enable = true;
+          go.enable = true;
         };
         git = {
           enable = true;
