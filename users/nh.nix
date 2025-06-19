@@ -92,6 +92,12 @@
       wl-clipboard # Clipboard management for Wayland
     ];
 
+    # Add shell aliases for repository management
+    home.shellAliases = {
+      repo-sync = "~/.local/bin/repo-manager";
+      repo-log = "tail -f ~/.local/state/repo-manager.log";
+    };
+
     components = {
       application = {
         browser = {
@@ -185,6 +191,9 @@
       desktop = {
         fonts.enable = true;
         wayland.enable = false;
+      };
+      scripts = {
+        repoManager.enable = true;
       };
     };
   };
