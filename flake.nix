@@ -50,6 +50,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    plasma-manager = {
+      url = "github:nix-community/plasma-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+    };
+
     # Microcode updates for Intel and AMD CPUs
     ucodenix.url = "github:e-tho/ucodenix";
   };
@@ -65,6 +71,7 @@
     nixpkgs, # Nixpkgs input
     nixpkgs-stable, # Nixpkgs stable input
     nixos-hardware,
+    plasma-manager,
     lanzaboote,
     ucodenix,
     ... # Catches any other inputs

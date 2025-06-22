@@ -59,6 +59,7 @@
   }: {
     imports = [
       ../components/home-manager
+      inputs.plasma-manager.homeManagerModules.plasma-manager
     ];
     home.stateVersion = "24.11";
 
@@ -90,12 +91,49 @@
       obsidian
       alejandra # A code formatter for various languages
       wl-clipboard # Clipboard management for Wayland
+
+      # Essential KDE applications
+      kdePackages.dolphin # File manager
+      kdePackages.konsole # Terminal
+      kdePackages.kate # Text editor
+      kdePackages.spectacle # Screenshot tool
+      kdePackages.ark # Archive manager
+      kdePackages.okular # Document viewer
+      kdePackages.gwenview # Image viewer
+      kdePackages.systemsettings # System settings
     ];
 
     # Add shell aliases for repository management
     home.shellAliases = {
       repo-sync = "~/.local/bin/repo-manager";
       repo-log = "tail -f ~/.local/state/repo-manager.log";
+    };
+
+    # KDE Plasma configuration using plasma-manager
+    programs.plasma = {
+      enable = true;
+
+      # Basic workspace configuration
+      workspace = {
+        colorScheme = "BreezeDark";
+        iconTheme = "breeze-dark";
+      };
+
+      # Simple shortcuts
+      shortcuts = {
+        "kwin"."Switch to Desktop 1" = "Meta+1";
+        "kwin"."Switch to Desktop 2" = "Meta+2";
+        "kwin"."Switch to Desktop 3" = "Meta+3";
+        "kwin"."Switch to Desktop 4" = "Meta+4";
+        "org.kde.konsole.desktop"."_launch" = "Meta+Return";
+        "org.kde.dolphin.desktop"."_launch" = "Meta+E";
+      };
+
+      # Basic configuration files
+      configFile = {
+        "kdeglobals"."General"."BrowserApplication" = "firefox.desktop";
+        "kdeglobals"."General"."TerminalApplication" = "konsole";
+      };
     };
 
     components = {

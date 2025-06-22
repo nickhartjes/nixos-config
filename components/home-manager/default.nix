@@ -5,6 +5,7 @@
     ./cli
     ./terminal
     ./features
+    ./desktop
     ./scripts
   ];
 }
