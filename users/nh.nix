@@ -87,20 +87,11 @@
       ];
 
     home.packages = with pkgs; [
-      fd
+      fd # A simple, fast and user-friendly alternative to 'find'
       obsidian
       alejandra # A code formatter for various languages
       wl-clipboard # Clipboard management for Wayland
-
-      # Essential KDE applications
-      kdePackages.dolphin # File manager
-      kdePackages.konsole # Terminal
-      kdePackages.kate # Text editor
-      kdePackages.spectacle # Screenshot tool
-      kdePackages.ark # Archive manager
-      kdePackages.okular # Document viewer
-      kdePackages.gwenview # Image viewer
-      kdePackages.systemsettings # System settings
+      catppuccin-kde # Catppuccin color scheme for KDE
     ];
 
     # Add shell aliases for repository management
@@ -125,14 +116,27 @@
         "kwin"."Switch to Desktop 2" = "Meta+2";
         "kwin"."Switch to Desktop 3" = "Meta+3";
         "kwin"."Switch to Desktop 4" = "Meta+4";
-        "org.kde.konsole.desktop"."_launch" = "Meta+Return";
-        "org.kde.dolphin.desktop"."_launch" = "Meta+E";
+        "kwin"."Window Close" = "Meta+Q,Alt+F4,Close Window";
+        "org.freedesktop.krunner.desktop"."_launch" = "Meta";
+        "services/org.freedesktop.krunner.desktop"."_launch" = "Meta";
+        "services/com.mitchellh.ghostty.desktop"."new-window" = "Meta+Return";
       };
 
       # Basic configuration files
       configFile = {
-        "kdeglobals"."General"."BrowserApplication" = "firefox.desktop";
-        "kdeglobals"."General"."TerminalApplication" = "konsole";
+        "kdeglobals"."General"."BrowserApplication" = "chromium-browser.desktop";
+        "kdeglobals"."General"."TerminalApplication" = "com.github.ghostty";
+        "kdeglobals"."General"."TerminalService" = "com.github.ghostty";
+        "kwinrc"."Desktops"."Id_1" = "Desktop_1";
+        "kwinrc"."Desktops"."Id_2" = "Desktop_2";
+        "kwinrc"."Desktops"."Id_3" = "Desktop_3";
+        "kwinrc"."Desktops"."Id_4" = "Desktop_4";
+        "kwinrc"."Desktops"."Name_1" = "Main";
+        "kwinrc"."Desktops"."Name_2" = "Work";
+        "kwinrc"."Desktops"."Name_3" = "Media";
+        "kwinrc"."Desktops"."Name_4" = "Dev";
+        "kwinrc"."Desktops"."Number" = 4;
+        "kwinrc"."Desktops"."Rows" = 1;
       };
     };
 
@@ -251,9 +255,13 @@
                   "git@github.com:nickhartjes/gitops.git"
                   "git@github.com:nickhartjes/codex.git"
                 ];
-                work = [
+                dealdodo = [
                   "git@github.com:dealdodo/frontend"
                   "git@github.com:dealdodo/backend"
+                ];
+                entrnce = [
+                  "git@github.com:EnergyExchangeEnablersBV/devops-helm-charts.git"
+                  "git@github.com:EnergyExchangeEnablersBV/nma-platform.git"
                 ];
               };
             };

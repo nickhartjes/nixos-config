@@ -81,7 +81,7 @@
 
         # Conservative frequencies for battery efficiency
         scaling_min_freq = 400000; # 400 MHz minimum
-        scaling_max_freq = 2800000; # 2.8 GHz (below base for efficiency)
+        scaling_max_freq = 2000000; # 2.0 GHz (below base for efficiency)
 
         # Disable turbo on battery to maximize life
         turbo = "never";
