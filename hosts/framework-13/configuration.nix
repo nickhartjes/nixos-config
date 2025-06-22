@@ -19,9 +19,25 @@
   boot.loader.systemd-boot.enable = lib.mkForce false;
   boot.loader.systemd-boot.configurationLimit = 15;
   boot.kernelParams = [
-    "resume=/dev/mapper/cryptroot"
-    "resume_offset=2957497"
-    "mem_sleep_default=deep"
+    "resume=/dev/mapper/cryptroot" # Path to the swap partition for hibernation
+    "resume_offset=2957497" # Offset for the swap partition, adjust as needed
+    "mem_sleep_default=deep" # Use deep sleep for better power management
+    "pcie_aspm=off" # Disable PCIe Active State Power Management
+    "acpi_osi=\"!Windows 2020\"" # Addresses ACPI-related issues that can affect suspend behavior.
+
+    # Additional power management beyond what nixos-hardware provides
+    "processor.max_cstate=9"
+    "amd_pstate.shared_mem=1"
+
+    # Audio power saving
+    "snd_hda_intel.power_save=1"
+    "snd_ac97_codec.power_save=1"
+
+    # Network power management
+    "iwlwifi.power_save=1"
+
+    # Additional power saving
+    "pcie_aspm=force"
   ];
   boot.resumeDevice = "/dev/mapper/cryptroot";
 
@@ -34,9 +50,61 @@
   boot.kernelModules = ["btrfs"];
   boot.initrd.supportedFilesystems = ["btrfs"];
 
-  programs.auto-cpufreq.enable = true;
+  # Automatically adjust CPU frequency based on system load
+  programs.auto-cpufreq = {
+    enable = true;
 
-  services.power-profiles-daemon.enable = false; # Disable because we are using Auto CPU Frequency
+    settings = {
+      # AC Power / Charger settings
+      charger = {
+        governor = "performance";
+
+        # AMD Ryzen AI 5 340: Base 2.0GHz, Boost 4.2GHz
+        scaling_min_freq = 2000000; # 2.0 GHz
+        scaling_max_freq = 4200000; # 4.2 GHz max boost
+
+        # Enable turbo boost for AC power
+        turbo = "auto";
+
+        # Energy Performance Preference
+        energy_performance_preference = "performance";
+
+        # Battery threshold management for AC use
+        enable_thresholds = true;
+        start_threshold = 20;
+        stop_threshold = 95;
+      };
+
+      # Battery power settings
+      battery = {
+        governor = "powersave";
+
+        # Conservative frequencies for battery efficiency
+        scaling_min_freq = 400000; # 400 MHz minimum
+        scaling_max_freq = 2800000; # 2.8 GHz (below base for efficiency)
+
+        # Disable turbo on battery to maximize life
+        turbo = "never";
+
+        # Power-focused EPP
+        energy_performance_preference = "power";
+
+        # Battery-optimized charging thresholds
+        enable_thresholds = true;
+        start_threshold = 15;
+        stop_threshold = 80; # Conservative limit for longevity
+      };
+    };
+  };
+
+  services.power-profiles-daemon.enable = false;
+
+  powerManagement = {
+    enable = true;
+    powertop.enable = true;
+    cpuFreqGovernor = "ondemand"; # Fallback governor if auto-cpufreq
+    scsiLinkPolicy = "med_power_with_dipm";
+  };
 
   # Suspend first then hibernate when closing the lid
   services.logind.lidSwitch = "suspend-then-hibernate";
@@ -114,6 +182,12 @@
     vim
     sbctl # Secure Boot Control
     git
+
+    powertop
+    acpi
+    lm_sensors
+    linuxPackages.turbostat
+    cpufrequtils
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -164,5 +238,41 @@
       ];
       dates = "daily";
     };
+  };
+
+  # # Disable PCIe wakeup for AMD devices to prevent issues with suspend/hibernate
+  # services.udev.extraRules = ''
+  #   # Disable wakeup for specific USB controllers
+  #   SUBSYSTEM=="pci", ATTR{vendor}=="0x1022", ATTR{device}=="0x43f3", ATTR{power/wakeup}="disabled"
+  #   SUBSYSTEM=="pci", ATTR{vendor}=="0x1022", ATTR{device}=="0x43f4", ATTR{power/wakeup}="disabled"
+
+  #   # Disable wakeup for specific Thunderbolt controllers
+  #   SUBSYSTEM=="pci", ATTR{vendor}=="0x1022", ATTR{device}=="0x43f5", ATTR{power/wakeup}="disabled"
+  #   SUBSYSTEM=="pci", ATTR{vendor}=="0x1022", ATTR{device}=="0x43f6", ATTR{power/wakeup}="disabled"
+  # '';
+
+  # # Manage wireless devices during suspend
+  # systemd.services.rfkill-suspend = {
+  #   description = "Disable Wi-Fi and Bluetooth before suspend";
+  #   before = ["sleep.target"];
+  #   serviceConfig = {
+  #     Type = "oneshot";
+  #     ExecStart = "/usr/sbin/rfkill block all";
+  #     ExecStop = "/usr/sbin/rfkill unblock all";
+  #   };
+  #   wantedBy = ["sleep.target"];
+  # };
+
+  # Convenient aliases for auto-cpufreq management
+  environment.shellAliases = {
+    "cpu-perf" = "sudo auto-cpufreq --force=performance";
+    "cpu-save" = "sudo auto-cpufreq --force=powersave";
+    "cpu-auto" = "sudo auto-cpufreq --force=reset";
+    "cpu-stats" = "auto-cpufreq --stats";
+    "cpu-monitor" = "auto-cpufreq --monitor";
+    "cpu-live" = "sudo auto-cpufreq --live";
+    "fw-power" = "sudo powertop";
+    "fw-temp" = "sensors";
+    "fw-freq" = "cpufreq-info";
   };
 }
