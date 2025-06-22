@@ -9,26 +9,53 @@
 
     baseFolder = lib.mkOption {
       type = lib.types.str;
-      default = "/home/nh/projects";
+      default = "$HOME/projects";
       description = "Base directory where project folders will be created";
     };
 
     repositories = lib.mkOption {
-      type = lib.types.attrsOf (lib.types.listOf lib.types.str);
-      default = {
-        nh = [
-          "git@github.com:nickhartjes/obsidian.git"
-          "git@github.com:nickhartjes/talos.git"
-          "git@github.com:nickhartjes/gitops.git"
-          "git@github.com:nickhartjes/codex.git"
-          "git@github.com:nickhartjes/nickhartjes.nl.git"
-        ];
-        dealdodo = [
-          "git@github.com:dealdodo/frontend"
-          "git@github.com:dealdodo/backend"
-        ];
+      type = lib.types.submodule {
+        options = {
+          global = lib.mkOption {
+            type = lib.types.attrsOf (lib.types.listOf lib.types.str);
+            default = {};
+            description = "Global repository groups available to all users";
+            example = {
+              tools = [
+                "git@github.com:company/cli-tools.git"
+                "git@github.com:company/shared-scripts.git"
+              ];
+              documentation = [
+                "git@github.com:company/docs.git"
+              ];
+            };
+          };
+
+          users = lib.mkOption {
+            type = lib.types.attrsOf (lib.types.attrsOf (lib.types.listOf lib.types.str));
+            default = {};
+            description = "User-specific repository groups";
+            example = {
+              alice = {
+                personal = [
+                  "git@github.com:alice/personal-project.git"
+                ];
+                work = [
+                  "git@github.com:company/alice-work.git"
+                ];
+              };
+              bob = {
+                experiments = [
+                  "git@github.com:bob/experiment1.git"
+                  "git@github.com:bob/experiment2.git"
+                ];
+              };
+            };
+          };
+        };
       };
-      description = "Repository groups and their URLs";
+      default = {};
+      description = "Repository configuration with global and per-user groups";
     };
   };
 
@@ -102,15 +129,38 @@
           return $error_count
         }
 
+        # Get current user
+        CURRENT_USER=$(whoami)
+
         # Main execution
-        log "Starting repository management process"
+        log "Starting repository management process for user: $CURRENT_USER"
         total_errors=0
 
+        # Process global repositories
         ${lib.concatStringsSep "\n" (lib.mapAttrsToList (folderName: repoList: ''
             clone_or_fetch "${folderName}" ${lib.concatStringsSep " " (map (repo: ''"${repo}"'') repoList)}
             total_errors=$((total_errors + $?))
           '')
-          config.components.scripts.repoManager.repositories)}
+          config.components.scripts.repoManager.repositories.global)}
+
+        # Process user-specific repositories if they exist
+        ${lib.optionalString (config.components.scripts.repoManager.repositories.users != {}) ''
+          case "$CURRENT_USER" in
+            ${lib.concatStringsSep "\n" (lib.mapAttrsToList (userName: userRepos: ''
+            "${userName}")
+              log "Processing user-specific repositories for ${userName}"
+              ${lib.concatStringsSep "\n" (lib.mapAttrsToList (folderName: repoList: ''
+                clone_or_fetch "${folderName}" ${lib.concatStringsSep " " (map (repo: ''"${repo}"'') repoList)}
+                total_errors=$((total_errors + $?))
+              '')
+              userRepos)}
+              ;;'')
+          config.components.scripts.repoManager.repositories.users)}
+            *)
+              log "No user-specific repositories configured for user: $CURRENT_USER"
+              ;;
+          esac
+        ''}
 
         if [ $total_errors -eq 0 ]; then
           log "Repository management completed successfully"

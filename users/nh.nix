@@ -198,7 +198,29 @@
         wayland.enable = false;
       };
       scripts = {
-        repoManager.enable = true;
+        repoManager = {
+          enable = true;
+          repositories = {
+            users = {
+              nh = {
+                personal = [
+                  "git@github.com:nickhartjes/obsidian.git"
+                  "git@github.com:nickhartjes/dotfiles.git"
+                  "git@github.com:nickhartjes/nickhartjes.nl.git"
+                ];
+                projects = [
+                  "git@github.com:nickhartjes/talos.git"
+                  "git@github.com:nickhartjes/gitops.git"
+                  "git@github.com:nickhartjes/codex.git"
+                ];
+                work = [
+                  "git@github.com:dealdodo/frontend"
+                  "git@github.com:dealdodo/backend"
+                ];
+              };
+            };
+          };
+        };
       };
     };
   };
