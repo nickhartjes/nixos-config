@@ -34,12 +34,10 @@
   boot.kernelModules = ["btrfs"];
   boot.initrd.supportedFilesystems = ["btrfs"];
 
-  powerManagement.enable = true;
-  powerManagement.powertop.enable = true;
-  powerManagement.cpuFreqGovernor = "powersave";
-  powerManagement.scsiLinkPolicy = "med_power_with_dipm";
+  programs.auto-cpufreq.enable = true;
 
-  services.power-profiles-daemon.enable = true;
+  services.power-profiles-daemon.enable = false; # Disable because we are using Auto CPU Frequency
+
   # Suspend first then hibernate when closing the lid
   services.logind.lidSwitch = "suspend-then-hibernate";
   # Hibernate on power button pressed

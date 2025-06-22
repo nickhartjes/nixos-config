@@ -45,6 +45,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    auto-cpufreq = {
+      url = "github:AdnanHodzic/auto-cpufreq";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Microcode updates for Intel and AMD CPUs
     ucodenix.url = "github:e-tho/ucodenix";
   };
@@ -52,6 +57,7 @@
   # --- Outputs ---
   # Defines what this flake provides (packages, NixOS configurations, etc.)
   outputs = {
+    auto-cpufreq, # Auto CPU frequency scaling
     self, # A reference to this flake's own outputs
     agenix, # Agenix input
     home-manager, # Home Manager input
@@ -136,6 +142,7 @@
           nixos-hardware.nixosModules.framework-amd-ai-300-series # NixOS hardware module for framework-13
           inputs.lanzaboote.nixosModules.lanzaboote
           inputs.ucodenix.nixosModules.default
+          auto-cpufreq.nixosModules.default
         ];
       };
 
