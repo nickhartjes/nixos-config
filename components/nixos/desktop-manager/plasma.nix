@@ -43,5 +43,8 @@
       # gwenview
       # khelpcenter
     ];
+
+    # Set environment variable for Plasma session
+    environment.sessionVariables.KWIN_DRM_FORCE_10BPC = "1";
   };
 }

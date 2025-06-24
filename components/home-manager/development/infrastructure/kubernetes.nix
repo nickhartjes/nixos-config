@@ -11,7 +11,7 @@
   config = lib.mkIf config.components.development.infrastructure.kubernetes.enable {
     home.packages = with pkgs; [
       kubectl # Kubernetes CLI
-      helm # Kubernetes package manager
+      kubernetes-helm # Kubernetes package manager
       k9s # Terminal UI for Kubernetes
       kubectx # Switch between Kubernetes contexts
       kustomize # Configuration management
