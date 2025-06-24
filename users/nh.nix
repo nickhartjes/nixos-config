@@ -92,6 +92,7 @@
       alejandra # A code formatter for various languages
       wl-clipboard # Clipboard management for Wayland
       catppuccin-kde # Catppuccin color scheme for KDE
+      just
     ];
 
     # Add shell aliases for repository management
