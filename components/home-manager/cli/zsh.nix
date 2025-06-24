@@ -25,6 +25,18 @@ in {
           # "zdharma-continuum/fast-syntax-highlighting"
           # Optional advanced autocomplete:
           # "marlonrichert/zsh-autocomplete"
+
+          # OMZ plugins (antidote syntax)
+          # https://github.com/ohmyzsh/ohmyzsh/wiki/Plugins
+          "ohmyzsh/ohmyzsh path:plugins/aws"
+          "ohmyzsh/ohmyzsh path:plugins/command-not-found"
+          "ohmyzsh/ohmyzsh path:plugins/gh"
+          "ohmyzsh/ohmyzsh path:plugins/git-auto-fetch"
+          "ohmyzsh/ohmyzsh path:plugins/git"
+          "ohmyzsh/ohmyzsh path:plugins/gradle"
+          "ohmyzsh/ohmyzsh path:plugins/kubectl"
+          "ohmyzsh/ohmyzsh path:plugins/kubectx"
+          "ohmyzsh/ohmyzsh path:plugins/vscode"
         ];
       };
 
@@ -43,7 +55,10 @@ in {
         pbpaste = "wl-paste || xsel --clipboard --output";
       };
 
-      initExtra = ''
+      initContent = ''
+        # Source p10k config
+        [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
         # SSH Agent fallback
         if [ -z "$SSH_AUTH_SOCK" ]; then
           if [ -S "$XDG_RUNTIME_DIR/ssh-agent" ]; then
@@ -68,7 +83,7 @@ in {
         # Completion improvements
         zstyle ':completion:*' menu select
         zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
-        zstyle ':completion:*' list-colors "${s.:. LS_COLORS}"
+        zstyle ':completion:*' list-colors "''${LS_COLORS}"
 
         # fzf-tab preview configuration
         zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
@@ -77,8 +92,9 @@ in {
         # fzf shell integration
         eval "$(fzf --zsh)"
 
-        # Source p10k config
-        [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+        # zoxide integration (replaces cd with smart cd)
+        eval "$(zoxide init --cmd cd zsh)"
+
         fastfetch
       '';
     };
