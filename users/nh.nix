@@ -201,6 +201,7 @@
           nodejs.enable = true;
           java.enable = true;
           go.enable = true;
+          rust.enable = true;
         };
         git = {
           enable = true;
