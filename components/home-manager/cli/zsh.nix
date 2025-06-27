@@ -95,6 +95,10 @@ in {
         # zoxide integration (replaces cd with smart cd)
         eval "$(zoxide init --cmd cd zsh)"
 
+        # Set JAVA_HOME to .jdks/jdk
+        export JAVA_HOME="$HOME/.jdks/jdk"
+        export PATH="$JAVA_HOME/bin:$PATH"
+
         fastfetch
       '';
     };
