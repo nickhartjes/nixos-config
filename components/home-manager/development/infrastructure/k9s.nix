@@ -22,6 +22,10 @@
           ro = "roles";
           rb = "rolebindings";
           np = "networkpolicies";
+          ap = "applications.argoproj.io";
+          as = "applicationsets.argoproj.io";
+          pr = "appprojects.argoproj.io";
+          ex = "externalsecrets.external-secrets.io";
         };
       };
 
