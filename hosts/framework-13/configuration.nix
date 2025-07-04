@@ -200,6 +200,13 @@
 
   # List services that you want to enable:
 
+  # Enable PipeWire for audio management
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    pulse.enable = true;
+  };
+
   # Enable the OpenSSH daemon.
   services.openssh = {
     enable = false;

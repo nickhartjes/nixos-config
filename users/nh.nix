@@ -172,6 +172,10 @@
         office = {
           libreoffice.enable = true;
         };
+        media = {
+          mpv.enable = true;
+          vlc.enable = false;
+        };
         security = {
           lynis.enable = true;
           protonvpn.enable = true;

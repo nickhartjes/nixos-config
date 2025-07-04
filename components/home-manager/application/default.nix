@@ -1,14 +1,15 @@
 {pkgs, ...}: {
   imports = [
-    ./browser
-    ./music
     ./ai
+    ./browser
     ./communication
-    ./graphics
     ./database
+    ./gaming
+    ./graphics
+    ./media
+    ./music
     ./office
     ./security
-    ./gaming
     ./system
   ];
 }
