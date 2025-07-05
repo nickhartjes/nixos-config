@@ -12,7 +12,5 @@
     home.packages = with pkgs; [
       ollama
     ];
-
-    # Ollama is free software, no need for allowUnfreePredicate
   };
 }

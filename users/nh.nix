@@ -66,24 +66,25 @@
     # nixpkgs.config.allowUnfree = true;
     nixpkgs.config.allowUnfreePredicate = pkg:
       builtins.elem (lib.getName pkg) [
-        "obsidian"
-        "vscode"
-        "idea-ultimate"
-        "spotify"
         "claude-code"
-        "slack"
-        "discord"
-        "signal-desktop"
-        "telegram-desktop"
-        "dbeaver-bin"
         "corefonts"
-        "terraform"
-        "protonvpn-gui"
+        "dbeaver-bin"
+        "discord"
+        "idea-ultimate"
+        "lmstudio"
+        "lutris"
+        "obsidian"
         "protonvpn-cli"
-        "steam"
+        "protonvpn-gui"
+        "signal-desktop"
+        "slack"
+        "spotify"
         "steam-original"
         "steam-unwrapped"
-        "lutris"
+        "steam"
+        "telegram-desktop"
+        "terraform"
+        "vscode"
       ];
 
     home.packages = with pkgs; [
@@ -154,6 +155,8 @@
           claude-code.enable = true;
           ollama.enable = true;
           alpaca.enable = true;
+          opencode.enable = true;
+          lmstudio.enable = true;
         };
         communication = {
           slack.enable = true;
@@ -174,7 +177,7 @@
         };
         media = {
           mpv.enable = true;
-          vlc.enable = false;
+          vlc.enable = true;
         };
         security = {
           lynis.enable = true;
