@@ -74,6 +74,7 @@
       fonts.enable = true;
       yubikey.enable = true;
       gaming.enable = true;
+      tailscale.enable = true; # Enable Tailscale VPN
     };
   };
 }

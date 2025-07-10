@@ -189,6 +189,8 @@
         };
         system = {
           mission-center.enable = true;
+          # tailscale is a system-level service, not a home-manager component
+          # Move this configuration to the system-level config if needed
         };
       };
       development = {
