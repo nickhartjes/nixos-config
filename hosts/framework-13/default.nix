@@ -46,12 +46,12 @@
     # Enable all desktop environments (Note: may cause conflicts)
     desktop = {
       cinnamon.enable = false;
-      cosmic.enable = true;
+      cosmic.enable = false;
       gnome.enable = false;
-      hyprland.enable = true;
+      hyprland.enable = false;
       pantheon.enable = false;
       plasma.enable = true;
-      sway.enable = false;
+      sway.enable = true;
     };
 
     display = {

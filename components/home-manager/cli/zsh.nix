@@ -56,6 +56,9 @@ in {
       };
 
       initContent = ''
+        # Set JetBrains JDK as BOOT_JDK for Java builds
+        export BOOT_JDK="${pkgs.jetbrains.jdk}/lib/openjdk"
+
         # Source p10k config
         [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 

@@ -15,6 +15,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # https://status.nixos.org/
     # Main Nixpkgs (unstable channel)
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 

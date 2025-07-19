@@ -197,7 +197,7 @@
         editor = {
           vscode.enable = true;
           zed.enable = true;
-          intellij.enable = true;
+          intellij.enable = false;
         };
         infrastructure = {
           opentofu.enable = true;
@@ -242,7 +242,7 @@
       };
       features = {
         desktop = {
-          hyprland.enable = false;
+          hyprland.enable = true;
           sway.enable = false;
         };
       };

@@ -12,169 +12,219 @@
     wayland.windowManager.hyprland = {
       enable = true;
       settings = {
+        # Variables
+        "$mainMod" = "SUPER";
+        "$terminal" = "${pkgs.ghostty}/bin/ghostty";
+        "$browser" = "chromium"; # Use desktop entry name instead of direct path
+        # "$fileManager" = "${pkgs.pcmanfm}/bin/pcmanfm";
+        "$menu" = "${pkgs.wofi}/bin/wofi --show drun";
+
         # Monitor configuration
-        monitor = ",preferred,auto,auto";
+        monitor = [
+          ",preferred,auto,1.5"
+          "desc:Samsung Electric Company Odyssey G95SC H1AK500000,5120x1440,auto,1"
+        ];
 
         # Input configuration
         input = {
           kb_layout = "us";
           kb_variant = "";
           kb_model = "";
-          kb_options = "";
+          kb_options = "caps:escape";
           kb_rules = "";
 
           follow_mouse = 1;
 
           touchpad = {
             natural_scroll = "yes";
-            tap-to-click = "yes";
+            tap-to-click = true;
+            drag_lock = true;
           };
 
-          sensitivity = 0;
+          sensitivity = 0.5;
         };
 
         # General settings
         general = {
           gaps_in = 5;
-          gaps_out = 20;
-          border_size = 2;
-          "col.active_border" = "rgba(33ccffee) rgba(00ff99ee) 45deg";
-          "col.inactive_border" = "rgba(595959aa)";
-
-          layout = "dwindle";
-
-          allow_tearing = false;
+          gaps_out = 5;
+          border_size = 3;
+          "col.active_border" = "0x661e81b0";
+          "col.inactive_border" = "0x66333333";
         };
 
         # Decoration settings
         decoration = {
-          rounding = 10;
-
+          rounding = 3;
           blur = {
             enabled = true;
             size = 3;
             passes = 1;
           };
-
-          drop_shadow = "yes";
-          shadow_range = 4;
-          shadow_render_power = 3;
-          "col.shadow" = "rgba(1a1a1aee)";
         };
 
         # Animation settings
         animations = {
-          enabled = "yes";
-
-          bezier = "myBezier, 0.05, 0.9, 0.1, 1.05";
-
+          enabled = 1;
           animation = [
-            "windows, 1, 7, myBezier"
-            "windowsOut, 1, 7, default, popin 80%"
-            "border, 1, 10, default"
-            "borderangle, 1, 8, default"
-            "fade, 1, 7, default"
-            "workspaces, 1, 6, default"
+            "windows,1,7,default"
+            "border,1,10,default"
+            "fade,1,10,default"
+            "workspaces,1,6,default"
           ];
         };
 
         # Layout settings
         dwindle = {
-          pseudotile = "yes";
-          preserve_split = "yes";
-        };
-
-        master = {
-          new_is_master = true;
+          pseudotile = 0;
         };
 
         # Gestures
         gestures = {
-          workspace_swipe = false;
-        };
-
-        # Misc settings
-        misc = {
-          force_default_wallpaper = -1;
+          workspace_swipe = "yes";
         };
 
         # Window rules
         windowrulev2 = [
-          "suppressevent maximize, class:.*"
-          "float,class:^(pavucontrol)$"
-          "float,class:^(nm-applet)$"
+          "opacity 0.8 0.8,class:^(ghostty)$"
+          "animation popin,class:^(alacritty)$,title:^(update-sys)$"
+          "animation popin,class:^(thunar)$"
+          "opacity 0.8 0.8,class:^(thunar)$"
+          "opacity 0.8 0.8,class:^(VSCodium)$"
+          "animation popin,class:^(chromium)$"
+          "move cursor -3% -105%,class:^(wofi)$"
         ];
 
-        # Key bindings
-        "$mod" = "SUPER";
-
-        bind = [
-          # Application bindings
-          "$mod, Return, exec, ${pkgs.foot}/bin/foot"
-          "$mod, Q, killactive,"
-          "$mod, M, exit,"
-          "$mod, E, exec, ${pkgs.xfce.thunar}/bin/thunar"
-          "$mod, V, togglefloating,"
-          "$mod, D, exec, ${pkgs.wofi}/bin/wofi --show drun"
-          "$mod, P, pseudo,"
-          "$mod, J, togglesplit,"
-
-          # Move focus
-          "$mod, left, movefocus, l"
-          "$mod, right, movefocus, r"
-          "$mod, up, movefocus, u"
-          "$mod, down, movefocus, d"
-
-          # Switch workspaces
-          "$mod, 1, workspace, 1"
-          "$mod, 2, workspace, 2"
-          "$mod, 3, workspace, 3"
-          "$mod, 4, workspace, 4"
-          "$mod, 5, workspace, 5"
-          "$mod, 6, workspace, 6"
-          "$mod, 7, workspace, 7"
-          "$mod, 8, workspace, 8"
-          "$mod, 9, workspace, 9"
-          "$mod, 0, workspace, 10"
-
-          # Move active window to workspace
-          "$mod SHIFT, 1, movetoworkspace, 1"
-          "$mod SHIFT, 2, movetoworkspace, 2"
-          "$mod SHIFT, 3, movetoworkspace, 3"
-          "$mod SHIFT, 4, movetoworkspace, 4"
-          "$mod SHIFT, 5, movetoworkspace, 5"
-          "$mod SHIFT, 6, movetoworkspace, 6"
-          "$mod SHIFT, 7, movetoworkspace, 7"
-          "$mod SHIFT, 8, movetoworkspace, 8"
-          "$mod SHIFT, 9, movetoworkspace, 9"
-          "$mod SHIFT, 0, movetoworkspace, 10"
-
-          # Special workspace
-          "$mod, S, togglespecialworkspace, magic"
-          "$mod SHIFT, S, movetoworkspace, special:magic"
-
-          # Scroll through workspaces
-          "$mod, mouse_down, workspace, e+1"
-          "$mod, mouse_up, workspace, e-1"
-
-          # Screenshot bindings
-          ", Print, exec, ${pkgs.grim}/bin/grim"
-          "SHIFT, Print, exec, ${pkgs.grim}/bin/grim -g \"$(${pkgs.slurp}/bin/slurp)\""
+        windowrule = [
+          "animation popin, class:ghostty"
+          "noblur, class:firefox"
+          "bordercolor rgb(FF0000) rgb(880808), fullscreen:1"
+          "bordercolor rgb(00FF00), fullscreenstate:* 1"
+          "stayfocused, class:(pinentry-)(.*)"
+          "workspace special:slack, class:slack"
+          "workspace special:terminal, class:ghostty"
+          "workspace special:music, class:spotify"
         ];
 
         # Mouse bindings
         bindm = [
-          "$mod, mouse:272, movewindow"
-          "$mod, mouse:273, resizewindow"
+          "$mainMod,mouse:272,movewindow"
+          "$mainMod,mouse:273,resizewindow"
+        ];
+
+        # Key bindings
+        bind = [
+          # Application bindings
+          "$mainMod,RETURN,exec,$terminal"
+          "$mainMod,B,exec,$browser"
+          "$mainMod,F,fullscreen"
+          "$mainMod,Q,killactive"
+          "$mainMod ALT,L,exec,${pkgs.hyprlock}/bin/hyprlock"
+          "$mainMod SHIFT,Q,exec,${pkgs.wlogout}/bin/wlogout --protocol layer-shell"
+          "$mainMod SHIFT,M,exit"
+          "$mainMod,E,exec,$fileManager"
+          "$mainMod,V,togglefloating"
+          "$mainMod,P,exec,$menu"
+          "$mainMod,S,exec,${pkgs.grim}/bin/grim -t jpeg -q 10 -g \"$(${pkgs.slurp}/bin/slurp)\" - | ${pkgs.swappy}/bin/swappy -f -"
+
+          # Focus bindings (vim motions: h=left, j=down, k=up, l=right)
+          "$mainMod,h,movefocus,l"
+          "$mainMod,j,movefocus,d"
+          "$mainMod,k,movefocus,u"
+          "$mainMod,l,movefocus,r"
+
+          # Window movement bindings (vim motions: h=left, j=down, k=up, l=right)
+          "$mainMod SHIFT,h,movewindow,l"
+          "$mainMod SHIFT,j,movewindow,d"
+          "$mainMod SHIFT,k,movewindow,u"
+          "$mainMod SHIFT,l,movewindow,r"
+
+          # Workspace bindings
+          "$mainMod,1,workspace,1"
+          "$mainMod,2,workspace,2"
+          "$mainMod,3,workspace,3"
+          "$mainMod,4,workspace,4"
+          "$mainMod,5,workspace,5"
+          "$mainMod,6,workspace,6"
+          "$mainMod,7,workspace,7"
+          "$mainMod,8,workspace,8"
+          "$mainMod,9,workspace,9"
+          "$mainMod,0,workspace,10"
+
+          # Move window to workspace
+          "$mainMod SHIFT,1,movetoworkspace,1"
+          "$mainMod SHIFT,2,movetoworkspace,2"
+          "$mainMod SHIFT,3,movetoworkspace,3"
+          "$mainMod SHIFT,4,movetoworkspace,4"
+          "$mainMod SHIFT,5,movetoworkspace,5"
+          "$mainMod SHIFT,6,movetoworkspace,6"
+          "$mainMod SHIFT,7,movetoworkspace,7"
+          "$mainMod SHIFT,8,movetoworkspace,8"
+          "$mainMod SHIFT,9,movetoworkspace,9"
+          "$mainMod SHIFT,0,movetoworkspace,10"
+
+          # Mouse wheel workspace switching
+          "$mainMod,mouse_down,workspace,e+1"
+          "$mainMod,mouse_up,workspace,e-1"
+
+          # Special workspaces
+          "ALT,S,togglespecialworkspace,slack"
+          "ALT,T,togglespecialworkspace,terminal"
+          "ALT,M,togglespecialworkspace,music"
+
+          # Window resize submap
+          "$mainMod,R,submap,resize"
+
+          # Media key bindings
+          # ",XF86AudioPlay,exec,~/.config/hypr/scripts/brightness.sh --play-pause"
+          # ",XF86AudioPause,exec,~/.config/hypr/scripts/brightness.sh --play-pause"
+          # ",XF86AudioNext,exec,~/.config/hypr/scripts/brightness.sh --next"
+          # ",XF86AudioPrev,exec,~/.config/hypr/scripts/brightness.sh --previous"
+        ];
+
+        # Media controls
+        binde = [
+          # ",XF86AudioRaiseVolume,exec,~/.config/hypr/scripts/brightness.sh --volume-up"
+          # ",XF86AudioLowerVolume,exec,~/.config/hypr/scripts/brightness.sh --volume-down"
+          # ",XF86AudioMute,exec,~/.config/hypr/scripts/brightness.sh --mute-toggle"
+          # ",XF86MonBrightnessUp,exec,~/.config/hypr/scripts/brightness.sh --inc"
+          # ",XF86MonBrightnessDown,exec,~/.config/hypr/scripts/brightness.sh --dec"
+        ];
+
+        # Laptop lid switch
+        bindl = [
+          ",switch:on:Lid Switch,exec,${pkgs.hyprland}/bin/hyprctl keyword monitor \"eDP-1, disable\""
+          ",switch:off:Lid Switch,exec,${pkgs.hyprland}/bin/hyprctl keyword monitor \"eDP-1, 1920x1080, 0x0, 1\""
         ];
 
         # Execute on startup
         exec-once = [
-          "${pkgs.waybar}/bin/waybar"
-          "${pkgs.mako}/bin/mako"
-          "${pkgs.networkmanagerapplet}/bin/nm-applet"
-          "${pkgs.hyprpaper}/bin/hyprpaper"
+          "${pkgs.hyprpanel}/bin/hyprpanel"
+          "${pkgs.kanshi}/bin/kanshi"
+          "${pkgs.hypridle}/bin/hypridle"
+          "[workspace special:slack silent] ${pkgs.slack}/bin/slack"
+          "[workspace special:terminal silent] ${pkgs.ghostty}/bin/ghostty"
+          "[workspace special:music silent] ${pkgs.spotify}/bin/spotify"
         ];
+
+        # Plugin configuration
+        plugin = {
+          hy3 = {
+            tabs = {
+              border_width = 1;
+              "col.active" = "rgba(33ccff20)";
+              "col.border.active" = "rgba(33ccffee)";
+              "col.text.active" = "rgba(ffffffff)";
+              "col.inactive" = "rgba(30303020)";
+              "col.border.inactive" = "rgba(595959aa)";
+            };
+            autotile = {
+              enable = true;
+              trigger_width = 800;
+              trigger_height = 500;
+            };
+          };
+        };
       };
     };
 
@@ -246,31 +296,49 @@
         ];
 
         wallpaper = [
-          ",~/.config/wallpaper"
+          "~/.config/wallpaper"
         ];
       };
     };
 
-    # Additional Hyprland-related packages (minimal set - others should be in system config)
+    # Additional Hyprland-related packages
     home.packages = with pkgs; [
-      # User-specific Hyprland tools only
+      # Core applications (note: chromium is installed via browser component)
+      ghostty
+      # pcmanfm
+      wofi
+
+      # System tools
+      hyprlock
+      wlogout
+      hyprpanel
+      kanshi
+      hypridle
+
+      yazi
+
+      # Screenshot and utilities
+      grim
+      slurp
+      swappy
+
+      # User-specific Hyprland tools
       hyprpicker
       wl-clipboard
-
-      # Note: Other packages like foot, kitty, wofi, etc. should be
-      # installed via their respective component modules for better modularity
     ];
 
     # Mako notification daemon configuration
     services.mako = {
       enable = true;
-      backgroundColor = "#2e3440";
-      borderColor = "#88c0d0";
-      borderRadius = 5;
-      borderSize = 2;
-      defaultTimeout = 5000;
-      font = "Noto Sans 10";
-      textColor = "#eceff4";
+      settings = {
+        backgroundColor = "#2e3440";
+        borderColor = "#88c0d0";
+        borderRadius = 5;
+        borderSize = 2;
+        defaultTimeout = 5000;
+        font = "Noto Sans 10";
+        textColor = "#eceff4";
+      };
     };
   };
 }
