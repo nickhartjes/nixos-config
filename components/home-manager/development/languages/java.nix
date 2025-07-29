@@ -26,7 +26,7 @@
       ".jdks/jdk21".source = pkgs.jdk21;
       ".jdks/jdk23".source = pkgs.jdk23;
       ".jdks/jdk24".source = pkgs.jdk24;
-      ".jdks/jetbrains-jdk".source = pkgs.jetbrains.jdk;
+      # ".jdks/jetbrains-jdk".source = pkgs.jetbrains.jdk;
     };
   };
 }

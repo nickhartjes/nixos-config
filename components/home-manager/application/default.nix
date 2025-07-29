@@ -7,6 +7,7 @@
     ./gaming
     ./graphics
     ./media
+    ./monitoring
     ./music
     ./office
     ./security
