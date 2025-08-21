@@ -6,6 +6,7 @@
     ./fzf.nix
     ./neofetch.nix
     ./neovim.nix
+    ./nvtop.nix
     ./nh.nix
     ./zsh.nix
     ./ssh.nix

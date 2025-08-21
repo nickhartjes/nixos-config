@@ -1,7 +1,7 @@
 {pkgs, ...}: {
   imports = [
-    ./steam.nix
     ./lutris.nix
-    ./ryujinx.nix
+    ./ryubing.nix
+    ./steam.nix
   ];
 }

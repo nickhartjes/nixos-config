@@ -186,6 +186,7 @@
         gaming = {
           steam.enable = true;
           lutris.enable = true;
+          ryubing.enable = true;
         };
         system = {
           mission-center.enable = true;
@@ -228,10 +229,11 @@
         fish.enable = true; # Enable fish as well
         fzf.enable = true;
         neofetch.enable = true; # Enable neofetch too
-        nh.enable = true;
-        zsh.enable = true;
         neovim.enable = true;
+        nh.enable = true;
+        nvtop.enable = true;
         ssh.enable = true;
+        zsh.enable = true;
       };
       terminal = {
         alacritty.enable = true;

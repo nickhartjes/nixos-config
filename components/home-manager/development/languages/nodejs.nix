@@ -12,7 +12,7 @@
     home.packages = with pkgs; [
       bun
       cypress
-      nodejs_22
+      # nodejs_22
       nodePackages.npm
       npm-check-updates
       pnpm
