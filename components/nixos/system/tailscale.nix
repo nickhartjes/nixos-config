@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 with lib; let
@@ -43,5 +44,20 @@ in {
         # Set these via extraConfig if supported in the future
       }
       // cfg.extraConfig;
+
+    # Add tailscale-systray to system packages
+    environment.systemPackages = with pkgs; [
+      tailscale-systray
+    ];
+
+    # Add a systemd service to start tailscale-systray on startup
+    systemd.services.tailscale-systray = {
+      description = "Tailscale Systray";
+      wantedBy = ["graphical.target"];
+      serviceConfig = {
+        ExecStart = "${pkgs.tailscale-systray}/bin/tailscale-systray";
+        Restart = "always";
+      };
+    };
   };
 }

@@ -282,4 +282,14 @@
     "fw-temp" = "sensors";
     "fw-freq" = "cpufreq-info";
   };
+
+  systemd.services."networkmanager-resume" = {
+    description = "Restart NetworkManager and reload iwlwifi after resume";
+    wantedBy = ["sleep.target"];
+    after = ["sleep.target"];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.systemd}/bin/modprobe -r iwlwifi; ${pkgs.systemd}/bin/modprobe iwlwifi; ${pkgs.systemd}/bin/systemctl restart NetworkManager";
+    };
+  };
 }
