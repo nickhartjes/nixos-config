@@ -51,51 +51,51 @@
   boot.initrd.supportedFilesystems = ["btrfs"];
 
   # Automatically adjust CPU frequency based on system load
-  programs.auto-cpufreq = {
-    enable = true;
+  # programs.auto-cpufreq = {
+  #   enable = true;
 
-    settings = {
-      # AC Power / Charger settings
-      charger = {
-        governor = "performance";
+  #   settings = {
+  #     # AC Power / Charger settings
+  #     charger = {
+  #       governor = "performance";
 
-        # AMD Ryzen AI 5 340: Base 2.0GHz, Boost 4.2GHz
-        scaling_min_freq = 2000000; # 2.0 GHz
-        scaling_max_freq = 4200000; # 4.2 GHz max boost
+  #       # AMD Ryzen AI 5 340: Base 2.0GHz, Boost 4.2GHz
+  #       scaling_min_freq = 2000000; # 2.0 GHz
+  #       scaling_max_freq = 4200000; # 4.2 GHz max boost
 
-        # Enable turbo boost for AC power
-        turbo = "auto";
+  #       # Enable turbo boost for AC power
+  #       turbo = "auto";
 
-        # Energy Performance Preference
-        energy_performance_preference = "performance";
+  #       # Energy Performance Preference
+  #       energy_performance_preference = "performance";
 
-        # Battery threshold management for AC use
-        enable_thresholds = true;
-        start_threshold = 20;
-        stop_threshold = 95;
-      };
+  #       # Battery threshold management for AC use
+  #       enable_thresholds = true;
+  #       start_threshold = 20;
+  #       stop_threshold = 95;
+  #     };
 
-      # Battery power settings
-      battery = {
-        governor = "powersave";
+  #     # Battery power settings
+  #     battery = {
+  #       governor = "powersave";
 
-        # Conservative frequencies for battery efficiency
-        scaling_min_freq = 400000; # 400 MHz minimum
-        scaling_max_freq = 2000000; # 2.0 GHz (below base for efficiency)
+  #       # Conservative frequencies for battery efficiency
+  #       scaling_min_freq = 400000; # 400 MHz minimum
+  #       scaling_max_freq = 2000000; # 2.0 GHz (below base for efficiency)
 
-        # Disable turbo on battery to maximize life
-        turbo = "never";
+  #       # Disable turbo on battery to maximize life
+  #       turbo = "never";
 
-        # Power-focused EPP
-        energy_performance_preference = "power";
+  #       # Power-focused EPP
+  #       energy_performance_preference = "power";
 
-        # Battery-optimized charging thresholds
-        enable_thresholds = true;
-        start_threshold = 15;
-        stop_threshold = 80; # Conservative limit for longevity
-      };
-    };
-  };
+  #       # Battery-optimized charging thresholds
+  #       enable_thresholds = true;
+  #       start_threshold = 15;
+  #       stop_threshold = 80; # Conservative limit for longevity
+  #     };
+  #   };
+  # };
 
   services.power-profiles-daemon.enable = false;
 
@@ -119,12 +119,12 @@
   '';
 
   # Additional hibernation and power optimizations
-  services.logind.extraConfig = ''
-    HandleSuspendKey=suspend-then-hibernate
-    HandleHibernateKey=hibernate
-    IdleAction=suspend-then-hibernate
-    IdleActionSec=2h
-  '';
+  services.logind.settings.Login = {
+    HandleSuspendKey = "suspend-then-hibernate";
+    HandleHibernateKey = "hibernate";
+    IdleAction = "suspend-then-hibernate";
+    IdleActionSec = "2h";
+  };
 
   # Optimize for Framework laptop
   services.tlp = {

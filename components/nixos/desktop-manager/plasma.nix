@@ -37,7 +37,7 @@
     ];
 
     # Exclude some default KDE applications if desired
-    environment.plasma5.excludePackages = with pkgs.libsForQt5; [
+    environment.plasma6.excludePackages = with pkgs.libsForQt5; [
       # Add packages to exclude here if needed
       # elisa
       # gwenview

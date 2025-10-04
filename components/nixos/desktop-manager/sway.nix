@@ -28,7 +28,7 @@
 
         # Application launcher
         wofi
-        rofi-wayland
+        rofi
 
         # Terminal
         foot

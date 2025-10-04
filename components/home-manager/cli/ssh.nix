@@ -92,13 +92,22 @@ in {
 
     programs.ssh = {
       enable = true;
-      addKeysToAgent = "yes";
+      enableDefaultConfig = false;
       extraConfig = ''
         AddKeysToAgent yes
         IdentitiesOnly yes
         ServerAliveInterval 60
         ServerAliveCountMax 3
       '';
+      matchBlocks = {
+        "*" = {
+          addKeysToAgent = "yes";
+          # Add common default settings that would normally be included
+          identitiesOnly = true;
+          serverAliveInterval = 60;
+          serverAliveCountMax = 3;
+        };
+      };
     };
 
     # Systemd user service to automatically load SSH keys
