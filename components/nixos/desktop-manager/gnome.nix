@@ -9,10 +9,8 @@
   };
 
   config = lib.mkIf config.components.desktop.gnome.enable {
-    services.xserver = {
-      enable = true;
-      desktopManager.gnome.enable = true;
-    };
+    services.xserver.enable = true;
+    services.desktopManager.gnome.enable = true;
 
     # Enable sound
     services.pulseaudio.enable = false;

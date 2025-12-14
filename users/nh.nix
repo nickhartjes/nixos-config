@@ -59,7 +59,7 @@
   }: {
     imports = [
       ../components/home-manager
-      inputs.plasma-manager.homeManagerModules.plasma-manager
+      inputs.plasma-manager.homeModules.plasma-manager
     ];
     home.stateVersion = "24.11";
 
