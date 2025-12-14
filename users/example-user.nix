@@ -91,8 +91,12 @@
 
     programs.git = {
       enable = true;
-      userName = "Your Name";
-      userEmail = "your@email.com";
+      settings = {
+        user = {
+          name = "Your Name";
+          email = "your@email.com";
+        };
+      };
     };
   };
 }

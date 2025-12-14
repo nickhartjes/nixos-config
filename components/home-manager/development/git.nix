@@ -41,29 +41,28 @@ in {
   config = lib.mkIf cfg.enable {
     programs.git = {
       enable = true;
-      userName = cfg.userName;
-      userEmail = cfg.userEmail;
-
-      signing = lib.mkIf cfg.gpgSigning.enable {
-        key = cfg.gpgSigning.key;
-        signByDefault = true;
-      };
-
-      extraConfig =
+      settings =
         {
+          user = {
+            name = cfg.userName;
+            email = cfg.userEmail;
+          };
           init.defaultBranch = "main";
           pull.rebase = true;
           push.autoSetupRemote = true;
           core.autocrlf = "input";
           rerere.enabled = true;
-
-          # GPG configuration
           gpg.program = "${pkgs.gnupg}/bin/gpg";
         }
         // lib.optionalAttrs cfg.gpgSigning.enable {
           commit.gpgsign = true;
           tag.gpgsign = true;
         };
+
+      signing = lib.mkIf cfg.gpgSigning.enable {
+        key = cfg.gpgSigning.key;
+        signByDefault = true;
+      };
     };
 
     programs.gpg = lib.mkIf cfg.gpgSigning.enable {
