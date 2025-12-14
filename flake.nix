@@ -42,7 +42,7 @@
 
     # Nix-darwin for managing macOS configurations (not used in this flake)
     lanzaboote = {
-      url = "github:nix-community/lanzaboote/v0.4.2";
+      url = "github:nix-community/lanzaboote";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
