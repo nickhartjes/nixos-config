@@ -224,7 +224,7 @@
         };
       };
       cli = {
-        bat.enable = true;
+        bat.enable = false;
         fastfetch.enable = true;
         fish.enable = true; # Enable fish as well
         fzf.enable = true;

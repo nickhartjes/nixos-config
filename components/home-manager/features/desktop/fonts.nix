@@ -16,7 +16,6 @@ in {
       nerd-fonts.inconsolata
       font-manager
       font-awesome_5
-      noto-fonts
     ];
   };
 }
