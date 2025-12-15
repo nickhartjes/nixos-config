@@ -18,7 +18,7 @@ in {
         enableBashIntegration = true;
         settings = {
           font-family = "ComicCodeLigatures Nerd Font";
-          theme = "catppuccin-mocha";
+          theme = "Catppuccin Mocha";
           font-size = 10;
         };
       };
