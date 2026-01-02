@@ -40,8 +40,8 @@
       "sh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII8Fzq/ktI9g9FYsADc8NkaYDhHuXIPPPxwRjXT7Gcwk info@nickhartjes.nl"
     ];
     packages = [
-      inputs.home-manager.packages.${pkgs.system}.default
-      inputs.agenix.packages.${pkgs.system}.default
+      inputs.home-manager.packages.${pkgs.stdenv.hostPlatform.system}.default
+      inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default
     ];
   };
 
