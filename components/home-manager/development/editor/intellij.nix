@@ -11,11 +11,11 @@ in {
 
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
-      # jetbrains.idea-ultimate
+      jetbrains.idea
 
-      (jetbrains.idea-ultimate.override {
-        jdk = pkgs.openjdk21;
-      })
+      # (jetbrains.idea-ultimate.override {
+      #   jdk = pkgs.openjdk21;
+      # })
     ];
 
     home.file.".ideavimrc".text = ''

@@ -34,6 +34,7 @@
       "kvm" # Enables usage of hardware virtualization features via KVM
       "qemu-libvirtd" # Associated with QEMU instances managed by libvirt
       "docker" # Docker daemon access
+      "podman" # Podman socket/group access
     ];
     openssh.authorizedKeys.keys = [
       "sh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII8Fzq/ktI9g9FYsADc8NkaYDhHuXIPPPxwRjXT7Gcwk info@nickhartjes.nl"
@@ -70,7 +71,7 @@
         "corefonts"
         "dbeaver-bin"
         "discord"
-        "idea-ultimate"
+        "idea"
         "lmstudio"
         "lutris"
         "obsidian"
@@ -198,7 +199,7 @@
         editor = {
           vscode.enable = true;
           zed.enable = true;
-          intellij.enable = false;
+          intellij.enable = true;
         };
         infrastructure = {
           opentofu.enable = true;

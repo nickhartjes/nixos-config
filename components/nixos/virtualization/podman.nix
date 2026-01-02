@@ -11,6 +11,7 @@ in {
 
   config = mkIf cfg.enable {
     virtualisation = {
+      containers.enable = true;
       podman = {
         enable = true;
         dockerCompat = true;
@@ -31,3 +32,10 @@ in {
     ];
   };
 }
+# To allow a non-root user to access the Podman socket, add the user
+# to the `podman` group in your system users definition. Example:
+#
+# users.users.<USERNAME> = { # replace <USERNAME> with the actual username
+#   extraGroups = [ "podman" ];
+# };
+
