@@ -43,7 +43,7 @@
         networkmanagerapplet
 
         # File manager
-        xfce.thunar
+        thunar
 
         # Image viewer
         imv

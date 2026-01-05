@@ -91,7 +91,7 @@
       networkmanagerapplet
 
       # File manager
-      xfce.thunar
+      thunar
       kdePackages.dolphin
 
       # Image viewer
