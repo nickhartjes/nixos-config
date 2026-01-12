@@ -6,6 +6,7 @@
     ./database
     ./gaming
     ./graphics
+    ./3d
     ./media
     ./monitoring
     ./music

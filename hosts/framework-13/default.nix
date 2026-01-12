@@ -63,7 +63,7 @@
     };
 
     hardware = {
-      displaylink.enable = false; # Temporarily disabled due to evdi incompatibility with Linux 6.18
+      displaylink.enable = true; # Temporarily disabled due to evdi incompatibility with Linux 6.18
     };
     virtualization = {
       docker.enable = false; # Enable all virtualization options

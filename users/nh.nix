@@ -86,6 +86,7 @@
         "telegram-desktop"
         "terraform"
         "vscode"
+        "bambu-studio"
       ];
 
     home.packages = with pkgs; [
@@ -169,6 +170,10 @@
           gimp.enable = true;
           inkscape.enable = true;
         };
+        "3d" = {
+          bambu-studio.enable = true;
+          openscad.enable = true;
+        };
         database = {
           dbeaver.enable = true;
           pgadmin.enable = true;
@@ -213,6 +218,7 @@
           java.enable = true;
           go.enable = true;
           rust.enable = true;
+          nix.enable = true;
         };
         git = {
           enable = true;
@@ -263,6 +269,7 @@
                   "git@github.com:nickhartjes/obsidian.git"
                   "git@github.com:nickhartjes/dotfiles.git"
                   "git@github.com:nickhartjes/nickhartjes.nl.git"
+                  "git@github.com:ostat/gridfinity_extended_openscad.git"
                 ];
                 projects = [
                   "git@github.com:nickhartjes/talos.git"
@@ -274,8 +281,11 @@
                   "git@github.com:dealdodo/backend"
                 ];
                 entrnce = [
-                  "git@github.com:EnergyExchangeEnablersBV/devops-helm-charts.git"
                   "git@github.com:EnergyExchangeEnablersBV/nma-platform.git"
+                ];
+                devops = [
+                  "git@github.com:EnergyExchangeEnablersBV/devops-helm-charts.git"
+                  "git@github.com:EnergyExchangeEnablersBV/devops-aws-cdk.git"
                 ];
               };
             };

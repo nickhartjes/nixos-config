@@ -4,5 +4,6 @@
     ./java.nix
     ./go.nix
     ./rust.nix
+    ./nix.nix
   ];
 }
