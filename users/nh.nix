@@ -173,6 +173,7 @@
         "3d" = {
           bambu-studio.enable = true;
           openscad.enable = true;
+          # freecad.enable = true;  # Temporarily disabled due to pagmo2 dependency issue
         };
         database = {
           dbeaver.enable = true;
@@ -270,6 +271,7 @@
                   "git@github.com:nickhartjes/dotfiles.git"
                   "git@github.com:nickhartjes/nickhartjes.nl.git"
                   "git@github.com:ostat/gridfinity_extended_openscad.git"
+                  "git@github.com:archimatetool/archi.git"
                 ];
                 projects = [
                   "git@github.com:nickhartjes/talos.git"
