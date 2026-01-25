@@ -51,15 +51,15 @@
       hyprland.enable = false;
       pantheon.enable = false;
       plasma.enable = true;
-      sway.enable = true;
+      sway.enable = false;
     };
 
     display = {
       gdm.enable = false; # Keep only one display manager to avoid conflicts
-      lightdm.enable = true;
+      lightdm.enable = false;
       sddm.enable = false;
       cosmic-greeter.enable = false;
-      greetd.enable = false;
+      greetd.enable = true;
     };
 
     hardware = {

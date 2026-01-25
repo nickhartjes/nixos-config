@@ -173,7 +173,7 @@
         "3d" = {
           bambu-studio.enable = true;
           openscad.enable = true;
-          # freecad.enable = true;  # Temporarily disabled due to pagmo2 dependency issue
+          freecad.enable = true; # Temporarily disabled due to pagmo2 dependency issue
         };
         database = {
           dbeaver.enable = true;

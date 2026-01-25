@@ -26,9 +26,18 @@
 
     # Basic system packages
     environment.systemPackages = with pkgs; [
+      examine # System information viewer for the COSMIC Desktop
+      tasks #Cosmic task manager
+      quick-webapps # Webapp integration for COSMIC
+
       cosmic-greeter
-      firefox
-      thunderbird
+      cosmic-wallpapers
+      cosmic-ext-tweaks
+      cosmic-ext-calculator
+      cosmic-ext-applet-caffeine
+      cosmic-ext-applet-minimon
+      cosmic-ext-applet-privacy-indicator
+      cosmic-workspaces-epoch
     ];
   };
 }
