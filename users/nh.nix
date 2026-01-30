@@ -178,6 +178,8 @@
         database = {
           dbeaver.enable = true;
           pgadmin.enable = true;
+          pgmodeler.enable = true;
+          supabase.enable = true;
         };
         office = {
           libreoffice.enable = true;
