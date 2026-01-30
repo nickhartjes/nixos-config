@@ -67,6 +67,7 @@
     # nixpkgs.config.allowUnfree = true;
     nixpkgs.config.allowUnfreePredicate = pkg:
       builtins.elem (lib.getName pkg) [
+        "bambu-studio"
         "claude-code"
         "corefonts"
         "dbeaver-bin"
@@ -86,7 +87,6 @@
         "telegram-desktop"
         "terraform"
         "vscode"
-        "bambu-studio"
       ];
 
     home.packages = with pkgs; [

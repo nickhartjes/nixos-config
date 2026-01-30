@@ -18,7 +18,7 @@
       enable = true;
       settings = {
         default_session = {
-          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd ${config.components.display.greetd.defaultSession}";
+          command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd ${config.components.display.greetd.defaultSession}";
           user = "greeter";
         };
       };

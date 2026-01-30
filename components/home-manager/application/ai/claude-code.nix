@@ -13,10 +13,21 @@
       claude-code
     ];
 
-    # Add claude-code to allowUnfreePredicate if not globally allowed
     nixpkgs.config.allowUnfreePredicate = pkg:
       builtins.elem (lib.getName pkg) [
         "claude-code"
+        # "vscode-extension-anthropic-claude-code"
+        # "vcode-extensions.anthropic.claude-code"
       ];
+
+    # Add claude-code to allowUnfreePredicate if not globally allowed
+    # nixpkgs.config = {
+    #   allowUnfree = true;
+    #   allowUnfreePredicate = pkg:
+    #     builtins.elem (lib.getName pkg) [
+    #       "claude-code"
+    #       "vscode-extension-anthropic-claude-code"
+    #     ];
+    # };
   };
 }

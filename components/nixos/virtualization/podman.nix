@@ -27,6 +27,10 @@ in {
         defaultNetwork.settings.dns_enabled = true;
       };
     };
+
+    networking.extraHosts = ''
+      127.0.0.1 host.docker.internal
+    '';
     environment.systemPackages = with pkgs; [
       podman-compose
     ];
