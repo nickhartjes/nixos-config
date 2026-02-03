@@ -67,6 +67,8 @@
     # nixpkgs.config.allowUnfree = true;
     nixpkgs.config.allowUnfreePredicate = pkg:
       builtins.elem (lib.getName pkg) [
+        "anytype"
+        "anytype-heart"
         "bambu-studio"
         "claude-code"
         "corefonts"
@@ -183,6 +185,7 @@
         };
         office = {
           libreoffice.enable = true;
+          anytype.enable = true;
         };
         media = {
           mpv.enable = true;
@@ -217,7 +220,10 @@
           k9s.enable = true;
         };
         languages = {
-          nodejs.enable = true;
+          nodejs = {
+            enable = true;
+            playwright.enable = true;
+          };
           java.enable = true;
           go.enable = true;
           rust.enable = true;
