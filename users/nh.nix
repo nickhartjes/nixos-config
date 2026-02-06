@@ -72,6 +72,7 @@
         "bambu-studio"
         "claude-code"
         "corefonts"
+        "vscode-extension-anthropic-claude-code"
         "dbeaver-bin"
         "discord"
         "idea"
@@ -171,6 +172,7 @@
         graphics = {
           gimp.enable = true;
           inkscape.enable = true;
+          flameshot.enable = true;
         };
         "3d" = {
           bambu-studio.enable = true;
