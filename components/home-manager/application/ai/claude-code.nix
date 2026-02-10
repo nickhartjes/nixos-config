@@ -11,13 +11,11 @@
   config = lib.mkIf config.components.application.ai.claude-code.enable {
     home.packages = with pkgs; [
       claude-code
-      vscode-extensions.anthropic.claude-code
     ];
 
     nixpkgs.config.allowUnfreePredicate = pkg:
       builtins.elem (lib.getName pkg) [
         "claude-code"
-        "vscode-extension-anthropic-claude-code"
       ];
 
     # Add claude-code to allowUnfreePredicate if not globally allowed

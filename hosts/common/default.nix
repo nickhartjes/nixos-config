@@ -70,4 +70,7 @@
     registry = lib.mapAttrs (_: flake: {inherit flake;}) flakeInputs;
     nixPath = lib.mapAttrsToList (flakeName: _: "${flakeName}=flake:${flakeName}") flakeInputs;
   };
+
+  # Allow unprivileged users to bind to ports 80 and above
+  boot.kernel.sysctl."net.ipv4.ip_unprivileged_port_start" = 80;
 }

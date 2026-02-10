@@ -49,6 +49,8 @@
       builtins.elem (lib.getName pkg) [
         "obsidian"
         "vscode"
+        "vscode-extension-anthropic-claude-code"
+        "claude-code"
       ];
 
     home.packages = with pkgs; [

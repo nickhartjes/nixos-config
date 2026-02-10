@@ -22,6 +22,8 @@ in {
           vscode-extensions.jnoortheen.nix-ide
           vscode-extensions.nefrob.vscode-just-syntax
 
+          vscode-extensions.anthropic.claude-code
+
           vscode-extensions.catppuccin.catppuccin-vsc
           vscode-extensions.catppuccin.catppuccin-vsc-icons
         ];
