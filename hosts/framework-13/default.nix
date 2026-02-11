@@ -66,8 +66,8 @@
       displaylink.enable = true; # Temporarily disabled due to evdi incompatibility with Linux 6.18
     };
     virtualization = {
-      docker.enable = false; # Enable all virtualization options
-      podman.enable = true;
+      docker.enable = true; # Enable all virtualization options
+      podman.enable = false;
       qemu.enable = true;
     };
     system = {

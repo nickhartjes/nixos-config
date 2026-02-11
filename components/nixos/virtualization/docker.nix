@@ -23,6 +23,10 @@ in {
         };
       };
     };
+    networking.extraHosts = ''
+      127.0.0.1 host.docker.internal
+    '';
+    networking.firewall.trustedInterfaces = ["docker0" "br-+"];
     environment.systemPackages = with pkgs; [
       docker-compose
     ];
