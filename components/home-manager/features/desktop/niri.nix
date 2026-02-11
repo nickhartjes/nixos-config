@@ -2,11 +2,15 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }: let
   # Utility function for Noctalia IPC commands
   noctalia = cmd: ["noctalia-shell" "ipc" "call"] ++ (pkgs.lib.splitString " " cmd);
 in {
+  # Note: Don't import inputs.niri.homeModules.niri here - it's already
+  # provided by inputs.niri.nixosModules.niri at the system level
+
   options.components.features.desktop.niri = {
     enable = lib.mkEnableOption "Niri user configuration";
     enableNoctalia = lib.mkEnableOption "Noctalia shell integration with Niri";
@@ -14,7 +18,6 @@ in {
 
   config = lib.mkIf config.components.features.desktop.niri.enable {
     programs.niri = {
-      enable = true;
       settings = {
         # Input configuration
         input = {
@@ -91,28 +94,28 @@ in {
             "Mod+D".action.spawn = [menu];
 
             # Window management
-            "Mod+Shift+Q".action = "close-window";
-            "Mod+Shift+E".action = "quit";
+            "Mod+Shift+Q".action.close-window = [];
+            "Mod+Shift+E".action.quit = [];
 
             # Focus movement
-            "Mod+H".action = "focus-column-left";
-            "Mod+J".action = "focus-window-down";
-            "Mod+K".action = "focus-window-up";
-            "Mod+L".action = "focus-column-right";
-            "Mod+Left".action = "focus-column-left";
-            "Mod+Down".action = "focus-window-down";
-            "Mod+Up".action = "focus-window-up";
-            "Mod+Right".action = "focus-column-right";
+            "Mod+H".action.focus-column-left = [];
+            "Mod+J".action.focus-window-down = [];
+            "Mod+K".action.focus-window-up = [];
+            "Mod+L".action.focus-column-right = [];
+            "Mod+Left".action.focus-column-left = [];
+            "Mod+Down".action.focus-window-down = [];
+            "Mod+Up".action.focus-window-up = [];
+            "Mod+Right".action.focus-column-right = [];
 
             # Move windows
-            "Mod+Shift+H".action = "move-column-left";
-            "Mod+Shift+J".action = "move-window-down";
-            "Mod+Shift+K".action = "move-window-up";
-            "Mod+Shift+L".action = "move-column-right";
-            "Mod+Shift+Left".action = "move-column-left";
-            "Mod+Shift+Down".action = "move-window-down";
-            "Mod+Shift+Up".action = "move-window-up";
-            "Mod+Shift+Right".action = "move-column-right";
+            "Mod+Shift+H".action.move-column-left = [];
+            "Mod+Shift+J".action.move-window-down = [];
+            "Mod+Shift+K".action.move-window-up = [];
+            "Mod+Shift+L".action.move-column-right = [];
+            "Mod+Shift+Left".action.move-column-left = [];
+            "Mod+Shift+Down".action.move-window-down = [];
+            "Mod+Shift+Up".action.move-window-up = [];
+            "Mod+Shift+Right".action.move-column-right = [];
 
             # Workspace navigation
             "Mod+1".action.focus-workspace = 1;
@@ -137,28 +140,28 @@ in {
             "Mod+Shift+9".action.move-column-to-workspace = 9;
 
             # Column width adjustments
-            "Mod+R".action = "switch-preset-column-width";
-            "Mod+F".action = "maximize-column";
-            "Mod+Shift+F".action = "fullscreen-window";
+            "Mod+R".action.switch-preset-column-width = [];
+            "Mod+F".action.maximize-column = [];
+            "Mod+Shift+F".action.fullscreen-window = [];
 
             # Column sizing
-            "Mod+Minus".action = "set-column-width";
-            "Mod+Equal".action = "set-column-width";
+            "Mod+Minus".action.set-column-width = "-10%";
+            "Mod+Equal".action.set-column-width = "+10%";
 
             # Scrolling (niri's unique feature)
-            "Mod+WheelScrollDown".action = "focus-workspace-down";
-            "Mod+WheelScrollUp".action = "focus-workspace-up";
-            "Mod+Shift+WheelScrollDown".action = "move-column-to-workspace-down";
-            "Mod+Shift+WheelScrollUp".action = "move-column-to-workspace-up";
+            "Mod+WheelScrollDown".action.focus-workspace-down = [];
+            "Mod+WheelScrollUp".action.focus-workspace-up = [];
+            "Mod+Shift+WheelScrollDown".action.move-column-to-workspace-down = [];
+            "Mod+Shift+WheelScrollUp".action.move-column-to-workspace-up = [];
 
             # Screenshots
-            "Print".action = "screenshot";
-            "Shift+Print".action = "screenshot-window";
-            "Ctrl+Print".action = "screenshot-screen";
+            "Print".action.screenshot = [];
+            "Shift+Print".action.screenshot-window = [];
+            "Ctrl+Print".action.screenshot-screen = [];
 
             # Consume/expel windows from columns
-            "Mod+Comma".action = "consume-window-into-column";
-            "Mod+Period".action = "expel-window-from-column";
+            "Mod+Comma".action.consume-window-into-column = [];
+            "Mod+Period".action.expel-window-from-column = [];
           }
           # Noctalia keybindings (when enabled)
           // lib.optionalAttrs config.components.features.desktop.niri.enableNoctalia {
