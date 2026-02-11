@@ -59,6 +59,12 @@
 
     # Microcode updates for Intel and AMD CPUs
     ucodenix.url = "github:e-tho/ucodenix";
+
+    # Noctalia shell for Wayland compositors
+    noctalia = {
+      url = "github:noctalia-dev/noctalia-shell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   # --- Outputs ---
@@ -75,6 +81,7 @@
     plasma-manager,
     lanzaboote,
     ucodenix,
+    noctalia, # Noctalia shell input
     ... # Catches any other inputs
   } @ inputs: let
     # `@ inputs` makes all inputs available under the `inputs` attribute set
