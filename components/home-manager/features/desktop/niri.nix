@@ -32,6 +32,7 @@ in {
             tap = true;
             natural-scroll = true;
             dwt = true; # Disable while typing
+            accel-speed = 0.7;
           };
           mouse = {
             accel-speed = 0.5;
@@ -69,6 +70,7 @@ in {
         # Spawn at startup
         spawn-at-startup =
           [
+            {command = ["${pkgs.xwayland-satellite}/bin/xwayland-satellite"];}
             {command = ["${pkgs.networkmanagerapplet}/bin/nm-applet"];}
           ]
           ++ lib.optionals (!config.components.features.desktop.niri.enableNoctalia) [
@@ -85,15 +87,15 @@ in {
         # Keybindings
         binds = let
           terminal = "${pkgs.ghostty}/bin/ghostty";
-          menu = "${pkgs.wofi}/bin/wofi --show drun";
         in
           {
             # Application launchers
             "Mod+Return".action.spawn = [terminal];
-            "Mod+D".action.spawn = [menu];
+            "Mod+D".action.spawn = ["${pkgs.wofi}/bin/wofi" "--show" "drun"];
+            "Mod+B".action.spawn = ["chromium"];
 
             # Window management
-            "Mod+Shift+Q".action.close-window = [];
+            "Mod+Q".action.close-window = [];
             "Mod+Shift+E".action.quit = [];
 
             # Focus movement
@@ -168,6 +170,13 @@ in {
             "Mod+P".action.spawn = noctalia "sessionMenu toggle";
             "Mod+O".action.spawn = noctalia "overview toggle";
             "Mod+Ctrl+L".action.spawn = noctalia "lockScreen lock";
+            "Mod+V".action.spawn = noctalia "launcher clipboard";
+            "Mod+E".action.spawn = noctalia "launcher emoji";
+            "Mod+Tab".action.spawn = noctalia "launcher windows";
+            "Mod+N".action.spawn = noctalia "controlCenter toggle";
+            "Mod+C".action.spawn = noctalia "calendar toggle";
+            "Mod+Shift+Escape".action.spawn = noctalia "systemMonitor toggle";
+            "Mod+Shift+D".action.spawn = noctalia "launcher command";
             "XF86AudioRaiseVolume".action.spawn = noctalia "volume increase";
             "XF86AudioLowerVolume".action.spawn = noctalia "volume decrease";
             "XF86AudioMute".action.spawn = noctalia "volume muteOutput";
@@ -189,6 +198,11 @@ in {
       };
     };
 
+    # Set DISPLAY for XWayland apps (e.g. IntelliJ, other Java/X11 apps)
+    home.sessionVariables = {
+      DISPLAY = ":0";
+    };
+
     # Supporting packages
     home.packages = with pkgs;
       [
@@ -196,6 +210,8 @@ in {
         grim
         slurp
         wl-clipboard
+        wdisplays
+        xwayland-satellite
       ]
       ++ lib.optionals (!config.components.features.desktop.niri.enableNoctalia) [
         swaynotificationcenter

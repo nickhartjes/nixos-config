@@ -265,7 +265,7 @@
           hyprland.enable = true;
           niri.enable = true;
           niri.enableNoctalia = true;
-          noctalia.enable = false;
+          noctalia.enable = true;
           sway.enable = false;
         };
       };
