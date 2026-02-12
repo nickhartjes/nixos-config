@@ -6,7 +6,8 @@
   ...
 }: let
   # Utility function for Noctalia IPC commands
-  noctalia = cmd: ["noctalia-shell" "ipc" "call"] ++ (pkgs.lib.splitString " " cmd);
+  noctaliaBin = "${inputs.noctalia.packages.${pkgs.system}.default}/bin/noctalia-shell";
+  noctalia = cmd: [noctaliaBin "ipc" "call"] ++ (pkgs.lib.splitString " " cmd);
 in {
   # Note: Don't import inputs.niri.homeModules.niri here - it's already
   # provided by inputs.niri.nixosModules.niri at the system level
@@ -72,10 +73,8 @@ in {
           ]
           ++ lib.optionals (!config.components.features.desktop.niri.enableNoctalia) [
             {command = ["${pkgs.swaynotificationcenter}/bin/swaync"];}
-          ]
-          ++ lib.optionals config.components.features.desktop.niri.enableNoctalia [
-            {command = ["noctalia-shell"];}
           ];
+        # Note: Noctalia is started by systemd when enableNoctalia is true
 
         # Prefer server-side decorations
         prefer-no-csd = true;

@@ -49,6 +49,7 @@
       cosmic.enable = true;
       gnome.enable = false;
       hyprland.enable = false;
+      niri.enable = true;
       pantheon.enable = false;
       plasma.enable = true;
       sway.enable = false;
@@ -56,10 +57,10 @@
 
     display = {
       gdm.enable = false; # Keep only one display manager to avoid conflicts
-      lightdm.enable = false;
+      lightdm.enable = true;
       sddm.enable = false;
       cosmic-greeter.enable = false;
-      greetd.enable = true;
+      greetd.enable = false;
     };
 
     hardware = {

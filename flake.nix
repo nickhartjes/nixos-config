@@ -65,6 +65,12 @@
       url = "github:noctalia-dev/noctalia-shell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Niri scrollable tiling Wayland compositor
+    niri = {
+      url = "github:sodiboo/niri-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   # --- Outputs ---
@@ -82,6 +88,7 @@
     lanzaboote,
     ucodenix,
     noctalia, # Noctalia shell input
+    niri, # Niri compositor input
     ... # Catches any other inputs
   } @ inputs: let
     # `@ inputs` makes all inputs available under the `inputs` attribute set
@@ -158,6 +165,7 @@
           inputs.lanzaboote.nixosModules.lanzaboote
           inputs.ucodenix.nixosModules.default
           auto-cpufreq.nixosModules.default
+          inputs.niri.nixosModules.niri # Niri compositor module
         ];
       };
 
