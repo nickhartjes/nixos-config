@@ -7,6 +7,7 @@
     ./plasma.nix
     ./sway.nix
     ./hyprland.nix
+    ./mangowc.nix
     ./niri.nix
   ];
 }

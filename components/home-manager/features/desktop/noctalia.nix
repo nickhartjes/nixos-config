@@ -17,8 +17,9 @@
     # Configure Noctalia shell
     programs.noctalia-shell = {
       enable = true;
-      # Enable systemd service for automatic startup
-      systemd.enable = true;
+      # Systemd service disabled - Niri spawns Noctalia directly so it
+      # only runs under Niri, not other desktop sessions like Plasma
+      systemd.enable = false;
 
       settings = {
         bar = {

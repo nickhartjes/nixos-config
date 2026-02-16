@@ -73,10 +73,12 @@ in {
             {command = ["${pkgs.xwayland-satellite}/bin/xwayland-satellite"];}
             {command = ["${pkgs.networkmanagerapplet}/bin/nm-applet"];}
           ]
+          ++ lib.optionals config.components.features.desktop.niri.enableNoctalia [
+            {command = [noctaliaBin];}
+          ]
           ++ lib.optionals (!config.components.features.desktop.niri.enableNoctalia) [
             {command = ["${pkgs.swaynotificationcenter}/bin/swaync"];}
           ];
-        # Note: Noctalia is started by systemd when enableNoctalia is true
 
         # Prefer server-side decorations
         prefer-no-csd = true;

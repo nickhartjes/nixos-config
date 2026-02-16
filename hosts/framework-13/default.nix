@@ -49,6 +49,7 @@
       cosmic.enable = true;
       gnome.enable = false;
       hyprland.enable = false;
+      mangowc.enable = true;
       niri.enable = true;
       pantheon.enable = false;
       plasma.enable = true;

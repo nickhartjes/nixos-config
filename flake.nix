@@ -71,6 +71,18 @@
       url = "github:sodiboo/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # MangoWC tiling Wayland compositor
+    mango = {
+      url = "github:DreamMaoMao/mango";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # Dank Material Shell - desktop shell built with Quickshell
+    dms = {
+      url = "github:AvengeMedia/DankMaterialShell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   # --- Outputs ---
@@ -89,6 +101,8 @@
     ucodenix,
     noctalia, # Noctalia shell input
     niri, # Niri compositor input
+    mango, # MangoWC compositor input
+    dms, # Dank Material Shell input
     ... # Catches any other inputs
   } @ inputs: let
     # `@ inputs` makes all inputs available under the `inputs` attribute set
@@ -166,6 +180,8 @@
           inputs.ucodenix.nixosModules.default
           auto-cpufreq.nixosModules.default
           inputs.niri.nixosModules.niri # Niri compositor module
+          inputs.mango.nixosModules.mango # MangoWC compositor module
+          inputs.dms.nixosModules.dank-material-shell # Dank Material Shell module
         ];
       };
 

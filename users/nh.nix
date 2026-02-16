@@ -190,7 +190,9 @@
           anytype.enable = true;
         };
         media = {
+          kdenlive.enable = true;
           mpv.enable = true;
+          obs.enable = true;
           vlc.enable = true;
         };
         security = {
@@ -263,6 +265,10 @@
       features = {
         desktop = {
           hyprland.enable = true;
+          mangowc.enable = true;
+          mangowc.enableNoctalia = false;
+          mangowc.enableDMS = true;
+          dms.enable = true;
           niri.enable = true;
           niri.enableNoctalia = true;
           noctalia.enable = true;
@@ -285,6 +291,7 @@
                   "git@github.com:nickhartjes/nickhartjes.nl.git"
                   "git@github.com:ostat/gridfinity_extended_openscad.git"
                   "git@github.com:archimatetool/archi.git"
+                  "git@github.com:nickhartjes/nextjs-shadcn-sveltia.git"
                 ];
                 projects = [
                   "git@github.com:nickhartjes/talos.git"
