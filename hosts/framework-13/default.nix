@@ -46,7 +46,7 @@
     # Enable all desktop environments (Note: may cause conflicts)
     desktop = {
       cinnamon.enable = false;
-      cosmic.enable = true;
+      cosmic.enable = false;
       gnome.enable = false;
       hyprland.enable = false;
       mangowc.enable = true;
@@ -65,7 +65,7 @@
     };
 
     hardware = {
-      displaylink.enable = true; # Temporarily disabled due to evdi incompatibility with Linux 6.18
+      displaylink.enable = false; # Disabled due to evdi incompatibility with Linux 6.18
     };
     virtualization = {
       docker.enable = true; # Enable all virtualization options
