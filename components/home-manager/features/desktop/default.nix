@@ -7,6 +7,7 @@
     ./niri.nix
     ./noctalia.nix
     ./sway.nix
+    ./wallpapers.nix
     ./wayland.nix
   ];
 }

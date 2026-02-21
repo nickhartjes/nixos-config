@@ -73,6 +73,7 @@
                 formatVertical = "HH mm";
                 useMonospacedFont = true;
                 usePrimaryColor = true;
+                timezone = "Europe/Amsterdam";
               }
             ];
           };
@@ -81,6 +82,11 @@
         # Color scheme settings
         colorSchemes = {
           preferDark = true;
+        };
+
+        # Weather settings
+        weather = {
+          city = "Arnhem";
         };
 
         # Overview settings

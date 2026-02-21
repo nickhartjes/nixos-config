@@ -36,6 +36,11 @@ in ''
   # Window management
   bind=SUPER,Q,killclient
   bind=SUPER+SHIFT,E,quit
+  bind=SUPER+SHIFT,R,reload_config
+  bind=SUPER,T,togglefloating
+  bind=SUPER,Z,focuslast
+  bind=SUPER+SHIFT,C,centerwin
+  bind=SUPER,W,switch_proportion_preset
 
   # Focus movement
   bind=SUPER,H,focusdir,left
@@ -79,12 +84,34 @@ in ''
   bind=SUPER,F,togglefullscreen
   bind=SUPER,M,togglemaximizescreen
 
+  # Gap control
+  bind=SUPER,EQUAL,incgaps,+2
+  bind=SUPER,MINUS,incgaps,-2
+  bind=SUPER+SHIFT,G,togglegaps
+
+  # Layout switching
+  bind=SUPER+SHIFT,SPACE,switch_layout
+
   # Ghostty scratchpad
   windowrule=isnamedscratchpad:1,width:1280,height:800,appid:ghostty-scratchpad
   bind=SUPER,S,toggle_named_scratchpad,ghostty-scratchpad,none,${pkgs.ghostty}/bin/ghostty --class=ghostty-scratchpad
 
   # Screenshots
   bind=NONE,PRINT,spawn,${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" ~/Pictures/Screenshots/screenshot-$(date +%Y-%m-%d-%H-%M-%S).png
+
+  # Window rules
+  windowrule=force_maximize:1,appid:chromium
+  windowrule=force_maximize:1,appid:firefox
+
+  # Mouse bindings (Super+drag to move/resize)
+  mousebind=SUPER,btn_left,moveresize,curmove
+  mousebind=SUPER,btn_right,moveresize,curresize
+
+  # Gesture bindings (trackpad swipes)
+  gesturebind=NONE,left,3,viewtoright
+  gesturebind=NONE,right,3,viewtoleft
+  gesturebind=NONE,up,3,toggleoverview
+  gesturebind=NONE,down,4,togglefullscreen
 
   ${noctaliaBindings}
 ''

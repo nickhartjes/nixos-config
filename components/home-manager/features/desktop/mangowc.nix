@@ -61,6 +61,7 @@ in {
         env=QT_AUTO_SCREEN_SCALE_FACTOR,1
 
         # Autostart
+        exec-once=${pkgs.swaybg}/bin/swaybg -i ~/.config/wallpaper -m fill
         exec-once=${pkgs.xwayland-satellite}/bin/xwayland-satellite
         exec-once=${pkgs.networkmanagerapplet}/bin/nm-applet
         ${noctaliaExecOnce}
@@ -71,6 +72,49 @@ in {
 
         # Output configuration
         monitorrule=name:eDP-1,scale:1.5
+
+        # Blur & shadows
+        blur=1
+        blur_params_radius=5
+        blur_params_num_passes=2
+        blur_params_brightness=0.9
+        shadows=1
+        shadow_only_floating=1
+        shadows_size=10
+        shadows_blur=15
+
+        # Border & corner radius (Catppuccin Mocha colors)
+        border_radius=8
+        borderpx=3
+        focuscolor=0x89b4faff
+        bordercolor=0x313244ff
+        scratchpadcolor=0x94e2d5ff
+
+        # Gaps
+        gappih=6
+        gappiv=6
+        gappoh=10
+        gappov=10
+
+        # Window opacity
+        unfocused_opacity=0.92
+
+        # Animations
+        animations=1
+        animation_type_open=zoom
+        animation_type_close=fade
+        animation_duration_open=300
+        animation_duration_close=200
+        animation_duration_move=300
+
+        # Cursor
+        cursor_size=24
+
+        # Scroller tuning
+        scroller_default_proportion=0.5
+        scroller_focus_center=0
+        scroller_prefer_overspread=1
+        scroller_proportion_preset=0.33,0.5,0.67,0.8,1.0
 
         # Layouts - set all tags to scroller
         tagrule=id:1,layout_name:scroller

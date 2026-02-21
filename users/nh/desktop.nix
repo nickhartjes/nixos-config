@@ -31,6 +31,8 @@
         niri.enableNoctalia = true;
         noctalia.enable = true;
         sway.enable = false;
+        wallpapers.enable = true;
+        wallpapers.default = "aishot-2697.jpg";
       };
     };
     desktop = {
