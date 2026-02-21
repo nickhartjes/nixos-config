@@ -16,12 +16,5 @@
       steamtinkerlaunch
     ];
 
-    # Add steam to allowUnfreePredicate if not globally allowed
-    nixpkgs.config.allowUnfreePredicate = pkg:
-      builtins.elem (lib.getName pkg) [
-        "steam"
-        "steam-original"
-        "steam-unwrapped"
-      ];
   };
 }

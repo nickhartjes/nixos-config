@@ -14,10 +14,5 @@
       corefonts # Microsoft core fonts for better compatibility
     ];
 
-    # Add corefonts to allowUnfreePredicate if not globally allowed
-    nixpkgs.config.allowUnfreePredicate = pkg:
-      builtins.elem (lib.getName pkg) [
-        "corefonts"
-      ];
   };
 }

@@ -13,11 +13,6 @@
       claude-code
     ];
 
-    nixpkgs.config.allowUnfreePredicate = pkg:
-      builtins.elem (lib.getName pkg) [
-        "claude-code"
-      ];
-
     # Add claude-code to allowUnfreePredicate if not globally allowed
     # nixpkgs.config = {
     #   allowUnfree = true;

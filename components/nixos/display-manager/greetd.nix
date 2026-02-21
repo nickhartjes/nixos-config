@@ -14,20 +14,11 @@
   };
 
   config = lib.mkIf config.components.display.greetd.enable {
-    services.greetd = {
-      enable = true;
-      settings = {
-        default_session = {
-          command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd ${config.components.display.greetd.defaultSession}";
-          user = "greeter";
-        };
+    services.greetd.settings = {
+      default_session = {
+        command = "${pkgs.tuigreet}/bin/tuigreet --time --cmd ${config.components.display.greetd.defaultSession}";
+        user = "greeter";
       };
     };
-
-    # Ensure other display managers are disabled
-    services.displayManager.gdm.enable = lib.mkForce false;
-    services.xserver.displayManager.lightdm.enable = lib.mkForce false;
-    services.displayManager.sddm.enable = lib.mkForce false;
-    services.displayManager.cosmic-greeter.enable = lib.mkForce false;
   };
 }

@@ -13,10 +13,5 @@
       discord
     ];
 
-    # Add discord to allowUnfreePredicate if not globally allowed
-    nixpkgs.config.allowUnfreePredicate = pkg:
-      builtins.elem (lib.getName pkg) [
-        "discord"
-      ];
   };
 }

@@ -92,8 +92,6 @@
 
   #security.sudo.wheelNeedsPassword = false;
 
-  security.sudo.extraConfig = "m3tam3re ALL=(ALL) NOPASSWD: ALL";
-
   # networking.firewall.enable = false;
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

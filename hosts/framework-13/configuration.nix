@@ -226,15 +226,13 @@
   system.stateVersion = "24.11"; # Did you read the comment?
 
   system = {
-    # Allow auto update
     autoUpgrade = {
       enable = true;
       flake = "path:/home/nh/.config/nixos-config";
       flags = [
         "--commit-lock-file"
-        "--recreate-lock-file"
       ];
-      dates = "daily";
+      dates = "weekly";
     };
   };
 

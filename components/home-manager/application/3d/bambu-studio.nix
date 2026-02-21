@@ -13,10 +13,5 @@
       bambu-studio
     ];
 
-    # Bambu Studio is proprietary software
-    nixpkgs.config.allowUnfreePredicate = pkg:
-      builtins.elem (lib.getName pkg) [
-        "bambu-studio"
-      ];
   };
 }
