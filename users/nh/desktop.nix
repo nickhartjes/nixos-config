@@ -24,9 +24,9 @@
       desktop = {
         hyprland.enable = true;
         mangowc.enable = true;
-        mangowc.enableNoctalia = false;
-        mangowc.enableDMS = true;
-        dms.enable = true;
+        mangowc.enableNoctalia = true;
+        mangowc.enableDMS = false;
+        dms.enable = false;
         niri.enable = true;
         niri.enableNoctalia = true;
         noctalia.enable = true;

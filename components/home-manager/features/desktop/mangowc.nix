@@ -69,6 +69,9 @@ in {
           exec-once=${pkgs.swaynotificationcenter}/bin/swaync
         ''}
 
+        # Output configuration
+        monitorrule=name:eDP-1,scale:1.5
+
         # Layouts - set all tags to scroller
         tagrule=id:1,layout_name:scroller
         tagrule=id:2,layout_name:scroller
