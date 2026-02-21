@@ -140,8 +140,11 @@ in {
     # Supporting packages
     home.packages = with pkgs;
       [
+        adw-gtk3
         grim
+        nwg-look
         slurp
+        swaybg
         wl-clipboard
         wdisplays
         xwayland-satellite
