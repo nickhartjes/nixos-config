@@ -38,7 +38,7 @@ in {
           enableNoctalia = cfg.enableNoctalia;
         };
         noctaliaExecOnce = lib.optionalString cfg.enableNoctalia ''
-          exec-once=${noctaliaBin}
+          exec-once=sh -c 'rm -f ~/.config/noctalia/settings.json && cp ~/.config/noctalia/settings-mango.json ~/.config/noctalia/settings.json && exec ${noctaliaBin}'
         '';
         dmsExecOnce = lib.optionalString cfg.enableDMS ''
           exec-once=${dmsBin} run --session
