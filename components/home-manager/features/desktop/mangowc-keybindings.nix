@@ -92,9 +92,9 @@ in ''
   # Layout switching
   bind=SUPER+SHIFT,SPACE,switch_layout
 
-  # Ghostty scratchpad
-  windowrule=isnamedscratchpad:1,width:1280,height:800,appid:ghostty-scratchpad
-  bind=SUPER,S,toggle_named_scratchpad,ghostty-scratchpad,none,${pkgs.ghostty}/bin/ghostty --class=ghostty-scratchpad
+  # Terminal scratchpad (foot — Ghostty GTK doesn't support custom app_id)
+  windowrule=isnamedscratchpad:1,width:1280,height:800,appid:foot-scratchpad
+  bind=SUPER,S,toggle_named_scratchpad,foot-scratchpad,none,${pkgs.foot}/bin/foot --app-id=foot-scratchpad
 
   # Screenshots
   bind=NONE,PRINT,spawn,${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" ~/Pictures/Screenshots/screenshot-$(date +%Y-%m-%d-%H-%M-%S).png

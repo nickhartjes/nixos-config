@@ -59,8 +59,10 @@ in {
         env=_JAVA_AWT_WM_NONREPARENTING,1
         env=QT_WAYLAND_DISABLE_WINDOWDECORATION,1
         env=QT_AUTO_SCREEN_SCALE_FACTOR,1
+        env=XDG_CURRENT_DESKTOP,mango
 
         # Autostart
+        exec-once=dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
         exec-once=${pkgs.swaybg}/bin/swaybg -i ~/.config/wallpaper -m fill
         exec-once=${pkgs.xwayland-satellite}/bin/xwayland-satellite
         exec-once=${pkgs.networkmanagerapplet}/bin/nm-applet
