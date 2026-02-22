@@ -9,6 +9,7 @@
   noctaliaBin = "${inputs.noctalia.packages.${pkgs.system}.default}/bin/noctalia-shell";
   noctalia = cmd: "${noctaliaBin} ipc call ${cmd}";
   dmsBin = "${inputs.dms.packages.${pkgs.system}.default}/bin/dms";
+  dms = cmd: "${dmsBin} ipc call ${cmd}";
   hasShell = cfg.enableNoctalia || cfg.enableDMS;
 in {
   imports = [
@@ -34,8 +35,9 @@ in {
 
       settings = let
         keybindings = import ./mangowc-keybindings.nix {
-          inherit pkgs noctalia hasShell lib;
+          inherit pkgs noctalia dms hasShell lib;
           enableNoctalia = cfg.enableNoctalia;
+          enableDMS = cfg.enableDMS;
         };
         noctaliaExecOnce = lib.optionalString cfg.enableNoctalia ''
           exec-once=sh -c 'rm -f ~/.config/noctalia/settings.json && cp ~/.config/noctalia/settings-mango.json ~/.config/noctalia/settings.json && exec ${noctaliaBin}'

@@ -2,8 +2,10 @@
 {
   pkgs,
   noctalia,
+  dms,
   hasShell,
   enableNoctalia,
+  enableDMS,
   lib,
 }: let
   noctaliaBindings = lib.optionalString enableNoctalia ''
@@ -24,6 +26,25 @@
     bindl=NONE,XF86AudioMute,spawn,${noctalia "volume muteOutput"}
     bindl=NONE,XF86MonBrightnessUp,spawn,${noctalia "brightness increase"}
     bindl=NONE,XF86MonBrightnessDown,spawn,${noctalia "brightness decrease"}
+  '';
+
+  dmsBindings = lib.optionalString enableDMS ''
+    # DMS keybindings
+    bind=SUPER,SPACE,spawn,${dms "spotlight toggle"}
+    bind=SUPER,P,spawn,${dms "powermenu toggle"}
+    bind=SUPER,O,spawn,${dms "hypr toggleOverview"}
+    bind=CTRL+SUPER,L,spawn,${dms "lock lock"}
+    bind=SUPER,V,spawn,${dms "clipboard toggle"}
+    bind=SUPER,TAB,spawn,${dms "hypr toggleOverview"}
+    bind=SUPER,N,spawn,${dms "notifications toggle"}
+    bind=SUPER,C,spawn,${dms "control-center toggle"}
+    bind=SUPER+SHIFT,ESCAPE,spawn,${dms "processlist toggle"}
+    bind=SUPER+SHIFT,D,spawn,${dms "settings toggle"}
+    bindl=NONE,XF86AudioRaiseVolume,spawn,${dms "audio increment 3"}
+    bindl=NONE,XF86AudioLowerVolume,spawn,${dms "audio decrement 3"}
+    bindl=NONE,XF86AudioMute,spawn,${dms "audio mute"}
+    bindl=NONE,XF86MonBrightnessUp,spawn,${dms "brightness increment 5"}
+    bindl=NONE,XF86MonBrightnessDown,spawn,${dms "brightness decrement 5"}
   '';
 in ''
   # Application launchers
@@ -114,4 +135,5 @@ in ''
   gesturebind=NONE,down,4,togglefullscreen
 
   ${noctaliaBindings}
+  ${dmsBindings}
 ''
