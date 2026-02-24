@@ -48,7 +48,9 @@
       vlc.enable = true;
     };
     security = {
+      bitwarden.enable = true;
       lynis.enable = true;
+      openssl.enable = true;
       protonvpn.enable = true;
     };
     gaming = {
