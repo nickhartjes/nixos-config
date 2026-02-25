@@ -25,10 +25,12 @@
             ];
             entrnce = [
               "git@github.com:EnergyExchangeEnablersBV/nma-platform.git"
+              "git@github.com:EnergyExchangeEnablersBV/ephemeral-gitops.git"
             ];
             devops = [
               "git@github.com:EnergyExchangeEnablersBV/devops-helm-charts.git"
               "git@github.com:EnergyExchangeEnablersBV/devops-aws-cdk.git"
+              "https://github.com/EnergyExchangeEnablersBV/devops-gitops.git"
             ];
           };
         };
