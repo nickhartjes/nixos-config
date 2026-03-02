@@ -16,6 +16,7 @@
     programs.dank-material-shell = {
       enable = true;
       systemd.enable = false;
+      enableSystemMonitoring = false; # dgop package not available in nixos-25.11
     };
   };
 }

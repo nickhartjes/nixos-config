@@ -11,13 +11,13 @@
   inputs = {
     # Home Manager for managing user-specific configurations
     home-manager = {
-      url = "github:nix-community/home-manager";
+      url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # https://status.nixos.org/
-    # Main Nixpkgs (unstable channel)
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    # Main Nixpkgs (stable channel)
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
 
     # Stable Nixpkgs (specific version, e.g., for certain packages or modules)
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.05";

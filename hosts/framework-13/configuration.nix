@@ -46,6 +46,9 @@
     pkiBundle = "/var/lib/sbctl";
   };
 
+  # Use LTS kernel for displaylink/evdi compatibility
+  boot.kernelPackages = pkgs.linuxPackages_6_12;
+
   # Enable hibernation support
   boot.kernelModules = ["btrfs"];
   boot.initrd.supportedFilesystems = ["btrfs"];

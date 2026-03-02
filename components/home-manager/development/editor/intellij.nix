@@ -7,15 +7,11 @@
 with lib; let
   cfg = config.components.development.editor.intellij;
 in {
-  options.components.development.editor.intellij.enable = mkEnableOption "enable IntelliJ IDEA";
+  options.components.development.editor.intellij.enable = mkEnableOption "enable IntelliJ IDEA (via JetBrains Toolbox)";
 
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
-      jetbrains.idea
-
-      # (jetbrains.idea-ultimate.override {
-      #   jdk = pkgs.openjdk21;
-      # })
+      jetbrains-toolbox
     ];
 
     home.file.".ideavimrc".text = ''
