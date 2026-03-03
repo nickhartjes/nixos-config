@@ -16,8 +16,7 @@
       [
         bun
         cypress
-        # nodejs_22
-        nodePackages.npm
+        nodejs_24
         npm-check-updates
         pnpm
         yarn

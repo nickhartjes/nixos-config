@@ -31,6 +31,7 @@
               "git@github.com:EnergyExchangeEnablersBV/devops-helm-charts.git"
               "git@github.com:EnergyExchangeEnablersBV/devops-aws-cdk.git"
               "https://github.com/EnergyExchangeEnablersBV/devops-gitops.git"
+              "git@github.com:EnergyExchangeEnablersBV/github-actions-workflows.git"
             ];
           };
         };
