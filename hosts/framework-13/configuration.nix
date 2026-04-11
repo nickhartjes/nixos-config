@@ -19,6 +19,7 @@
   boot.loader.systemd-boot.enable = lib.mkForce false;
   boot.loader.systemd-boot.configurationLimit = 15;
   boot.kernelParams = [
+    "nordrand" # Disable RDRAND/RDSEED - AMD CPU reports broken implementation
     "resume=/dev/mapper/cryptroot" # Path to the swap partition for hibernation
     "resume_offset=2957497" # Offset for the swap partition, adjust as needed
     "mem_sleep_default=deep" # Use deep sleep for better power management

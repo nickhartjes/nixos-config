@@ -7,10 +7,11 @@
 with lib; let
   cfg = config.components.development.editor.intellij;
 in {
-  options.components.development.editor.intellij.enable = mkEnableOption "enable IntelliJ IDEA (via JetBrains Toolbox)";
+  options.components.development.editor.intellij.enable = mkEnableOption "enable IntelliJ IDEA";
 
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
+      jetbrains.idea
       jetbrains-toolbox
     ];
 

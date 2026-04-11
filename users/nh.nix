@@ -76,6 +76,7 @@
         "vscode-extension-anthropic-claude-code"
         "dbeaver-bin"
         "discord"
+        "idea"
         "jetbrains-toolbox"
         "lmstudio"
         "lutris"

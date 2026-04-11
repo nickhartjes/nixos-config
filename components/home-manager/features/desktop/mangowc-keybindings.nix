@@ -121,8 +121,8 @@ in ''
   bind=NONE,PRINT,spawn,${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" ~/Pictures/Screenshots/screenshot-$(date +%Y-%m-%d-%H-%M-%S).png
 
   # Window rules
-  windowrule=force_maximize:1,appid:chromium
-  windowrule=force_maximize:1,appid:firefox
+  windowrule=force_fakemaximize:1,appid:chromium
+  windowrule=force_fakemaximize:1,appid:firefox
 
   # Mouse bindings (Super+drag to move/resize)
   mousebind=SUPER,btn_left,moveresize,curmove
