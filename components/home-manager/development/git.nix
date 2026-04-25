@@ -39,6 +39,10 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    programs.gh = {
+      enable = true;
+    };
+
     programs.git = {
       enable = true;
       settings =

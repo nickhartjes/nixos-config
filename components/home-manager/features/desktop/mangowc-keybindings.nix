@@ -8,132 +8,143 @@
   enableDMS,
   lib,
 }: let
-  noctaliaBindings = lib.optionalString enableNoctalia ''
-    # Noctalia keybindings
-    bind=SUPER,SPACE,spawn,${noctalia "launcher toggle"}
-    bind=SUPER,P,spawn,${noctalia "sessionMenu toggle"}
-    bind=SUPER,O,spawn,${noctalia "overview toggle"}
-    bind=CTRL+SUPER,L,spawn,${noctalia "lockScreen lock"}
-    bind=SUPER,V,spawn,${noctalia "launcher clipboard"}
-    bind=SUPER,E,spawn,${noctalia "launcher emoji"}
-    bind=SUPER,TAB,spawn,${noctalia "launcher windows"}
-    bind=SUPER,N,spawn,${noctalia "controlCenter toggle"}
-    bind=SUPER,C,spawn,${noctalia "calendar toggle"}
-    bind=SUPER+SHIFT,ESCAPE,spawn,${noctalia "systemMonitor toggle"}
-    bind=SUPER+SHIFT,D,spawn,${noctalia "launcher command"}
-    bindl=NONE,XF86AudioRaiseVolume,spawn,${noctalia "volume increase"}
-    bindl=NONE,XF86AudioLowerVolume,spawn,${noctalia "volume decrease"}
-    bindl=NONE,XF86AudioMute,spawn,${noctalia "volume muteOutput"}
-    bindl=NONE,XF86MonBrightnessUp,spawn,${noctalia "brightness increase"}
-    bindl=NONE,XF86MonBrightnessDown,spawn,${noctalia "brightness decrease"}
-  '';
+  noctaliaBinds = lib.optionals enableNoctalia [
+    "SUPER,SPACE,spawn,${noctalia "launcher toggle"}"
+    "SUPER,P,spawn,${noctalia "sessionMenu toggle"}"
+    "SUPER,O,spawn,${noctalia "overview toggle"}"
+    "CTRL+SUPER,L,spawn,${noctalia "lockScreen lock"}"
+    "SUPER,V,spawn,${noctalia "launcher clipboard"}"
+    "SUPER,E,spawn,${noctalia "launcher emoji"}"
+    "SUPER,TAB,spawn,${noctalia "launcher windows"}"
+    "SUPER,N,spawn,${noctalia "controlCenter toggle"}"
+    "SUPER,C,spawn,${noctalia "calendar toggle"}"
+    "SUPER+SHIFT,ESCAPE,spawn,${noctalia "systemMonitor toggle"}"
+    "SUPER+SHIFT,D,spawn,${noctalia "launcher command"}"
+  ];
 
-  dmsBindings = lib.optionalString enableDMS ''
-    # DMS keybindings
-    bind=SUPER,SPACE,spawn,${dms "spotlight toggle"}
-    bind=SUPER,P,spawn,${dms "powermenu toggle"}
-    bind=SUPER,O,spawn,${dms "hypr toggleOverview"}
-    bind=CTRL+SUPER,L,spawn,${dms "lock lock"}
-    bind=SUPER,V,spawn,${dms "clipboard toggle"}
-    bind=SUPER,TAB,spawn,${dms "hypr toggleOverview"}
-    bind=SUPER,N,spawn,${dms "notifications toggle"}
-    bind=SUPER,C,spawn,${dms "control-center toggle"}
-    bind=SUPER+SHIFT,ESCAPE,spawn,${dms "processlist toggle"}
-    bind=SUPER+SHIFT,D,spawn,${dms "settings toggle"}
-    bindl=NONE,XF86AudioRaiseVolume,spawn,${dms "audio increment 3"}
-    bindl=NONE,XF86AudioLowerVolume,spawn,${dms "audio decrement 3"}
-    bindl=NONE,XF86AudioMute,spawn,${dms "audio mute"}
-    bindl=NONE,XF86MonBrightnessUp,spawn,${dms "brightness increment 5"}
-    bindl=NONE,XF86MonBrightnessDown,spawn,${dms "brightness decrement 5"}
-  '';
-in ''
-  # Application launchers
-  bind=SUPER,RETURN,spawn,${pkgs.ghostty}/bin/ghostty
-  ${lib.optionalString (!hasShell) ''
-    bind=SUPER,D,spawn,${pkgs.wofi}/bin/wofi --show drun
-  ''}
-  bind=SUPER,B,spawn,chromium
+  noctaliaBindls = lib.optionals enableNoctalia [
+    "NONE,XF86AudioRaiseVolume,spawn,${noctalia "volume increase"}"
+    "NONE,XF86AudioLowerVolume,spawn,${noctalia "volume decrease"}"
+    "NONE,XF86AudioMute,spawn,${noctalia "volume muteOutput"}"
+    "NONE,XF86MonBrightnessUp,spawn,${noctalia "brightness increase"}"
+    "NONE,XF86MonBrightnessDown,spawn,${noctalia "brightness decrease"}"
+  ];
 
-  # Window management
-  bind=SUPER,Q,killclient
-  bind=SUPER+SHIFT,E,quit
-  bind=SUPER+SHIFT,R,reload_config
-  bind=SUPER,T,togglefloating
-  bind=SUPER,Z,focuslast
-  bind=SUPER+SHIFT,C,centerwin
-  bind=SUPER,W,switch_proportion_preset
+  dmsBinds = lib.optionals enableDMS [
+    "SUPER,SPACE,spawn,${dms "spotlight toggle"}"
+    "SUPER,P,spawn,${dms "powermenu toggle"}"
+    "SUPER,O,spawn,${dms "hypr toggleOverview"}"
+    "CTRL+SUPER,L,spawn,${dms "lock lock"}"
+    "SUPER,V,spawn,${dms "clipboard toggle"}"
+    "SUPER,TAB,spawn,${dms "hypr toggleOverview"}"
+    "SUPER,N,spawn,${dms "notifications toggle"}"
+    "SUPER,C,spawn,${dms "control-center toggle"}"
+    "SUPER+SHIFT,ESCAPE,spawn,${dms "processlist toggle"}"
+    "SUPER+SHIFT,D,spawn,${dms "settings toggle"}"
+  ];
 
-  # Focus movement
-  bind=SUPER,H,focusdir,left
-  bind=SUPER,J,focusdir,down
-  bind=SUPER,K,focusdir,up
-  bind=SUPER,L,focusdir,right
-  bind=SUPER,LEFT,focusdir,left
-  bind=SUPER,DOWN,focusdir,down
-  bind=SUPER,UP,focusdir,up
-  bind=SUPER,RIGHT,focusdir,right
+  dmsBindls = lib.optionals enableDMS [
+    "NONE,XF86AudioRaiseVolume,spawn,${dms "audio increment 3"}"
+    "NONE,XF86AudioLowerVolume,spawn,${dms "audio decrement 3"}"
+    "NONE,XF86AudioMute,spawn,${dms "audio mute"}"
+    "NONE,XF86MonBrightnessUp,spawn,${dms "brightness increment 5"}"
+    "NONE,XF86MonBrightnessDown,spawn,${dms "brightness decrement 5"}"
+  ];
+in {
+  bind =
+    [
+      # Application launchers
+      "SUPER,RETURN,spawn,${pkgs.ghostty}/bin/ghostty"
+      "SUPER,B,spawn,chromium"
 
-  # Move windows
-  bind=SUPER+SHIFT,H,movewin,left
-  bind=SUPER+SHIFT,J,movewin,down
-  bind=SUPER+SHIFT,K,movewin,up
-  bind=SUPER+SHIFT,L,movewin,right
+      # Window management
+      "SUPER,Q,killclient"
+      "SUPER+SHIFT,E,quit"
+      "SUPER+SHIFT,R,reload_config"
+      "SUPER,T,togglefloating"
+      "SUPER,Z,focuslast"
+      "SUPER+SHIFT,C,centerwin"
+      "SUPER,W,switch_proportion_preset"
 
-  # Tags (workspaces)
-  bind=SUPER,1,view,1,0
-  bind=SUPER,2,view,2,0
-  bind=SUPER,3,view,3,0
-  bind=SUPER,4,view,4,0
-  bind=SUPER,5,view,5,0
-  bind=SUPER,6,view,6,0
-  bind=SUPER,7,view,7,0
-  bind=SUPER,8,view,8,0
-  bind=SUPER,9,view,9,0
+      # Focus movement
+      "SUPER,H,focusdir,left"
+      "SUPER,J,focusdir,down"
+      "SUPER,K,focusdir,up"
+      "SUPER,L,focusdir,right"
+      "SUPER,LEFT,focusdir,left"
+      "SUPER,DOWN,focusdir,down"
+      "SUPER,UP,focusdir,up"
+      "SUPER,RIGHT,focusdir,right"
 
-  # Move window to tag
-  bind=SUPER+SHIFT,1,tag,1,0
-  bind=SUPER+SHIFT,2,tag,2,0
-  bind=SUPER+SHIFT,3,tag,3,0
-  bind=SUPER+SHIFT,4,tag,4,0
-  bind=SUPER+SHIFT,5,tag,5,0
-  bind=SUPER+SHIFT,6,tag,6,0
-  bind=SUPER+SHIFT,7,tag,7,0
-  bind=SUPER+SHIFT,8,tag,8,0
-  bind=SUPER+SHIFT,9,tag,9,0
+      # Move windows
+      "SUPER+SHIFT,H,movewin,left"
+      "SUPER+SHIFT,J,movewin,down"
+      "SUPER+SHIFT,K,movewin,up"
+      "SUPER+SHIFT,L,movewin,right"
 
-  # Fullscreen
-  bind=SUPER,F,togglefullscreen
-  bind=SUPER,M,togglemaximizescreen
+      # Tags (workspaces)
+      "SUPER,1,view,1,0"
+      "SUPER,2,view,2,0"
+      "SUPER,3,view,3,0"
+      "SUPER,4,view,4,0"
+      "SUPER,5,view,5,0"
+      "SUPER,6,view,6,0"
+      "SUPER,7,view,7,0"
+      "SUPER,8,view,8,0"
+      "SUPER,9,view,9,0"
 
-  # Gap control
-  bind=SUPER,EQUAL,incgaps,+2
-  bind=SUPER,MINUS,incgaps,-2
-  bind=SUPER+SHIFT,G,togglegaps
+      # Move window to tag
+      "SUPER+SHIFT,1,tag,1,0"
+      "SUPER+SHIFT,2,tag,2,0"
+      "SUPER+SHIFT,3,tag,3,0"
+      "SUPER+SHIFT,4,tag,4,0"
+      "SUPER+SHIFT,5,tag,5,0"
+      "SUPER+SHIFT,6,tag,6,0"
+      "SUPER+SHIFT,7,tag,7,0"
+      "SUPER+SHIFT,8,tag,8,0"
+      "SUPER+SHIFT,9,tag,9,0"
 
-  # Layout switching
-  bind=SUPER+SHIFT,SPACE,switch_layout
+      # Fullscreen
+      "SUPER,F,togglefullscreen"
+      "SUPER,M,togglemaximizescreen"
 
-  # Terminal scratchpad (foot — Ghostty GTK doesn't support custom app_id)
-  windowrule=isnamedscratchpad:1,width:1280,height:800,appid:foot-scratchpad
-  bind=SUPER,S,toggle_named_scratchpad,foot-scratchpad,none,${pkgs.foot}/bin/foot --app-id=foot-scratchpad
+      # Gap control
+      "SUPER,EQUAL,incgaps,+2"
+      "SUPER,MINUS,incgaps,-2"
+      "SUPER+SHIFT,G,togglegaps"
 
-  # Screenshots
-  bind=NONE,PRINT,spawn,${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" ~/Pictures/Screenshots/screenshot-$(date +%Y-%m-%d-%H-%M-%S).png
+      # Layout switching
+      "SUPER+SHIFT,SPACE,switch_layout"
 
-  # Window rules
-  windowrule=force_fakemaximize:1,appid:chromium
-  windowrule=force_fakemaximize:1,appid:firefox
+      # Scratchpad
+      "SUPER,S,toggle_named_scratchpad,foot-scratchpad,none,${pkgs.foot}/bin/foot --app-id=foot-scratchpad"
 
-  # Mouse bindings (Super+drag to move/resize)
-  mousebind=SUPER,btn_left,moveresize,curmove
-  mousebind=SUPER,btn_right,moveresize,curresize
+      # Screenshots
+      ''NONE,PRINT,spawn,${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" ~/Pictures/Screenshots/screenshot-$(date +%Y-%m-%d-%H-%M-%S).png''
+    ]
+    ++ lib.optionals (!hasShell) [
+      "SUPER,D,spawn,${pkgs.wofi}/bin/wofi --show drun"
+    ]
+    ++ noctaliaBinds
+    ++ dmsBinds;
 
-  # Gesture bindings (trackpad swipes)
-  gesturebind=NONE,left,3,viewtoright
-  gesturebind=NONE,right,3,viewtoleft
-  gesturebind=NONE,up,3,toggleoverview
-  gesturebind=NONE,down,4,togglefullscreen
+  bindl = noctaliaBindls ++ dmsBindls;
 
-  ${noctaliaBindings}
-  ${dmsBindings}
-''
+  windowrule = [
+    "isnamedscratchpad:1,width:1280,height:800,appid:foot-scratchpad"
+    "force_fakemaximize:1,appid:chromium"
+    "force_fakemaximize:1,appid:firefox"
+  ];
+
+  mousebind = [
+    "SUPER,btn_left,moveresize,curmove"
+    "SUPER,btn_right,moveresize,curresize"
+  ];
+
+  gesturebind = [
+    "NONE,left,3,viewtoright"
+    "NONE,right,3,viewtoleft"
+    "NONE,up,3,toggleoverview"
+    "NONE,down,4,togglefullscreen"
+  ];
+}
