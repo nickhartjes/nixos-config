@@ -1,6 +1,14 @@
 # Development tools configuration for user nh
 {
   components.development = {
+    mise = {
+      enable = true;
+      # Optional: declare global tools mise should install.
+      # globalTools = {
+      #   node = "lts";
+      #   java = "temurin-21";
+      # };
+    };
     editor = {
       vscode.enable = true;
       zed.enable = true;

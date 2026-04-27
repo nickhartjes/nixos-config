@@ -70,8 +70,28 @@
     nixPath = lib.mapAttrsToList (flakeName: _: "${flakeName}=flake:${flakeName}") flakeInputs;
   };
 
-  # Enable nix-ld for running dynamically linked executables (e.g., VS Code extensions)
-  programs.nix-ld.enable = true;
+  # Enable nix-ld for running dynamically linked executables (e.g., VS Code
+  # extensions, mise-installed Node/JDK/Python binaries).
+  programs.nix-ld = {
+    enable = true;
+    libraries = with pkgs; [
+      stdenv.cc.cc.lib
+      zlib
+      zstd
+      openssl
+      curl
+      libxml2
+      libxslt
+      libgcrypt
+      icu
+      ncurses
+      readline
+      bzip2
+      xz
+      sqlite
+      libffi
+    ];
+  };
 
   # Allow unprivileged users to bind to ports 80 and above
   boot.kernel.sysctl."net.ipv4.ip_unprivileged_port_start" = 80;

@@ -4,5 +4,6 @@
     ./infrastructure
     ./languages
     ./git.nix
+    ./mise.nix
   ];
 }
