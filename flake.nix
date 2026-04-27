@@ -22,6 +22,9 @@
     # Stable Nixpkgs (specific version, e.g., for certain packages or modules)
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.05";
 
+    # Unstable Nixpkgs (rolling release, for bleeding-edge packages)
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+
     # Agenix for managing secrets
     agenix.url = "github:ryantm/agenix";
 
