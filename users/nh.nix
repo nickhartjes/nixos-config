@@ -82,7 +82,7 @@
         "lutris"
         "obsidian"
         "protonvpn-cli"
-        "protonvpn-gui"
+        "proton-vpn"
         "signal-desktop"
         "slack"
         "spotify"

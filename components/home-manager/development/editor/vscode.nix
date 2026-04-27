@@ -22,7 +22,7 @@ in {
           vscode-extensions.jnoortheen.nix-ide
           vscode-extensions.nefrob.vscode-just-syntax
 
-          vscode-extensions.anthropic.claude-code
+          # vscode-extensions.anthropic.claude-code  # temporarily disabled: stale hash in nixpkgs unstable
 
           vscode-extensions.catppuccin.catppuccin-vsc
           vscode-extensions.catppuccin.catppuccin-vsc-icons
@@ -32,7 +32,7 @@ in {
 
     # Application needed for the vscode configuration to work properly
     home.packages = with pkgs; [
-      nixfmt-rfc-style
+      nixfmt
     ];
   };
 }

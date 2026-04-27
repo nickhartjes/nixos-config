@@ -10,7 +10,7 @@
 
   config = lib.mkIf config.components.application.security.protonvpn.enable {
     home.packages = with pkgs; [
-      protonvpn-gui
+      proton-vpn
     ];
 
   };

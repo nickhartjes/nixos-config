@@ -13,6 +13,7 @@
               "git@github.com:ostat/gridfinity_extended_openscad.git"
               "git@github.com:archimatetool/archi.git"
               "git@github.com:nickhartjes/nextjs-shadcn-sveltia.git"
+              "git@github.com:nickhartjes/lazyjust.git"
             ];
             projects = [
               "git@github.com:nickhartjes/talos.git"
