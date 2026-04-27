@@ -68,7 +68,7 @@
     # Create the repository management script
     home.file.".local/bin/repo-manager" = {
       text = ''
-        #!/usr/bin/env bash
+        #!${pkgs.bash}/bin/bash
 
         BASE_FOLDER="${config.components.scripts.repoManager.baseFolder}"
         LOG_FILE="$HOME/.local/state/repo-manager.log"

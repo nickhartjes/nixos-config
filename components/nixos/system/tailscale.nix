@@ -50,13 +50,17 @@ in {
       tailscale-systray
     ];
 
-    # Add a systemd service to start tailscale-systray on startup
-    systemd.services.tailscale-systray = {
+    # Run tailscale-systray as a user service so it has access to the
+    # graphical session (DISPLAY/WAYLAND_DISPLAY).
+    systemd.user.services.tailscale-systray = {
       description = "Tailscale Systray";
-      wantedBy = ["graphical.target"];
+      wantedBy = ["graphical-session.target"];
+      partOf = ["graphical-session.target"];
+      after = ["graphical-session.target"];
       serviceConfig = {
         ExecStart = "${pkgs.tailscale-systray}/bin/tailscale-systray";
-        Restart = "always";
+        Restart = "on-failure";
+        RestartSec = 5;
       };
     };
   };

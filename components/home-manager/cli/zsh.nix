@@ -13,6 +13,10 @@ in {
     programs.zsh = {
       enable = true;
       autocd = true;
+      envExtra = ''
+        export ZSH_CACHE_DIR="$HOME/.cache/zsh"
+        [[ -d "$ZSH_CACHE_DIR/completions" ]] || mkdir -p "$ZSH_CACHE_DIR/completions"
+      '';
       antidote = {
         enable = true;
         plugins = [

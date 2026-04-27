@@ -55,7 +55,7 @@
     };
     gaming = {
       steam.enable = true;
-      lutris.enable = true;
+      lutris.enable = false;
       ryubing.enable = true;
     };
     system = {

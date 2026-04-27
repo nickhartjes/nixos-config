@@ -86,6 +86,12 @@
       url = "github:AvengeMedia/DankMaterialShell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # lazyjust - terminal UI for the just command runner
+    lazyjust = {
+      url = "github:nickhartjes/lazyjust";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   # --- Outputs ---

@@ -6,7 +6,7 @@
       fastfetch.enable = true;
       fish.enable = true;
       fzf.enable = true;
-      neofetch.enable = true;
+      neofetch.enable = false;
       neovim.enable = true;
       nh.enable = true;
       nvtop.enable = true;

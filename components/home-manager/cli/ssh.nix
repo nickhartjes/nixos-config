@@ -43,17 +43,16 @@ with lib; let
 
     log "SSH agent socket found at: $SSH_AUTH_SOCK"
 
-    # Check if ssh-agent is responsive
-    if ! ${pkgs.openssh}/bin/ssh-add -l >/dev/null 2>&1; then
-      if [ $? -eq 2 ]; then
-        log "SSH agent is running but has no keys loaded"
-      else
-        log "ERROR: SSH agent is not responsive"
-        exit 1
-      fi
-    else
-      log "SSH agent is responsive and has existing keys"
-    fi
+    # Check if ssh-agent is responsive.
+    # ssh-add -l: 0 = keys present, 1 = no keys (agent up), 2 = cannot connect.
+    # Capture rc separately — `$?` after `if ! cmd` is the negated value, not cmd's real exit code.
+    ${pkgs.openssh}/bin/ssh-add -l >/dev/null 2>&1
+    rc=$?
+    case $rc in
+      0) log "SSH agent is responsive and has existing keys" ;;
+      1) log "SSH agent is running but has no keys loaded" ;;
+      *) log "ERROR: SSH agent is not responsive (ssh-add exit $rc)"; exit 1 ;;
+    esac
 
     # Load SSH keys
     keys_loaded=0

@@ -36,6 +36,6 @@ in {
     services.xserver.displayManager.lightdm.enable = lib.mkForce cfg.lightdm.enable;
     services.displayManager.sddm.enable = lib.mkForce cfg.sddm.enable;
     services.displayManager.cosmic-greeter.enable = lib.mkForce cfg.cosmic-greeter.enable;
-    services.greetd.enable = lib.mkForce cfg.greetd.enable;
+    services.greetd.enable = lib.mkForce (cfg.greetd.enable || cfg.cosmic-greeter.enable);
   };
 }

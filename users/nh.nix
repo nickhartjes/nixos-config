@@ -94,13 +94,15 @@
         "vscode"
       ];
 
-    home.packages = with pkgs; [
+    home.packages = (with pkgs; [
       fd
       obsidian
       alejandra
       wl-clipboard
       catppuccin-kde
       just
+    ]) ++ [
+      inputs.lazyjust.packages.${pkgs.stdenv.hostPlatform.system}.default
     ];
 
     home.shellAliases = {
