@@ -5,7 +5,7 @@ default:
 
 # Deploy system configuration
 deploy SYSTEM:
-    nixos-rebuild switch --flake .#{{SYSTEM}} --target-host {{SYSTEM}} --use-remote-sudo
+    nixos-rebuild switch --flake .#{{SYSTEM}} --target-host {{SYSTEM}} --use-remote-sudo --ask-sudo-password
 
 # Deploy velomo-alpha (production host: doco-cd, zot registry, beszel, scraper-app stack)
 deploy-velomo:
