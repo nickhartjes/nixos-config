@@ -1,9 +1,3 @@
-# velomo-alpha — minimal Komodo server. See:
-#   docs/superpowers/specs/2026-05-29-velomo-alpha-server-design.md
-#   docs/superpowers/plans/2026-05-29-velomo-alpha-implementation.md
-#
-# State: Phase 0 (repo skeleton). Secrets and services are not yet imported.
-# To advance, follow the Phase 1+ runbook in the plan above.
 {
   pkgs,
   lib,

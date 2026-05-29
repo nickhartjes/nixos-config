@@ -205,8 +205,7 @@
         ];
       };
 
-      # Minimal Komodo server (bare-metal homelab). See spec:
-      # docs/superpowers/specs/2026-05-29-velomo-alpha-server-design.md
+      # Minimal homelab server: NixOS + Docker + doco-cd (GitOps).
       velomo-alpha = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {inherit inputs outputs;};
