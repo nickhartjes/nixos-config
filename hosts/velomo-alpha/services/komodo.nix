@@ -88,9 +88,14 @@ in {
         extraOptions = ["--network=komodo" "--init"];
         ports = ["127.0.0.1:8120:8120"];
         environment = {
-          KOMODO_PORT = "8120";
+          PERIPHERY_PORT = "8120";
+          # Speak plain HTTP on the internal docker network. Core hits
+          # komodo-periphery via http://komodo-periphery:8120 — see
+          # KOMODO_FIRST_SERVER on komodo-core.
+          PERIPHERY_SSL_ENABLED = "false";
         };
         environmentFiles = [
+          # Exports PERIPHERY_PASSKEYS (same value as KOMODO_PASSKEY on core).
           config.age.secrets."velomo-alpha/komodo-passkey-env".path
         ];
         volumes = [
