@@ -14,6 +14,8 @@ in {
     "d ${dataDir} 0750 root root - -"
   ];
 
+  virtualisation.oci-containers.backend = "docker";
+
   virtualisation.oci-containers.containers.doco-cd = {
     image = "ghcr.io/kimdre/doco-cd:0.89.1";
     autoStart = true;
