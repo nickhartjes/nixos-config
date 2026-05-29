@@ -26,7 +26,10 @@ in {
     after = ["docker.service"];
     requires = ["docker.service"];
     wantedBy = ["multi-user.target"];
-    serviceConfig.Type = "oneshot";
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
     script = ''
       ${pkgs.docker}/bin/docker network inspect komodo >/dev/null 2>&1 \
         || ${pkgs.docker}/bin/docker network create komodo
@@ -62,9 +65,9 @@ in {
         };
         environmentFiles = [
           config.age.secrets."velomo-alpha/komodo-db".path
-          # Single env file that exports KOMODO_DATABASE_USERNAME,
-          # KOMODO_DATABASE_PASSWORD, KOMODO_PASSKEY, KOMODO_JWT_SECRET.
-          # Compose them into one secret file at edit time.
+          # Exports KOMODO_PASSKEY and KOMODO_JWT_SECRET.
+          # Database credentials (KOMODO_DATABASE_USERNAME / KOMODO_DATABASE_PASSWORD)
+          # come from the komodo-db env file above.
           config.age.secrets."velomo-alpha/komodo-core-env".path
         ];
         volumes = [
