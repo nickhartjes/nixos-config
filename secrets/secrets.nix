@@ -13,10 +13,6 @@ in {
   "nh/gpg-private-key.age".publicKeys = [framework-13 framework-13-2] ++ systems;
   "nh/gpg-public-key.age".publicKeys = [framework-13 framework-13-2] ++ systems;
 
-  "velomo-alpha/komodo-passkey-env.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
-  "velomo-alpha/komodo-core-env.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
-  "velomo-alpha/komodo-db.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
   "velomo-alpha/tailscale-authkey.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
-  "velomo-alpha/komodo-core-config.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
   "velomo-alpha/doco-git-token.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
 }
