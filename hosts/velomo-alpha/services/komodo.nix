@@ -75,6 +75,10 @@ in {
         ];
         volumes = [
           "${komodoDataRoot}/core:/config"
+          # TOML provider config (git_provider / docker_registry entries).
+          # Env vars still take precedence; this file only carries things that
+          # have no env-var equivalent.
+          "${config.age.secrets."velomo-alpha/komodo-core-config".path}:/config/config.toml:ro"
         ];
       };
 

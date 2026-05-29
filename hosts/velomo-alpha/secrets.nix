@@ -20,5 +20,12 @@
       owner = "root";
       mode = "400";
     };
+    "velomo-alpha/komodo-core-config" = {
+      file = ../../secrets/velomo-alpha/komodo-core-config.age;
+      owner = "root";
+      # World-readable so the komodo-core container process can read it.
+      # Containment is the /run/agenix/ directory perms, not the file mode.
+      mode = "444";
+    };
   };
 }
