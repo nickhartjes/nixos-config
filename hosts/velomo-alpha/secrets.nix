@@ -27,5 +27,11 @@
       # Containment is the /run/agenix/ directory perms, not the file mode.
       mode = "444";
     };
+    "velomo-alpha/doco-git-token" = {
+      file = ../../secrets/velomo-alpha/doco-git-token.age;
+      owner = "root";
+      # World-readable so the doco-cd container process (non-root inside) can read it.
+      mode = "444";
+    };
   };
 }

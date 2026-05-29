@@ -18,4 +18,5 @@ in {
   "velomo-alpha/komodo-db.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
   "velomo-alpha/tailscale-authkey.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
   "velomo-alpha/komodo-core-config.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
+  "velomo-alpha/doco-git-token.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
 }
