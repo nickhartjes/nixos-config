@@ -59,51 +59,58 @@ in {
         pbpaste = "wl-paste || xsel --clipboard --output";
       };
 
-      initContent = ''
-        # Set JetBrains JDK as BOOT_JDK for Java builds
-        export BOOT_JDK="${pkgs.jetbrains.jdk}/lib/openjdk"
+      initContent = mkMerge [
+        ''
+          # Set JetBrains JDK as BOOT_JDK for Java builds
+          export BOOT_JDK="${pkgs.jetbrains.jdk}/lib/openjdk"
 
-        # Source p10k config
-        [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+          # Source p10k config
+          [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-        # SSH Agent fallback
-        if [ -z "$SSH_AUTH_SOCK" ]; then
-          if [ -S "$XDG_RUNTIME_DIR/ssh-agent" ]; then
-            export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent"
-          elif [ -S "/run/user/$(id -u)/ssh-agent" ]; then
-            export SSH_AUTH_SOCK="/run/user/$(id -u)/ssh-agent"
+          # SSH Agent fallback
+          if [ -z "$SSH_AUTH_SOCK" ]; then
+            if [ -S "$XDG_RUNTIME_DIR/ssh-agent" ]; then
+              export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent"
+            elif [ -S "/run/user/$(id -u)/ssh-agent" ]; then
+              export SSH_AUTH_SOCK="/run/user/$(id -u)/ssh-agent"
+            fi
           fi
-        fi
 
-        # History configuration
-        HISTSIZE=5000
-        HISTFILE="$HOME/.zsh_history"
-        SAVEHIST=$HISTSIZE
-        setopt appendhistory
-        setopt sharehistory
-        setopt hist_ignore_space
-        setopt hist_ignore_all_dups
-        setopt hist_save_no_dups
-        setopt hist_ignore_dups
-        setopt hist_find_no_dups
+          # History configuration
+          HISTSIZE=5000
+          HISTFILE="$HOME/.zsh_history"
+          SAVEHIST=$HISTSIZE
+          setopt appendhistory
+          setopt sharehistory
+          setopt hist_ignore_space
+          setopt hist_ignore_all_dups
+          setopt hist_save_no_dups
+          setopt hist_ignore_dups
+          setopt hist_find_no_dups
 
-        # Completion improvements
-        zstyle ':completion:*' menu select
-        zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
-        zstyle ':completion:*' list-colors "''${LS_COLORS}"
+          # Completion improvements
+          zstyle ':completion:*' menu select
+          zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+          zstyle ':completion:*' list-colors "''${LS_COLORS}"
 
-        # fzf-tab preview configuration
-        zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
-        zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
+          # fzf-tab preview configuration
+          zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
+          zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
-        # fzf shell integration
-        eval "$(fzf --zsh)"
+          # fzf shell integration
+          eval "$(fzf --zsh)"
 
-        # zoxide integration (replaces cd with smart cd)
-        eval "$(zoxide init --cmd cd zsh)"
+          fastfetch
+        ''
 
-        fastfetch
-      '';
+        # Zoxide must be initialized at the very end of .zshrc so its
+        # chpwd/precmd hooks wrap (and aren't shadowed by) hooks from
+        # mise, kitty, ghostty, etc. Order 2000 places it after HM's
+        # shellAliases (which render at order 1100-1150).
+        (mkOrder 2000 ''
+          eval "$(zoxide init --cmd cd zsh)"
+        '')
+      ];
     };
 
     home.packages = with pkgs; [

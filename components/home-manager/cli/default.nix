@@ -15,7 +15,9 @@
   programs.zoxide = {
     enable = true;
     enableFishIntegration = true;
-    enableZshIntegration = true;
+    # Zsh init is placed at the end of .zshrc manually in zsh.nix
+    # (so zoxide's chpwd/precmd hooks aren't shadowed by mise et al).
+    enableZshIntegration = false;
     options = ["--cmd cd"];
   };
 
