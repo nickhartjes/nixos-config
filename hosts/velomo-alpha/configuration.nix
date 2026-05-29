@@ -75,13 +75,12 @@
       "docker"
     ];
     openssh.authorizedKeys.keys = [
-      # framework-13 SSH key. Same key material as users/nh.nix, but the
-      # prefix is corrected from "sh-ed25519" (typo upstream) to the valid
-      # "ssh-ed25519". OpenSSH silently skips unrecognized type labels, so
-      # the typo in users/nh.nix quietly disables that authorized_keys entry —
-      # meaning existing hosts may be authenticating via a different key.
-      # TODO: fix the typo in users/nh.nix in a separate commit.
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII8Fzq/ktI9g9FYsADc8NkaYDhHuXIPPPxwRjXT7Gcwk info@nickhartjes.nl"
+      # framework-13 keys — kept in sync with secrets/secrets.nix
+      # (framework-13 and framework-13-2). The "info@nickhartjes.nl" key that
+      # used to live here was a stale entry copied from users/nh.nix and did
+      # not match any private key actually held on the framework-13.
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPh1wLUOuMwH9tCGCRnEJ4lPqex1Ss2aaag6TKc/3hlD nick@hartj.es"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILLBdQCyD8xsKKy5UIUfKS7l+Fl5RQ9yIMR3wGOfL90+ nick@hartj.es"
     ];
     shell = pkgs.bash;
   };
