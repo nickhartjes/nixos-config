@@ -48,8 +48,26 @@
   # ---- Networking ----
   networking.networkmanager.enable = true;
 
-  # ---- Tailscale (autoconnect added in Phase 2 once auth-key secret exists) ----
+  # ---- Tailscale ----
   services.tailscale.enable = true;
+
+  systemd.services.tailscale-autoconnect = {
+    description = "Authenticate Tailscale on first boot";
+    after = ["network-pre.target" "tailscaled.service"];
+    wants = ["network-pre.target" "tailscaled.service"];
+    wantedBy = ["multi-user.target"];
+    serviceConfig.Type = "oneshot";
+    script = ''
+      sleep 2
+      status=$(${pkgs.tailscale}/bin/tailscale status --json | ${pkgs.jq}/bin/jq -r .BackendState)
+      if [ "$status" = "Running" ]; then
+        exit 0
+      fi
+      ${pkgs.tailscale}/bin/tailscale up \
+        --authkey "file:${config.age.secrets."velomo-alpha/tailscale-authkey".path}" \
+        --ssh
+    '';
+  };
 
   # ---- SSH ----
   services.openssh = {
@@ -90,6 +108,8 @@
     git
     neovim
     htop
+    jq
+    tailscale
   ];
 
   # ---- Firewall ----
