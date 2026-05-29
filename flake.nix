@@ -204,6 +204,18 @@
           agenix.nixosModules.default # Agenix module
         ];
       };
+
+      # Minimal Komodo server (bare-metal homelab). See spec:
+      # docs/superpowers/specs/2026-05-29-velomo-alpha-server-design.md
+      velomo-alpha = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = {inherit inputs outputs;};
+        modules = [
+          ./hosts/velomo-alpha
+          inputs.disko.nixosModules.disko
+          agenix.nixosModules.default
+        ];
+      };
     };
   };
 }
