@@ -39,6 +39,10 @@ in {
       "${dataDir}:${dataDir}"
       # Read-only mount of the agenix-decrypted PAT into a stable in-container path
       "${config.age.secrets."velomo-alpha/doco-git-token".path}:/run/doco/git-token:ro"
+      # Expose all agenix-decrypted secrets to doco-cd so deployed compose
+      # stacks can reference them via env_file: /run/agenix/<host>/<name>
+      # without doco-cd needing to know about each one individually.
+      "/run/agenix:/run/agenix:ro"
     ];
   };
 }
