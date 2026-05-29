@@ -600,67 +600,96 @@ git push
 
 These tasks require physical or virtual access to the `velomo-alpha` hardware. Each task is a checklist; commands assume you're running on the target unless noted otherwise.
 
-## Task 9: Bare-metal install
+## Task 9: Install with nixos-anywhere (primary path)
 
-**Where:** velomo-alpha (booted into NixOS installer ISO)
+**Where:** framework-13 → velomo-alpha (over SSH)
 
-- [ ] **Step 1: Boot the latest NixOS installer ISO** (any recent unstable or 25.05 ISO works).
+[`nixos-anywhere`](https://github.com/nix-community/nixos-anywhere) installs NixOS on the target machine over SSH from framework-13. It kexecs into a NixOS installer, runs disko, installs the flake config, and reboots — no keyboard/monitor on velomo-alpha needed.
 
-- [ ] **Step 2: Confirm wired Ethernet got an IP**
+- [ ] **Step 1: Boot the target into something SSH-reachable**
 
-Run: `ip a`
-Expected: at least one `inet` address on a wired interface.
+Two options, pick one:
+- **Official NixOS installer ISO** (recommended): write a recent unstable or 25.05 minimal ISO to a USB stick, boot velomo-alpha from it. The installer auto-enables SSH on the root user with **no password** (you can log in as `root@<ip>` with the host's `~/.ssh/authorized_keys` if pre-populated, or set a password via `passwd` on the console).
+- **Any other Linux live USB** (Ubuntu/Debian/whatever) with SSH enabled. nixos-anywhere will kexec into NixOS and replace it.
 
-- [ ] **Step 3: Confirm the install disk path**
+- [ ] **Step 2: Find velomo-alpha's IP**
 
-Run: `lsblk`
-Expected: shows the install disk. If it's `nvme0n1`, `disko-config.nix` matches. If it's something else (e.g., `sda`), edit `hosts/velomo-alpha/disko-config.nix` before running disko.
+On velomo-alpha's console: `ip a` and note the wired interface address. Or check your router's DHCP leases.
 
-- [ ] **Step 4: Clone this repo onto the installer**
+- [ ] **Step 3: (Optional) Set a root password on the installer**
 
-Substitute `<REPO_URL>` with the actual clone URL (HTTPS for public, SSH if you've added your key to the installer):
-
-```bash
-nix-shell -p git --run "git clone <REPO_URL> /tmp/nixos-config"
-cd /tmp/nixos-config
-```
-
-- [ ] **Step 5: Generate the real hardware-configuration.nix**
+If you didn't add framework-13's SSH key to the installer ahead of time, on the velomo-alpha console run:
 
 ```bash
-sudo nixos-generate-config --no-filesystems --dir /tmp/hw
-sudo cp /tmp/hw/hardware-configuration.nix hosts/velomo-alpha/hardware-configuration.nix
+sudo passwd root
 ```
 
-- [ ] **Step 6: Run disko to partition + format the disk**
+Set a temporary password. nixos-anywhere will prompt for it once.
 
-⚠️ **This erases the disk.** Triple-check the device path in `disko-config.nix` first.
+- [ ] **Step 4: Confirm install disk path on the target**
+
+On velomo-alpha's console: `lsblk`. Confirm the target install disk path. If it's NOT `/dev/nvme0n1`, edit `hosts/velomo-alpha/disko-config.nix` on framework-13 to match (e.g. `/dev/sda`), commit, and proceed.
+
+- [ ] **Step 5: Run nixos-anywhere from framework-13**
+
+From the nixos-config repo on framework-13:
 
 ```bash
-sudo nix --extra-experimental-features 'nix-command flakes' \
-  run github:nix-community/disko -- \
-  --mode disko hosts/velomo-alpha/disko-config.nix
+nix run github:nix-community/nixos-anywhere -- \
+  --flake .#velomo-alpha \
+  --generate-hardware-config nixos-generate-config \
+  ./hosts/velomo-alpha/hardware-configuration.nix \
+  root@<velomo-alpha-ip>
 ```
 
-Expected: disko prints partition operations and exits 0.
+What this does:
+- Connects to `root@<velomo-alpha-ip>` over SSH.
+- kexecs into a NixOS installer environment (if not already on NixOS installer).
+- Runs `nixos-generate-config --no-filesystems` on the target and writes the result back to `./hosts/velomo-alpha/hardware-configuration.nix` on framework-13.
+- Runs disko using `./hosts/velomo-alpha/disko-config.nix`. **This erases the disk.**
+- Builds the velomo-alpha system closure on framework-13 (or the target — nixos-anywhere chooses based on resources).
+- Copies it to the target and runs `nixos-install`.
+- Reboots the target.
 
-- [ ] **Step 7: Run nixos-install**
+Expected duration: 5-20 minutes depending on network speed and how much of the closure has to be built.
+
+- [ ] **Step 6: Commit the generated hardware-configuration.nix**
+
+After nixos-anywhere succeeds, the placeholder `hardware-configuration.nix` on framework-13 has been overwritten with the real one generated on the target.
 
 ```bash
-sudo nixos-install --flake .#velomo-alpha --no-root-passwd
+git add hosts/velomo-alpha/hardware-configuration.nix
+git commit -m "feat(velomo-alpha): real hardware-configuration.nix (from target)"
+git push
 ```
 
-Expected: full system build + install + `nixos-install: completed successfully`.
+- [ ] **Step 7: Verify the target rebooted into NixOS**
 
-- [ ] **Step 8: Reboot into the installed system**
+After the target reboots, SSH in as `nh` (the user defined in `configuration.nix` — framework-13's SSH key is already in its authorized_keys):
 
 ```bash
-sudo reboot
+ssh nh@<velomo-alpha-ip>
+hostname
+# Expected: velomo-alpha
+nixos-version
+# Expected: a 25.05 or 26.05.* version string
 ```
 
-- [ ] **Step 9: Verify the install booted**
+---
 
-After reboot, log in at the console as `nh` (initial password from `users/nh.nix`'s `initialHashedPassword`). Or skip console login entirely and go straight to Task 10's SSH path from framework-13.
+### Fallback: manual ISO install
+
+If `nixos-anywhere` doesn't work (e.g. too little RAM on the target to kexec, network firewall blocking SSH from framework-13, or you prefer the manual path), use these steps from the target console instead:
+
+- Boot the NixOS installer ISO on velomo-alpha.
+- Confirm Ethernet has DHCP'd: `ip a`.
+- Confirm install disk path: `lsblk`.
+- Clone the repo: `nix-shell -p git --run "git clone <REPO_URL> /tmp/nixos-config"` and `cd /tmp/nixos-config`.
+- Generate real hardware-config: `sudo nixos-generate-config --no-filesystems --dir /tmp/hw && sudo cp /tmp/hw/hardware-configuration.nix hosts/velomo-alpha/hardware-configuration.nix`.
+- Run disko: `sudo nix --extra-experimental-features 'nix-command flakes' run github:nix-community/disko -- --mode disko hosts/velomo-alpha/disko-config.nix` (⚠️ this erases the disk).
+- Run install: `sudo nixos-install --flake .#velomo-alpha --no-root-passwd`.
+- `sudo reboot`.
+- On framework-13, after the install: `scp` the real `hardware-configuration.nix` back from the target and commit it.
 
 ---
 
