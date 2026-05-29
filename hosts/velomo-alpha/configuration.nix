@@ -27,7 +27,7 @@
   in {
     settings = {
       experimental-features = "nix-command flakes";
-      trusted-users = ["root"];
+      trusted-users = ["root" "@wheel"];
       auto-optimise-store = true;
     };
     gc = {
