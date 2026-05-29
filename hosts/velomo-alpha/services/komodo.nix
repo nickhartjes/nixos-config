@@ -62,6 +62,9 @@ in {
           KOMODO_HOST = "http://velomo-alpha:9120";
           KOMODO_DATABASE_ADDRESS = "mongo:27017";
           KOMODO_FIRST_SERVER = "http://komodo-periphery:8120";
+          # Enable username/password login. First user to sign up via the UI
+          # becomes admin automatically.
+          KOMODO_LOCAL_AUTH = "true";
         };
         environmentFiles = [
           config.age.secrets."velomo-alpha/komodo-db".path
