@@ -26,6 +26,23 @@
       owner = "root";
       mode = "444";
     };
+    # TUNNEL_TOKEN for the single public-ingress tunnel (reuses the registry
+    # tunnel's token) that feeds the Caddy reverse proxy in the auth stack.
+    # Loaded via `env_file:` in infra/compose/auth.compose.yaml; doco-cd reads
+    # it from /run/agenix (bind-mounted into doco-cd by services/doco.nix).
+    "velomo-alpha/cloudflared-main-token.env" = {
+      file = ../../secrets/velomo-alpha/cloudflared-main-token.env.age;
+      owner = "root";
+      mode = "444";
+    };
+    # Authelia core secrets: AUTHELIA_JWT_SECRET, AUTHELIA_SESSION_SECRET,
+    # AUTHELIA_STORAGE_ENCRYPTION_KEY. Loaded via `env_file:` by the authelia
+    # service in infra/compose/auth.compose.yaml.
+    "velomo-alpha/authelia-secrets.env" = {
+      file = ../../secrets/velomo-alpha/authelia-secrets.env.age;
+      owner = "root";
+      mode = "444";
+    };
     # One-time registration token for the self-hosted GitHub Actions runner.
     # Generate fresh via:
     #   gh api -X POST /repos/Dealdodo/scraper/actions/runners/registration-token --jq .token

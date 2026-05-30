@@ -17,6 +17,10 @@ in {
   "velomo-alpha/doco-git-token.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
   "velomo-alpha/zot-htpasswd.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
   "velomo-alpha/cloudflared-registry-token.env.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
+  # Single public-ingress tunnel (reuses the registry tunnel token) feeding Caddy.
+  "velomo-alpha/cloudflared-main-token.env.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
+  # Authelia JWT/session/storage-encryption secrets for the auth stack.
+  "velomo-alpha/authelia-secrets.env.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
   "velomo-alpha/github-runner-token.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
   "velomo-alpha/scraper-app.env.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
   "velomo-alpha/doco-docker-config.json.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
