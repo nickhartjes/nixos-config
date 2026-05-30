@@ -50,5 +50,13 @@
       owner = "root";
       mode = "444";
     };
+    # docker config.json for doco-cd to authenticate to zot when pulling
+    # registry.velomo.nl/velomo/scraper. Mounted into the doco-cd
+    # container as the docker SDK's config file (see services/doco.nix).
+    "velomo-alpha/doco-docker-config.json" = {
+      file = ../../secrets/velomo-alpha/doco-docker-config.json.age;
+      owner = "root";
+      mode = "444";
+    };
   };
 }

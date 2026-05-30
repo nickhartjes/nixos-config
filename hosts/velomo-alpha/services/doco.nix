@@ -27,6 +27,11 @@ in {
       TZ = "Europe/Berlin";
       LOG_LEVEL = "info";
       GIT_ACCESS_TOKEN_FILE = "/run/doco/git-token";
+      # Point the docker SDK at the agenix-decrypted registry-auth config
+      # so doco-cd can authenticate to zot (registry.velomo.nl + the
+      # 127.0.0.1:5000 loopback) when pulling images. The docker SDK
+      # reads `$DOCKER_CONFIG/config.json`.
+      DOCKER_CONFIG = "/run/doco/docker";
       POLL_CONFIG = ''
         - url: https://github.com/Dealdodo/scraper.git
           reference: main
@@ -39,6 +44,9 @@ in {
       "${dataDir}:${dataDir}"
       # Read-only mount of the agenix-decrypted PAT into a stable in-container path
       "${config.age.secrets."velomo-alpha/doco-git-token".path}:/run/doco/git-token:ro"
+      # Docker registry auth (used by the docker SDK in doco-cd when
+      # pulling private images from registry.velomo.nl / 127.0.0.1:5000).
+      "${config.age.secrets."velomo-alpha/doco-docker-config.json".path}:/run/doco/docker/config.json:ro"
       # Expose all agenix-decrypted secrets to doco-cd so deployed compose
       # stacks can reference them via env_file: /run/agenix/<host>/<name>
       # without doco-cd needing to know about each one individually.
