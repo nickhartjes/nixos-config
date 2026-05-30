@@ -17,4 +17,5 @@ in {
   "velomo-alpha/doco-git-token.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
   "velomo-alpha/zot-htpasswd.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
   "velomo-alpha/cloudflared-registry-token.env.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
+  "velomo-alpha/github-runner-token.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
 }

@@ -26,5 +26,19 @@
       owner = "root";
       mode = "444";
     };
+    # One-time registration token for the self-hosted GitHub Actions runner.
+    # Generate fresh via:
+    #   gh api -X POST /repos/Dealdodo/scraper/actions/runners/registration-token --jq .token
+    # Token expires ~1h after generation but is consumed once on first
+    # service start; after that the runner uses persisted credentials.
+    "velomo-alpha/github-runner-token" = {
+      file = ../../secrets/velomo-alpha/github-runner-token.age;
+      owner = "root";
+      # World-readable (within /run/agenix/, which is root-protected at the
+      # directory level). The github-runner service uses a systemd dynamic
+      # user — we can't chown to it because the UID isn't allocated until
+      # the service starts.
+      mode = "444";
+    };
   };
 }
