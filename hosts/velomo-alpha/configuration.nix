@@ -117,7 +117,10 @@
     enable = true;
     trustedInterfaces = ["tailscale0"];
     allowedTCPPorts = [22];
-    interfaces.tailscale0.allowedTCPPorts = [9120];
+    # 9120: legacy Komodo UI port (kept open in case anything still references
+    # it). 8080: scraper-app's main port (admin UI at /admin). 8090: Beszel hub
+    # UI. Only tailnet members get past this — eth0 stays closed except SSH.
+    interfaces.tailscale0.allowedTCPPorts = [9120 8080 8090];
   };
 
   # ---- stateVersion: pin to the release the host was first installed against ----
