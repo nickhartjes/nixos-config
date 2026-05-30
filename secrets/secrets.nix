@@ -21,6 +21,9 @@ in {
   "velomo-alpha/cloudflared-main-token.env.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
   # Authelia JWT/session/storage-encryption secrets for the auth stack.
   "velomo-alpha/authelia-secrets.env.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
+  # Authelia file-backed user store (login + argon2id hash). Gitignored in the
+  # scraper repo; shipped to the host via agenix so the auth stack can mount it.
+  "velomo-alpha/authelia-users.yml.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
   "velomo-alpha/github-runner-token.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
   "velomo-alpha/scraper-app.env.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
   "velomo-alpha/doco-docker-config.json.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;

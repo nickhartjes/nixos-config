@@ -43,6 +43,15 @@
       owner = "root";
       mode = "444";
     };
+    # Authelia file-backed user store, mounted into the authelia container at
+    # /config/users_database.yml (see infra/compose/auth.compose.yaml). 444 so
+    # the non-root authelia container user can read it; /run/agenix is itself
+    # root-only at the directory level, so it isn't truly world-accessible.
+    "velomo-alpha/authelia-users.yml" = {
+      file = ../../secrets/velomo-alpha/authelia-users.yml.age;
+      owner = "root";
+      mode = "444";
+    };
     # One-time registration token for the self-hosted GitHub Actions runner.
     # Generate fresh via:
     #   gh api -X POST /repos/Dealdodo/scraper/actions/runners/registration-token --jq .token
