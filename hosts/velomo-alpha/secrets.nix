@@ -40,5 +40,15 @@
       # the service starts.
       mode = "444";
     };
+    # Env-file for the scraper app stack: DB_PASSWORD, MEILI_MASTER_KEY,
+    # ANTHROPIC_API_KEY, plus placeholder Phase-2 vars (RUSTFS_*, BACKUP_*,
+    # CLOUDFLARED_IMAGES_TUNNEL_TOKEN). Loaded by doco-cd via the
+    # .doco-cd.yaml env_files entry; doco-cd mounts /run/agenix in via
+    # services/doco.nix so the absolute path works inside its container.
+    "velomo-alpha/scraper-app.env" = {
+      file = ../../secrets/velomo-alpha/scraper-app.env.age;
+      owner = "root";
+      mode = "444";
+    };
   };
 }
