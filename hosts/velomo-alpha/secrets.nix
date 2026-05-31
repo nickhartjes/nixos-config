@@ -84,5 +84,22 @@
       owner = "root";
       mode = "444";
     };
+    # Env-file for the observability (LGTM) stack: OBS_RUSTFS_ROOT_USER/PASSWORD,
+    # OBS_RUSTFS_ACCESS_KEY/SECRET_KEY, GF_SECURITY_ADMIN_PASSWORD. Loaded by
+    # doco-cd via the observability stack's env_files entry in .doco-cd.yaml;
+    # doco-cd reads it from /run/agenix (bind-mounted via services/doco.nix).
+    "velomo-alpha/observability.env" = {
+      file = ../../secrets/velomo-alpha/observability.env.age;
+      owner = "root";
+      mode = "444";
+    };
+    # Slack incoming-webhook URL (bare URL, no key) for Alertmanager. Bind-mounted
+    # into the alertmanager container at /etc/alertmanager/slack-url and read via
+    # `slack_api_url_file` in infra/observability/alertmanager.prod.yaml.
+    "velomo-alpha/alertmanager-slack-url" = {
+      file = ../../secrets/velomo-alpha/alertmanager-slack-url.age;
+      owner = "root";
+      mode = "444";
+    };
   };
 }

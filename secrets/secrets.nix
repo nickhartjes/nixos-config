@@ -27,4 +27,11 @@ in {
   "velomo-alpha/github-runner-token.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
   "velomo-alpha/scraper-app.env.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
   "velomo-alpha/doco-docker-config.json.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
+  # Observability (LGTM) stack: dedicated RustFS root + scoped creds and the
+  # Grafana break-glass admin password. Loaded by doco-cd via the
+  # observability stack's env_files entry in .doco-cd.yaml.
+  "velomo-alpha/observability.env.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
+  # Slack incoming-webhook URL for Alertmanager (read via slack_api_url_file).
+  # File contents are the bare URL; bind-mounted into the alertmanager container.
+  "velomo-alpha/alertmanager-slack-url.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
 }
