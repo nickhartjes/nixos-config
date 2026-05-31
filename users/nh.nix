@@ -111,11 +111,11 @@
     };
 
     # Load the Grafana MCP service-account token (GRAFANA_SA_TOKEN) for the
-    # Velomo prod observability stack. The secret value lives in a gitignored
-    # local file (~/.config/velomo-grafana-sa.env, mode 600, created out-of-band)
-    # so it never enters the repo — only the source line is declarative here.
-    # Consumed by the grafana MCP server's ${GRAFANA_SA_TOKEN} in scraper's
-    # .mcp.json. Guarded so it's a no-op on machines without the file.
+    # Velomo prod observability stack. agenix decrypts the token to
+    # ~/.config/velomo-grafana-sa.env on framework-13 (owner nh; see
+    # hosts/framework-13/secrets.nix); this sources it so the grafana MCP in
+    # scraper's .mcp.json gets ${GRAFANA_SA_TOKEN}. Guarded so it's a no-op on
+    # machines/hosts where the secret isn't provisioned.
     programs.zsh.initContent = lib.mkOrder 1500 ''
       [[ -f ~/.config/velomo-grafana-sa.env ]] && source ~/.config/velomo-grafana-sa.env
     '';

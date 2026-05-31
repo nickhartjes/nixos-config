@@ -8,6 +8,11 @@ let
 in {
   "secret1.age".publicKeys = [framework-13 framework-13-2] ++ systems;
 
+  # Grafana service-account token (export GRAFANA_SA_TOKEN=...) for the Velomo
+  # prod observability stack's MCP. Decrypted on framework-13 to nh's home so
+  # zsh can source it (see hosts/framework-13/secrets.nix + users/nh.nix).
+  "framework-13/grafana-sa-token.age".publicKeys = [framework-13 framework-13-2] ++ systems;
+
   "nh/ssh-framework-13.age".publicKeys = [framework-13 framework-13-2] ++ systems;
   "nh/ssh-framework-13.pub.age".publicKeys = [framework-13 framework-13-2] ++ systems;
   "nh/gpg-private-key.age".publicKeys = [framework-13 framework-13-2] ++ systems;
