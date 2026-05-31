@@ -109,5 +109,15 @@
       repo-sync = "~/.local/bin/repo-manager";
       repo-log = "tail -f ~/.local/state/repo-manager.log";
     };
+
+    # Load the Grafana MCP service-account token (GRAFANA_SA_TOKEN) for the
+    # Velomo prod observability stack. The secret value lives in a gitignored
+    # local file (~/.config/velomo-grafana-sa.env, mode 600, created out-of-band)
+    # so it never enters the repo — only the source line is declarative here.
+    # Consumed by the grafana MCP server's ${GRAFANA_SA_TOKEN} in scraper's
+    # .mcp.json. Guarded so it's a no-op on machines without the file.
+    programs.zsh.initContent = lib.mkOrder 1500 ''
+      [[ -f ~/.config/velomo-grafana-sa.env ]] && source ~/.config/velomo-grafana-sa.env
+    '';
   };
 }
