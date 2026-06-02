@@ -53,8 +53,11 @@ in {
   # as --build-arg. Runtime secrets live in frontend-app.env, NOT here.
   "velomo-alpha/frontend-build.env.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
 
-  # Runtime env for the frontend container. Loaded via env_files in
-  # .doco-cd.yaml; doco-cd reads it from /run/agenix. Contains DATABASE_URL
-  # (with the velomo_reader password), MEILI_HOST, MEILI_SEARCH_KEY.
+  # Runtime env for the frontend stack (Astro app + Fider + Fider's Postgres).
+  # Loaded via env_files in .doco-cd.yaml; doco-cd reads it from /run/agenix.
+  # Contains:
+  #   - App: DATABASE_URL (with the velomo_reader password), MEILI_HOST, MEILI_SEARCH_KEY
+  #   - Fider: FIDER_BASE_URL, FIDER_DB_PASSWORD, FIDER_JWT_SECRET,
+  #     FIDER_EMAIL_NOREPLY, FIDER_SMTP_{HOST,PORT,USERNAME,PASSWORD,ENABLE_STARTTLS}
   "velomo-alpha/frontend-app.env.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
 }

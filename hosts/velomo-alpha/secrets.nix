@@ -118,10 +118,11 @@
       owner = "root";
       mode = "444";
     };
-    # Runtime env for the frontend container. Loaded via env_files in
-    # .doco-cd.yaml; doco-cd reads it from /run/agenix (bind-mounted via
-    # services/doco.nix). 444 so the doco-cd container (non-root inside)
-    # can read it.
+    # Runtime env for the frontend stack (Astro app + Fider feedback board +
+    # its dedicated Postgres). Single env file shared by all three services
+    # in docker-compose.prod.yml. Loaded via env_files in .doco-cd.yaml;
+    # doco-cd reads it from /run/agenix (bind-mounted via services/doco.nix).
+    # 444 so the doco-cd container (non-root inside) can read it.
     "velomo-alpha/frontend-app.env" = {
       file = ../../secrets/velomo-alpha/frontend-app.env.age;
       owner = "root";
