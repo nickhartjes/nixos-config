@@ -39,4 +39,22 @@ in {
   # Slack incoming-webhook URL for Alertmanager (read via slack_api_url_file).
   # File contents are the bare URL; bind-mounted into the alertmanager container.
   "velomo-alpha/alertmanager-slack-url.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
+
+  # Self-hosted GitHub Actions runner registration token for the
+  # Dealdodo/frontend repo. Consumed once on first registration; after
+  # that the runner persists credentials. Re-generate via:
+  #   gh api -X POST /repos/Dealdodo/frontend/actions/runners/registration-token --jq .token
+  "velomo-alpha/frontend-runner-token.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
+
+  # Build-time env for the frontend CI publish job. Contains ONLY PUBLIC_*
+  # values that Vite bakes into the client bundle at build time
+  # (PUBLIC_POSTHOG_KEY, PUBLIC_POSTHOG_HOST). The publish workflow sources
+  # this file into $GITHUB_ENV so docker/build-push-action can pass them
+  # as --build-arg. Runtime secrets live in frontend-app.env, NOT here.
+  "velomo-alpha/frontend-build.env.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
+
+  # Runtime env for the frontend container. Loaded via env_files in
+  # .doco-cd.yaml; doco-cd reads it from /run/agenix. Contains DATABASE_URL
+  # (with the velomo_reader password), MEILI_HOST, MEILI_SEARCH_KEY.
+  "velomo-alpha/frontend-app.env.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
 }

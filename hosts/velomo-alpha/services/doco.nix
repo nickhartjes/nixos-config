@@ -36,6 +36,9 @@ in {
         - url: https://github.com/Dealdodo/scraper.git
           reference: main
           interval: 180
+        - url: https://github.com/Dealdodo/frontend.git
+          reference: main
+          interval: 180
       '';
     };
 

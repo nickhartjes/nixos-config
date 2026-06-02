@@ -101,5 +101,31 @@
       owner = "root";
       mode = "444";
     };
+    # GitHub Actions runner registration token for the Dealdodo/frontend repo.
+    # Consumed once on first registration by services.github-runners.frontend.
+    # 444 because services.github-runners uses a systemd dynamic user — we
+    # can't chown to a UID that doesn't exist until the unit starts.
+    "velomo-alpha/frontend-runner-token" = {
+      file = ../../secrets/velomo-alpha/frontend-runner-token.age;
+      owner = "root";
+      mode = "444";
+    };
+    # Build-time env for the frontend CI publish job. Read by the workflow's
+    # "Load build env from agenix" step which sources it into $GITHUB_ENV.
+    # 444 for the same dynamic-user reason as the runner token.
+    "velomo-alpha/frontend-build.env" = {
+      file = ../../secrets/velomo-alpha/frontend-build.env.age;
+      owner = "root";
+      mode = "444";
+    };
+    # Runtime env for the frontend container. Loaded via env_files in
+    # .doco-cd.yaml; doco-cd reads it from /run/agenix (bind-mounted via
+    # services/doco.nix). 444 so the doco-cd container (non-root inside)
+    # can read it.
+    "velomo-alpha/frontend-app.env" = {
+      file = ../../secrets/velomo-alpha/frontend-app.env.age;
+      owner = "root";
+      mode = "444";
+    };
   };
 }

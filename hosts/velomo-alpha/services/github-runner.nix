@@ -64,4 +64,49 @@
       SupplementaryGroups = ["docker"];
     };
   };
+
+  # Self-hosted GitHub Actions runner for the Dealdodo/frontend repo.
+  #
+  # Why a second runner (not org-scoped): velomo-alpha's existing runner is
+  # repo-scoped to Dealdodo/scraper. Per-repo runners require one registration
+  # token per repo, so the simplest path to handle the frontend repo is a
+  # second runner service with its own agenix secret.
+  #
+  # The registration token in tokenFile is consumed once on first
+  # registration; after that the runner persists its own credentials
+  # under /var/lib/github-runners/frontend/ and the token can expire.
+  # To re-register from scratch (e.g. after the data dir is wiped),
+  # generate a fresh token via:
+  #   gh api -X POST /repos/Dealdodo/frontend/actions/runners/registration-token --jq .token
+  # then re-encrypt secrets/velomo-alpha/frontend-runner-token.age.
+  services.github-runners.frontend = {
+    enable = true;
+    url = "https://github.com/Dealdodo/frontend";
+    tokenFile = config.age.secrets."velomo-alpha/frontend-runner-token".path;
+
+    # Workflow targets this runner with `runs-on: [self-hosted, velomo-alpha]`.
+    # The "frontend" label is advisory and lets future workflows narrow targeting.
+    extraLabels = ["velomo-alpha" "frontend"];
+
+    # Cleanly re-register if a runner with the same name already exists.
+    replace = true;
+
+    # Tools the frontend's publish job needs on PATH.
+    extraPackages = with pkgs; [
+      docker
+      docker-buildx
+      git
+      gh
+      jq
+      coreutils
+      gnused
+      gnugrep
+    ];
+
+    # The systemd unit uses a dynamic user — grant docker socket access via
+    # SupplementaryGroups instead of chowning.
+    serviceOverrides = {
+      SupplementaryGroups = ["docker"];
+    };
+  };
 }
