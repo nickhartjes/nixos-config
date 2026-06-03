@@ -11,13 +11,13 @@ in {
     enable = mkEnableOption "mise polyglot runtime version manager";
 
     globalTools = mkOption {
-      type = types.attrsOf types.str;
+      type = types.attrsOf (types.oneOf [types.str (types.listOf types.str)]);
       default = {};
       example = {
         node = "lts";
-        java = "temurin-21";
+        java = ["temurin-21" "temurin-17"];
       };
-      description = "Tools and versions to install globally via mise (~/.config/mise/config.toml).";
+      description = "Tools and versions to install globally via mise (~/.config/mise/config.toml). A list installs multiple versions; the first becomes the default.";
     };
   };
 

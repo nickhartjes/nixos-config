@@ -124,5 +124,5 @@
   };
 
   # ---- stateVersion: pin to the release the host was first installed against ----
-  system.stateVersion = "25.05";
+  system.stateVersion = "26.05";
 }

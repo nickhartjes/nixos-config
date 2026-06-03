@@ -20,19 +20,9 @@
               "git@github.com:nickhartjes/gitops.git"
               "git@github.com:nickhartjes/codex.git"
             ];
-            dealdodo = [
+            velomo = [
               "git@github.com:dealdodo/frontend"
-              "git@github.com:dealdodo/backend"
-            ];
-            entrnce = [
-              "git@github.com:EnergyExchangeEnablersBV/nma-platform.git"
-              "git@github.com:EnergyExchangeEnablersBV/ephemeral-gitops.git"
-            ];
-            devops = [
-              "git@github.com:EnergyExchangeEnablersBV/devops-helm-charts.git"
-              "git@github.com:EnergyExchangeEnablersBV/devops-aws-cdk.git"
-              "https://github.com/EnergyExchangeEnablersBV/devops-gitops.git"
-              "git@github.com:EnergyExchangeEnablersBV/github-actions-workflows.git"
+              "git@github.com:dealdodo/scraper"
             ];
           };
         };

@@ -24,7 +24,7 @@ in {
     # No host port exposure — running polling-only (GitHub can't reach a LAN
     # host for webhooks anyway). Healthcheck still runs inside the container.
     environment = {
-      TZ = "Europe/Berlin";
+      TZ = "Europe/Amsterdam";
       LOG_LEVEL = "info";
       GIT_ACCESS_TOKEN_FILE = "/run/doco/git-token";
       # Point the docker SDK at the agenix-decrypted registry-auth config

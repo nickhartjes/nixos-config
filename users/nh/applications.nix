@@ -27,7 +27,7 @@
       flameshot.enable = true;
     };
     "3d" = {
-      bambu-studio.enable = true;
+      bambu-studio.enable = false;
       openscad.enable = true;
       freecad.enable = true;
     };

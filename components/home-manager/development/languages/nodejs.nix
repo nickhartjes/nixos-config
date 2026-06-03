@@ -11,12 +11,13 @@
     };
   };
 
+  # node and bun are installed via mise (see components/.../mise.nix); only
+  # surrounding tooling lives here. pnpm/yarn/npm-check-updates work against
+  # whichever node mise has on PATH.
   config = lib.mkIf config.components.development.languages.nodejs.enable {
     home.packages = with pkgs;
       [
-        bun
         cypress
-        nodejs_24
         npm-check-updates
         pnpm
         yarn

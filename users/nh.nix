@@ -64,7 +64,15 @@
       ./nh/desktop.nix
       ./nh/repositories.nix
     ];
-    home.stateVersion = "24.11";
+    home.stateVersion = "26.05";
+
+    # bitwarden-desktop pins electron_39, which nixpkgs (both nixos-unstable
+    # and master, checked 2026-06-03) marks as EOL. Lives here, not at the
+    # host level, because home-manager.useGlobalPkgs is off — HM has its own
+    # nixpkgs.config. Drop once bitwarden-desktop moves to electron_40+.
+    nixpkgs.config.permittedInsecurePackages = [
+      "electron-39.8.10"
+    ];
 
     nixpkgs.config.allowUnfreePredicate = pkg:
       builtins.elem (lib.getName pkg) [

@@ -16,6 +16,12 @@ in {
       envExtra = ''
         export ZSH_CACHE_DIR="$HOME/.cache/zsh"
         [[ -d "$ZSH_CACHE_DIR/completions" ]] || mkdir -p "$ZSH_CACHE_DIR/completions"
+
+        # Claude Code's shell snapshot restores zoxide's functions but not its
+        # chpwd_functions+= side-effect, so the doctor check spuriously fires
+        # in every Bash-tool subshell. Suppress it; the interactive .zshrc is
+        # already correctly ordered.
+        export _ZO_DOCTOR=0
       '';
       antidote = {
         enable = true;

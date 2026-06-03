@@ -3,11 +3,14 @@
   components.development = {
     mise = {
       enable = true;
-      # Optional: declare global tools mise should install.
-      # globalTools = {
-      #   node = "lts";
-      #   java = "temurin-21";
-      # };
+      # Runtimes are owned by mise, not nix. Java is multi-version so IntelliJ
+      # can switch SDKs from ~/.local/share/mise/installs/java/; the first
+      # entry (temurin-21) becomes the default `java`.
+      globalTools = {
+        node = "lts";
+        bun = "latest";
+        java = ["temurin-21" "temurin-17" "temurin-11" "temurin-25"];
+      };
     };
     editor = {
       vscode.enable = true;

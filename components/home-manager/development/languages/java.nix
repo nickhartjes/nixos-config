@@ -8,24 +8,12 @@
     enable = lib.mkEnableOption "Java development environment";
   };
 
+  # JDKs are installed via mise (see components/.../mise.nix); IntelliJ
+  # finds them under ~/.local/share/mise/installs/java/. Only build tooling
+  # lives here.
   config = lib.mkIf config.components.development.languages.java.enable {
     home.packages = with pkgs; [
       gradle
     ];
-
-    programs = {
-      java = {
-        enable = true;
-        package = pkgs.jdk21;
-      };
-    };
-
-    home.file = {
-      ".jdks/jdk11".source = pkgs.jdk11;
-      ".jdks/jdk17".source = pkgs.jdk17;
-      ".jdks/jdk21".source = pkgs.jdk21;
-      ".jdks/jdk25".source = pkgs.jdk25;
-      # ".jdks/jetbrains-jdk".source = pkgs.jetbrains.jdk;
-    };
   };
 }

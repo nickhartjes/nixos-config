@@ -42,7 +42,7 @@
     imports = [
       ../components/home-manager
     ];
-    home.stateVersion = "24.11";
+    home.stateVersion = "26.05";
 
     # nixpkgs.config.allowUnfree = true;
     nixpkgs.config.allowUnfreePredicate = pkg:
