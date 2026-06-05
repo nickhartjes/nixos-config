@@ -6,7 +6,7 @@
   ...
 }: let
   # Utility function for Noctalia IPC commands
-  noctaliaBin = "${inputs.noctalia.packages.${pkgs.system}.default}/bin/noctalia-shell";
+  noctaliaBin = "${inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/noctalia-shell";
   noctalia = cmd: [noctaliaBin "ipc" "call"] ++ (pkgs.lib.splitString " " cmd);
 in {
   # Note: Don't import inputs.niri.homeModules.niri here - it's already

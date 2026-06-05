@@ -10,6 +10,7 @@
         node = "lts";
         bun = "latest";
         java = ["temurin-21" "temurin-17" "temurin-11" "temurin-25"];
+        python = "3.12";
       };
     };
     editor = {

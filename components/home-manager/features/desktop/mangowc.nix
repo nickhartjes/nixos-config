@@ -6,9 +6,9 @@
   ...
 }: let
   cfg = config.components.features.desktop.mangowc;
-  noctaliaBin = "${inputs.noctalia.packages.${pkgs.system}.default}/bin/noctalia-shell";
+  noctaliaBin = "${inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/noctalia-shell";
   noctalia = cmd: "${noctaliaBin} ipc call ${cmd}";
-  dmsBin = "${inputs.dms.packages.${pkgs.system}.default}/bin/dms";
+  dmsBin = "${inputs.dms.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/dms";
   dms = cmd: "${dmsBin} ipc call ${cmd}";
   hasShell = cfg.enableNoctalia || cfg.enableDMS;
 in {

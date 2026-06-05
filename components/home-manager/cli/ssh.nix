@@ -98,13 +98,12 @@ in {
         ServerAliveInterval 60
         ServerAliveCountMax 3
       '';
-      matchBlocks = {
+      settings = {
         "*" = {
-          addKeysToAgent = "yes";
-          # Add common default settings that would normally be included
-          identitiesOnly = true;
-          serverAliveInterval = 60;
-          serverAliveCountMax = 3;
+          AddKeysToAgent = "yes";
+          IdentitiesOnly = "yes";
+          ServerAliveInterval = 60;
+          ServerAliveCountMax = 3;
         };
       };
     };

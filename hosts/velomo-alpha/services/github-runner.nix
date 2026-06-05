@@ -3,11 +3,14 @@
   pkgs,
   ...
 }: {
-  # The GitHub Actions runner bundles Node 20 to execute JS-based actions
-  # (actions/checkout, docker/login-action, etc.). nixpkgs marks Node 20 as
-  # insecure as of its EOL but the runner still ships it. GitHub announced
-  # Node 24 will become the default for actions in June 2026; we'll drop
-  # this once the runner ships with Node 24.
+  # github-runner 2.334.0 no longer provides a working lib/externals/node20,
+  # so Node-20-pinned JS actions (e.g. docker/setup-buildx-action@v3) fail to
+  # launch with "node20/bin/node: No such file or directory" while Node-24
+  # actions (actions/checkout@v6) run fine. We force all JS actions onto the
+  # bundled Node 24 via FORCE_JAVASCRIPT_ACTIONS_TO_NODE24 (set per runner in
+  # serviceOverrides below) — the opt-in GitHub documents ahead of the June
+  # 2026 Node-20 removal. permittedInsecurePackages is kept harmless in case
+  # anything still resolves node20.
   nixpkgs.config.permittedInsecurePackages = [
     "nodejs-20.20.2"
     "nodejs-slim-20.20.2"
@@ -62,6 +65,8 @@
     # access via SupplementaryGroups on the unit instead.
     serviceOverrides = {
       SupplementaryGroups = ["docker"];
+      # Run JS actions on Node 24; the runner's node20 externals are missing.
+      Environment = ["FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true"];
     };
   };
 
@@ -107,6 +112,8 @@
     # SupplementaryGroups instead of chowning.
     serviceOverrides = {
       SupplementaryGroups = ["docker"];
+      # Run JS actions on Node 24; the runner's node20 externals are missing.
+      Environment = ["FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true"];
     };
   };
 }
