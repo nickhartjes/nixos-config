@@ -59,5 +59,17 @@ in {
   #   - App: DATABASE_URL (with the velomo_reader password), MEILI_HOST, MEILI_SEARCH_KEY
   #   - Fider: FIDER_BASE_URL, FIDER_DB_PASSWORD, FIDER_JWT_SECRET,
   #     FIDER_EMAIL_NOREPLY, FIDER_SMTP_{HOST,PORT,USERNAME,PASSWORD,ENABLE_STARTTLS}
+  #   - Auth (Astro-side): LOGTO_ISSUER, LOGTO_CLIENT_ID, LOGTO_CLIENT_SECRET,
+  #     LOGTO_M2M_CLIENT_ID, LOGTO_M2M_CLIENT_SECRET, LOGTO_MGMT_API_URL,
+  #     LOGTO_DB_URL, SESSION_SECRET, GOOGLE_CLIENT_ID/SECRET, GITHUB_CLIENT_ID/SECRET,
+  #     DISCORD_WEBHOOK_URL
   "velomo-alpha/frontend-app.env.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
+
+  # Runtime env for the Logto identity provider stack (logto, logto-db, oauth2-proxy).
+  # Loaded via env_files in .doco-cd.yaml alongside frontend-app.env.
+  # Contains: LOGTO_DB_PASSWORD, LOGTO_ENDPOINT, LOGTO_ADMIN_ENDPOINT,
+  # OAUTH2_PROXY_{CLIENT_ID,CLIENT_SECRET,REDIRECT_URL,COOKIE_SECRET},
+  # BACKUP_S3_{BUCKET,ENDPOINT,REGION,KEY,KEY_SECRET,URI_STYLE,VERIFY_TLS}
+  # Create: cd secrets && agenix -e velomo-alpha/logto-app.env.age
+  "velomo-alpha/logto-app.env.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
 }
