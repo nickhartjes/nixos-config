@@ -131,7 +131,8 @@
     # Runtime env for the Logto identity provider stack (logto, logto-db,
     # oauth2-proxy). Contains: LOGTO_DB_PASSWORD, LOGTO_ENDPOINT,
     # LOGTO_ADMIN_ENDPOINT, OAUTH2_PROXY_CLIENT_ID, OAUTH2_PROXY_CLIENT_SECRET,
-    # OAUTH2_PROXY_REDIRECT_URL, OAUTH2_PROXY_COOKIE_SECRET.
+    # OAUTH2_PROXY_REDIRECT_URL, OAUTH2_PROXY_COOKIE_SECRET, and the shared
+    # BACKUP_S3_* vars (same bucket as scraper, logto-db uses /logto-backups path).
     # Loaded alongside frontend-app.env via env_files in .doco-cd.yaml.
     # Create/edit: cd nixos-config && agenix -e secrets/velomo-alpha/logto-app.env.age
     "velomo-alpha/logto-app.env" = {
