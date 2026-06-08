@@ -47,8 +47,14 @@
     pkiBundle = "/var/lib/sbctl";
   };
 
-  # Use LTS kernel for displaylink/evdi compatibility
-  boot.kernelPackages = pkgs.linuxPackages_6_12;
+  # Track the NixOS default kernel (currently 6.18). We were previously pinned to
+  # 6.12 LTS for evdi/DisplayLink, but 6.12 left the USB-C controller without
+  # renegotiating DisplayPort after resume, killing external displays until a
+  # physical replug. DisplayLink is disabled (hosts/framework-13/default.nix), so
+  # there's no longer a reason to pin — the default is newer and never EOLs out of
+  # eval. If DisplayLink is needed again, pin back to an evdi-supported kernel here
+  # and re-enable it.
+  boot.kernelPackages = pkgs.linuxPackages;
 
   # Enable hibernation support
   boot.kernelModules = ["btrfs"];

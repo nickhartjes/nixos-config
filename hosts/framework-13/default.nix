@@ -65,7 +65,9 @@
     };
 
     hardware = {
-      displaylink.enable = true;
+      # Disabled: evdi doesn't build against the default kernel (see configuration.nix).
+      # Re-enable together with pinning kernelPackages back to an evdi-supported LTS.
+      displaylink.enable = false;
     };
     virtualization = {
       docker.enable = true; # Enable all virtualization options
