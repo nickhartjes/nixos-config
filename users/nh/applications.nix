@@ -28,7 +28,7 @@
     };
     "3d" = {
       bambu-studio.enable = false;
-      openscad.enable = true;
+      openscad.enable = false;
       freecad.enable = true;
     };
     database = {
