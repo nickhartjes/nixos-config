@@ -74,7 +74,7 @@ in {
             {command = ["${pkgs.networkmanagerapplet}/bin/nm-applet"];}
           ]
           ++ lib.optionals config.components.features.desktop.niri.enableNoctalia [
-            {command = ["sh" "-c" "rm -f ~/.config/noctalia/settings.json && cp ~/.config/noctalia/settings-niri.json ~/.config/noctalia/settings.json && exec ${noctaliaBin}"];}
+            {command = [noctaliaBin];}
           ]
           ++ lib.optionals (!config.components.features.desktop.niri.enableNoctalia) [
             {command = ["${pkgs.swaynotificationcenter}/bin/swaync"];}

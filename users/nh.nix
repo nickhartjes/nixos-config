@@ -54,6 +54,7 @@
   home-manager.users.nh = {
     config,
     pkgs,
+    lib,
     ...
   }: {
     imports = [
@@ -102,29 +103,82 @@
         "vscode"
       ];
 
-    home.packages = (with pkgs; [
-      fd
-      obsidian
-      alejandra
-      wl-clipboard
-      catppuccin-kde
-      just
-    ]) ++ [
-      inputs.lazyjust.packages.${pkgs.stdenv.hostPlatform.system}.default
-    ];
+    home.packages =
+      (with pkgs; [
+        fd
+        obsidian
+        alejandra
+        wl-clipboard
+        catppuccin-kde
+        just
+        uv # Python tool/proj manager; also backs the headroom install below
+      ])
+      ++ [
+        inputs.lazyjust.packages.${pkgs.stdenv.hostPlatform.system}.default
+      ];
 
     home.shellAliases = {
       repo-sync = "~/.local/bin/repo-manager";
       repo-log = "tail -f ~/.local/state/repo-manager.log";
     };
 
-    # Load the Grafana MCP service-account token (GRAFANA_SA_TOKEN) for the
+    # uv installs tool executables (e.g. headroom) here.
+    home.sessionPath = ["$HOME/.local/bin"];
+
+    # Headroom context-compression CLI. Installed via `uv tool` rather than
+    # mise's pipx backend, which silently drops the [all] extras (mcp/proxy/
+    # ml/...) when it pins the version. nix-ld (hosts/common) lets headroom's
+    # prebuilt Rust-extension wheels load. Idempotent: only installs when the
+    # binary is missing, so normal switches are a fast no-op and need no
+    # network. To upgrade: `uv tool upgrade headroom-ai`.
+    home.activation.installHeadroom = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      if [[ ! -x "$HOME/.local/bin/headroom" ]]; then
+        $DRY_RUN_CMD ${pkgs.uv}/bin/uv tool install 'headroom-ai[all]'
+      fi
+    '';
+
+    # Run the Headroom optimization proxy as a supervised user service. This is
+    # the declarative replacement for `headroom init claude`, which would
+    # otherwise scribble an ANTHROPIC_BASE_URL + SessionStart/PreToolUse hooks
+    # into ~/.claude/settings.json plus a runtime manifest under headroom's
+    # state dir — the hooks exist only to lazily spawn this proxy. A systemd
+    # user service supervises it instead. The proxy passes Claude Code's own
+    # auth headers straight through to api.anthropic.com (anthropic backend,
+    # token mode); no API key is stored here. Upstream is ANTHROPIC_TARGET_API_URL
+    # (default api.anthropic.com), NOT ANTHROPIC_BASE_URL, so routing clients at
+    # the proxy creates no loop — the empty Environment entry is belt-and-braces.
+    # --memory enables persistent cross-session memory (project-scoped by
+    # default, seeded at ~/.headroom/memory.db); --no-telemetry opts out of
+    # Headroom's anonymous usage telemetry.
+    systemd.user.services.headroom-proxy = {
+      Unit.Description = "Headroom context-optimization proxy";
+      Service = {
+        # uv-installed at ~/.local/bin (see installHeadroom above), not a Nix
+        # package, so reference by absolute path. %h expands to $HOME.
+        ExecStart = "%h/.local/bin/headroom proxy --host 127.0.0.1 --port 8787 --memory --no-telemetry";
+        Environment = ["ANTHROPIC_BASE_URL="];
+        Restart = "always";
+        RestartSec = 2;
+      };
+      Install.WantedBy = ["default.target"];
+    };
+
+    # Exported here rather than via home.sessionVariables: HM only auto-sources
+    # its hm-session-vars.sh when programs.zsh integration is on, which it isn't
+    # in this setup — so the session var never reached interactive zsh. Routes
+    # nh's Anthropic-API clients (Claude Code included) through the proxy. NOTE:
+    # this is a hard dependency — if headroom-proxy is down, Claude Code can't
+    # reach the API; the service above is Restart=always to keep that window
+    # small.
+    #
+    # Also loads the Grafana MCP service-account token (GRAFANA_SA_TOKEN) for the
     # Velomo prod observability stack. agenix decrypts the token to
     # ~/.config/velomo-grafana-sa.env on framework-13 (owner nh; see
     # hosts/framework-13/secrets.nix); this sources it so the grafana MCP in
     # scraper's .mcp.json gets ${GRAFANA_SA_TOKEN}. Guarded so it's a no-op on
     # machines/hosts where the secret isn't provisioned.
     programs.zsh.initContent = lib.mkOrder 1500 ''
+      export ANTHROPIC_BASE_URL="http://127.0.0.1:8787"
       [[ -f ~/.config/velomo-grafana-sa.env ]] && source ~/.config/velomo-grafana-sa.env
     '';
   };

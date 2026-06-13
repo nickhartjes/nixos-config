@@ -69,7 +69,7 @@ in {
               "${pkgs.networkmanagerapplet}/bin/nm-applet"
             ]
             ++ lib.optionals cfg.enableNoctalia [
-              "sh -c 'rm -f ~/.config/noctalia/settings.json && cp ~/.config/noctalia/settings-mango.json ~/.config/noctalia/settings.json && exec ${noctaliaBin}'"
+              noctaliaBin
             ]
             ++ lib.optionals cfg.enableDMS [
               "${dmsBin} run --session"
