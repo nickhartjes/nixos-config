@@ -12,7 +12,7 @@ in {
   config = mkIf cfg.enable {
     programs.fastfetch = {
       enable = true;
-      package = pkgs.fastfetch.minimal;
+      package = pkgs.fastfetch-unwrapped;
 
       settings = {
         "$schema" = "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json";

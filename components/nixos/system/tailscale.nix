@@ -45,20 +45,20 @@ in {
       }
       // cfg.extraConfig;
 
-    # Add tailscale-systray to system packages
+    # trayscale: maintained GTK4/libadwaita tray GUI for Tailscale.
+    # Replaces the abandoned tailscale-systray, which busy-looped on a core.
     environment.systemPackages = with pkgs; [
-      tailscale-systray
+      trayscale
     ];
 
-    # Run tailscale-systray as a user service so it has access to the
-    # graphical session (DISPLAY/WAYLAND_DISPLAY).
-    systemd.user.services.tailscale-systray = {
-      description = "Tailscale Systray";
+    # Autostart hidden into the tray with the graphical session.
+    systemd.user.services.trayscale = {
+      description = "Trayscale (Tailscale tray)";
       wantedBy = ["graphical-session.target"];
       partOf = ["graphical-session.target"];
       after = ["graphical-session.target"];
       serviceConfig = {
-        ExecStart = "${pkgs.tailscale-systray}/bin/tailscale-systray";
+        ExecStart = "${pkgs.trayscale}/bin/trayscale --hide-window";
         Restart = "on-failure";
         RestartSec = 5;
       };
