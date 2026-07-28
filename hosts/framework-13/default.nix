@@ -40,27 +40,27 @@
   ];
 
   # Fix conflicting default session definitions
-  services.displayManager.defaultSession = lib.mkForce "cosmic";
+  services.displayManager.defaultSession = lib.mkForce "plasma";
 
   components = {
     # Enable all desktop environments (Note: may cause conflicts)
     desktop = {
       cinnamon.enable = false;
-      cosmic.enable = true;
+      cosmic.enable = false;
       gnome.enable = false;
       hyprland.enable = false;
       mangowc.enable = true;
       niri.enable = true;
       pantheon.enable = false;
-      plasma.enable = false;
+      plasma.enable = true;
       sway.enable = false;
     };
 
     display = {
       gdm.enable = false; # Keep only one display manager to avoid conflicts
       lightdm.enable = false;
-      sddm.enable = false;
-      cosmic-greeter.enable = true;
+      sddm.enable = true;
+      cosmic-greeter.enable = false;
       greetd.enable = false;
     };
 
