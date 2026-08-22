@@ -75,6 +75,43 @@
       "electron-39.8.10"
     ];
 
+    # TEMP (2026-07-26): pandas-stubs test collection breaks under pytest 9,
+    # failing markitdown -> alpaca. Same fix as overlays/default.nix
+    # modifications, but HM needs it separately: useGlobalPkgs is off and
+    # nothing imports components/home-manager/common (where the shared overlay
+    # list lives — dead code), so HM's nixpkgs has NO overlays. Drop after a
+    # flake update builds without it.
+    nixpkgs.overlays = [
+      # TEMP (2026-08-07): hyprland 0.56.1 cannot configure against glaze 8,
+      # which is what the nixpkgs rev we pin ships (NixOS/nixpkgs#549246).
+      # Same fix as overlays/default.nix modifications — duplicated here for
+      # the reason spelled out above (HM's nixpkgs gets no overlays). Drop
+      # both together once the main nixpkgs pin can move past e0832b87.
+      (_final: prev: let
+        unstable = import inputs.nixpkgs-unstable {
+          inherit (prev.stdenv.hostPlatform) system;
+          config.allowUnfree = true;
+        };
+      in {
+        inherit (unstable) hyprland xdg-desktop-portal-hyprland;
+      })
+
+      (_final: prev: {
+        pythonPackagesExtensions =
+          prev.pythonPackagesExtensions
+          ++ [
+            (_pyfinal: pyprev: {
+              # pythonImportsCheck imports pandas, which only comes in via the
+              # (now skipped) test deps — disable it along with the tests.
+              pandas-stubs = pyprev.pandas-stubs.overridePythonAttrs (_: {
+                doCheck = false;
+                pythonImportsCheck = [];
+              });
+            })
+          ];
+      })
+    ];
+
     nixpkgs.config.allowUnfreePredicate = pkg:
       builtins.elem (lib.getName pkg) [
         "anytype"
@@ -85,6 +122,9 @@
         "vscode-extension-anthropic-claude-code"
         "dbeaver-bin"
         "discord"
+        # nixpkgs split discord into a wrapper + unwrapped derivation; the
+        # predicate sees the inner name, so both have to be listed.
+        "discord-unwrapped"
         "idea"
         "jetbrains-toolbox"
         "lmstudio"

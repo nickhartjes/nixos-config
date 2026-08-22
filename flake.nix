@@ -190,6 +190,10 @@
           auto-cpufreq.nixosModules.default
           inputs.niri.nixosModules.niri # Niri compositor module
           inputs.mango.nixosModules.mango # MangoWC compositor module
+          # nixpkgs now ships its own programs.mango module, which collides with the
+          # flake module above; keep the flake one so the compositor package stays in
+          # sync with the mango HM module.
+          {disabledModules = ["programs/wayland/mango.nix"];}
           inputs.dms.nixosModules.dank-material-shell # Dank Material Shell module
         ];
       };

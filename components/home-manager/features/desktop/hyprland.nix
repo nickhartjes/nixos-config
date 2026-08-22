@@ -199,7 +199,6 @@
 
         # Execute on startup
         exec-once = [
-          "${pkgs.hyprpanel}/bin/hyprpanel"
           "${pkgs.kanshi}/bin/kanshi"
           "${pkgs.hypridle}/bin/hypridle"
           "[workspace special:slack silent] ${pkgs.slack}/bin/slack"
@@ -311,7 +310,6 @@
       # System tools
       hyprlock
       wlogout
-      hyprpanel
       kanshi
       hypridle
 

@@ -6,6 +6,22 @@
   # You can change versions, add patches, set compilation flags, anything really.
   # https://nixos.wiki/wiki/Overlays
   modifications = final: prev: {
+    # TEMP (2026-07-26): pandas-stubs test collection breaks under pytest 9
+    # (PytestRemovedIn10Warning escalated to error), failing the whole
+    # markitdown -> alpaca chain. Skip its tests until nixpkgs bumps the
+    # package; remove this after a flake update builds without it.
+    pythonPackagesExtensions =
+      prev.pythonPackagesExtensions
+      ++ [
+        (_pyfinal: pyprev: {
+          # pythonImportsCheck imports pandas, which only comes in via the
+          # (now skipped) test deps — disable it along with the tests.
+          pandas-stubs = pyprev.pandas-stubs.overridePythonAttrs (_: {
+            doCheck = false;
+            pythonImportsCheck = [];
+          });
+        })
+      ];
     n8n = import ./mods/n8n.nix {inherit prev;};
     bambu-studio = prev.appimageTools.wrapType2 rec {
       name = "BambuStudio";
