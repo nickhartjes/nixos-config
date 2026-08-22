@@ -46,7 +46,7 @@ in {
           xkb_rules_options = "caps:escape";
           tap_to_click = 1;
           trackpad_natural_scrolling = 1;
-          disable_while_typing = 1;
+          trackpad_disable_while_typing = 1;
 
           # Environment variables
           env = [
