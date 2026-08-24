@@ -29,8 +29,8 @@
     # Claude OAuth token, consumed by the agent container via mount-by-reference
     # (nanoclaw refuses credential VALUES in container env; absolute paths are
     # the sanctioned channel). owner=nh so the host process can mount it.
-    "n100-nanoclaw/anthropic-token.env" = {
-      file = ../../secrets/n100-nanoclaw/anthropic-token.env.age;
+    "n100-nanoclaw/anthropic-token" = {
+      file = ../../secrets/n100-nanoclaw/anthropic-token.age;
       path = "/home/nh/.config/nanoclaw-anthropic-token";
       owner = "nh";
       mode = "400";

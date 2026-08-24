@@ -108,7 +108,11 @@ in {
   # vault; we bypass that with a `direct` gateway provider and deliver the token
   # by mount-by-reference instead, so it stays on our own infrastructure.
   # Single line, no wrapping -- an embedded newline silently breaks the token.
-  "n100-nanoclaw/anthropic-token.env.age".publicKeys = [framework-13 framework-13-2] ++ nanoclawSystems;
+  # NOT named *.env: nanoclaw's mount-security blocks any mount whose resolved
+  # realPath contains ".env" (a hardcoded pattern), and agenix's decrypted path
+  # under /run/agenix.d/ is what gets resolved. A .env suffix here makes the
+  # container mount fail regardless of the allowlist.
+  "n100-nanoclaw/anthropic-token.age".publicKeys = [framework-13 framework-13-2] ++ nanoclawSystems;
 
   # SSH private key giving the host clone/push access to the private
   # nickhartjes/nanoclaw mirror (upstream nanoclaw can't be private as a
