@@ -17,6 +17,13 @@ before relying on this document if upstream has moved since that date.
 
 ## (a) Per-group bind mounts: supported config key
 
+**Evidence basis: enforced by code.** The forced `/workspace/extra/` prefix
+is not a convention that a differently-configured mount could route around —
+`isValidContainerPath()` rejects any absolute or `..`-containing path before
+the mount is ever composed, and `validateAdditionalMounts()` is the only
+place `additionalMounts` entries reach the driver, so this is a hard
+constraint, not something merely unexercised in the code I read.
+
 **Supported.** The config key is `additionalMounts` (an array of
 `{ hostPath: string; containerPath: string; readonly?: boolean }`), stored in
 the DB `container_configs.additional_mounts` column (JSON) and materialized
@@ -73,14 +80,36 @@ allowlist can simply be a subdirectory the host creates under
 
 ## (b) Per-group env vars: supported config key
 
-**Partially supported, and not at the granularity the brief assumed.** There
-is **no** generic, container-wide, operator-settable "additional env" key on
-`ContainerConfig` (`src/container-config.ts:239-255` — the only fields are
-`mcpServers`, `packages`, `imageTag`, `additionalMounts`, `skills`, `provider`,
-`groupName`, `assistantName`, `agentGroupId`, `maxMessagesPerPrompt`, `model`,
-`effort`, `timezone`, `runtimeTier`). Grepping upstream for any
+**Evidence basis: mixed.** The absence of a generic per-group env key is
+**enforced by code** for the piece that matters most: `ContainerConfig` is a
+TypeScript interface with an exhaustive, explicitly-named field list
+(`src/container-config.ts:239-255` — `mcpServers`, `packages`, `imageTag`,
+`additionalMounts`, `skills`, `provider`, `groupName`, `assistantName`,
+`agentGroupId`, `maxMessagesPerPrompt`, `model`, `effort`, `timezone`,
+`runtimeTier`); anything not in that list cannot survive
+`configFromDb()`/`materializeContainerJson()` round-tripping, so this is not
+just "I didn't find one," it's "the type does not have room for one." The
+per-server `env` field's existence and its 32-entry cap are likewise
+enforced-by-code reads (`src/container-config.ts:28-33`,
+`src/modules/self-mod/request.ts:79,174-175`).
+
+The one thing this section does **not** rule out (evidence basis:
+not-settled-from-source, same gap as (d)): whether the SDK's `settingSources`
+mechanism gives the agent process a *second*, SDK-level way to pick up
+project-scoped environment values (e.g. via a `.claude/settings.json` at
+`/workspace/agent` under `settingSources: ['project']`) independent of
+anything `ContainerConfig` models. I did not find evidence of this for env
+specifically (unlike `.mcp.json`, no string literal in the SDK bundle names
+an env-from-settings-file mechanism), but the search that produced "no
+generic env key" was scoped to nanoclaw's own repository plus a targeted grep
+of the SDK bundle for MCP-adjacent strings — it was not an exhaustive read of
+the SDK/CLI's settings-file schema, so a project-level env mechanism there
+cannot be fully ruled out on this evidence.
+
+Confirming the negative claim above: grepping upstream nanoclaw for any
 `additionalEnv`/`extraEnv`/`envVars`/"config set-env"-style key turns up
-nothing (checked `src/` and `container/agent-runner/src/`).
+nothing (checked `src/` and `container/agent-runner/src/`) — this covers
+nanoclaw's own code, not the vendored SDK/CLI.
 
 The only per-group, operator-configurable env-injection surface is **scoped to
 one MCP server's own process**: `McpStdioServerConfig.env?: Record<string,
@@ -111,6 +140,10 @@ described in (a), not a literal `~/.config/hevy-mcp.env` path.
 
 ## (c) Agent container's `$HOME`
 
+**Evidence basis: enforced by code**, on two independent, corroborating
+paths — one baked into the image build (not reachable from JS config at
+all), one explicit in the composer:
+
 **Resolves to `/home/node`,** by two independent, corroborating mechanisms:
 
 1. **Image default.** `container/Dockerfile` is `FROM node:22-slim` (line 13),
@@ -132,62 +165,109 @@ the agent container's `$HOME` regardless of which code path is active.
 
 ## (d) `.mcp.json` in the group folder, read by the in-container agent
 
-**Not read.** No such runtime mechanism exists. Two unrelated things carry
-similar names, and conflating them was the likely source of the brief's
-"inferred, not verified" assumption:
+**UNRESOLVED.** The first draft of this document claimed "not read, period."
+That claim was wrong to state without a hedge: it was reached by searching
+only nanoclaw's own repository, and it overlooked a second, independent
+loading path inside the vendored Claude Agent SDK that nanoclaw itself wires
+up and does not disable. Corrected below, split into what nanoclaw's own code
+does (settled) and what the SDK/CLI does with what nanoclaw hands it
+(not settled from source available to this task).
 
-1. **`mcp.json` (no leading dot) is read, but only from a *plugin* directory
-   at template-stamp time**, not from the group folder at container spawn
-   time. `readPluginMcp()` (`src/templates/mcp.ts:48-97`) explicitly checks
-   for a legacy `.mcp.json` (with the dot) and — rather than reading it —
-   **ignores it and reports it as a lint warning**: `".mcp.json: ignored
-   (legacy name); rename it to mcp.json"` (`src/templates/mcp.ts:52-54`,
-   confirmed by the test at `src/templates/parse.test.ts:361-368`). This
-   machinery belongs to the "Agent Plugins" template/stamping system
-   (plugin authors ship an `mcp.json` that gets folded into the DB
-   `mcp_servers` column once, when a template is applied via
-   `ncl groups create --template`) — it has nothing to do with what the
-   running agent reads on every spawn.
-2. **The actual runtime source of truth is `groups/<folder>/container.json`**
-   (materialized from the DB by `materializeContainerJson()`,
-   `src/container-config.ts:358-373`), bind-mounted **read-only** into the
-   container at `/workspace/agent/container.json`
-   (`src/container-runner.ts:503-516`). Inside the container,
-   `container/agent-runner/src/config.ts:12,33-49` reads exactly that path
-   and exposes its `mcpServers` field. That field is then passed **directly**
-   into the Claude Agent SDK's own `mcpServers` option in-process
-   (`container/agent-runner/src/providers/claude.ts:482,491-492,575`) — the
-   SDK never reads a `.mcp.json` project file off disk for this; nanoclaw
-   hands it the parsed object.
+**Settled — nanoclaw's own explicit wiring (evidence basis: enforced by code,
+read directly):**
 
-**Bottom line: there is no `.mcp.json` (dotted or not) in the group folder
-that the in-container agent reads for its three MCP servers.** The three
-servers belong in `container.json`'s `mcpServers` map, populated via
-`ncl groups config add-mcp-server` (see (b) above) or via the plugin-stamping
-path in (d.1) if they should ship as part of a reusable template.
+`groups/<folder>/container.json` is nanoclaw's own materialized config
+(`materializeContainerJson()`, `src/container-config.ts:358-373`), mounted
+read-only at `/workspace/agent/container.json`
+(`src/container-runner.ts:503-516`). `container/agent-runner/src/config.ts:12,33-49`
+reads exactly that path and exposes its `mcpServers` field, which
+`container/agent-runner/src/providers/claude.ts:482,491-492` passes into the
+SDK's own `mcpServers` query option. This channel is real and does not
+involve any file named `.mcp.json`.
+
+**Not settled — a second, independent channel the SDK call also opens
+(evidence basis: real but not fully investigated; found in the SDK's
+published source, not nanoclaw's repo, and not run):**
+
+The same `query()` call also passes `settingSources: ['project', 'user',
+'local']` and `cwd: input.cwd` to the SDK
+(`container/agent-runner/src/providers/claude.ts:574` for `settingSources`,
+`:565` for `cwd`), and `input.cwd` is always `/workspace/agent`
+(`CWD = '/workspace/agent'`, `container/agent-runner/src/index.ts:46,125`) —
+the same directory `groups/<folder>/` is mounted to. `settingSources` and
+`mcpServers` are two separate options on the same call; nothing in
+nanoclaw's code disables or overrides `settingSources`, and nothing here
+proves it is inert.
+
+To find out what `settingSources` actually does, I downloaded the real
+published package — `npm view` shows nanoclaw pins
+`@anthropic-ai/claude-agent-sdk@^0.3.238`
+(`container/agent-runner/package.json:12`); I fetched the exact `0.3.238`
+tarball from the npm registry and inspected its bundled `sdk.mjs` (this is
+source, not documentation). That confirms:
+
+- `settingSources` is a real, live option: the SDK translates it verbatim
+  into a `--setting-sources=project,user,local`-style flag on the underlying
+  CLI subprocess invocation (found in `sdk.mjs`'s option-to-argv translation).
+- The bundle's own embedded schema/help strings describe `.mcp.json` and a
+  per-project "approved/disabled McpJsonServers" list as a source the CLI
+  treats as **independent of** the SDK's own `mcpServers` plumbing — one
+  string literally reads "does not gate other MCP entry points (SDK
+  setMcpServers, claude mcp add, .mcp.json)", i.e. the SDK bundle itself
+  documents `.mcp.json` as a parallel, non-overlapping entry point.
+- **What I could not verify:** the actual filesystem-read-and-approval logic
+  for project-scoped `.mcp.json` lives in the separate compiled `claude` CLI
+  binary that the SDK spawns as a subprocess (nanoclaw pins
+  `pathToClaudeCodeExecutable: '/pnpm/claude'`,
+  `container/agent-runner/src/providers/claude.ts:565`-adjacent options
+  block) — that binary is a different package
+  (`@anthropic-ai/claude-code`), was not fetched, and was not decompiled or
+  run. So I cannot state whether, given nanoclaw's specific options
+  (`permissionMode: 'bypassPermissions'`, `allowDangerouslySkipPermissions:
+  true`, no TTY, headless container), a `.mcp.json` dropped at
+  `groups/<folder>/.mcp.json` (→ `/workspace/agent/.mcp.json`) would be
+  auto-approved and its servers actually surfaced to the agent, silently
+  ignored pending an approval step that never fires headlessly, or something
+  in between.
+
+**Concrete experiment that would settle it** (not run as part of this
+task — this is a read-only investigation): on the framework-13 nanoclaw
+install, drop a minimal valid `.mcp.json` (`{"mcpServers": {"probe":
+{"command": "..."}}}`) directly into an existing group's folder (host path
+`groups/<folder>/.mcp.json`, which lands at `/workspace/agent/.mcp.json` in
+the container — no `additionalMounts` needed, since `/workspace/agent` is
+already mounted RW), restart that group's session with
+`ncl groups restart --id <id>`, and check either the agent-runner startup
+logs for an MCP connection attempt to `probe`, or ask the agent to list its
+available tools and look for an `mcp__probe__*` entry that was never present
+in that group's `container.json`. A positive result would mean Phase B can
+skip `container.json`'s `mcpServers` entirely and use a plain `.mcp.json`
+instead — materially simpler. A negative result (or a result gated behind an
+approval prompt that never resolves headlessly) confirms the original `(d)`
+conclusion holds in practice, for a different reason than first claimed.
 
 ---
 
 ## Summary table
 
-| Question | Answer | Key citation |
-|---|---|---|
-| (a) bind mounts | `additionalMounts` array on `ContainerConfig`; **container path always forced under `/workspace/extra/`**, host path must pre-exist and match an allowlist root | `src/modules/mount-security/index.ts:276-438`, `src/cli/resources/groups.ts:555-606` |
-| (b) env vars | No generic per-group env key; only `mcpServers.<name>.env`, scoped to that one server, capped at 32 entries | `src/container-config.ts:28-33,239-255`, `src/cli/resources/groups.ts:423-458`, `src/modules/self-mod/request.ts:79` |
-| (c) `$HOME` | `/home/node` — image default (`USER node` in `node:22-slim`) and explicit override on uid-mapped runs | `container/Dockerfile:13,128,134`, `src/container-runner.ts:686-700` |
-| (d) `.mcp.json` in group folder | Not read by the runtime agent at all. Runtime source is `container.json`'s `mcpServers`, mounted at `/workspace/agent/container.json`. A dotted `.mcp.json` is explicitly ignored, and only in an unrelated plugin-template directory, not the group folder | `src/templates/mcp.ts:48-97`, `src/container-config.ts:358-373`, `src/container-runner.ts:503-516`, `container/agent-runner/src/config.ts:12,33-49` |
+| Question | Answer | Evidence basis | Key citation |
+|---|---|---|---|
+| (a) bind mounts | `additionalMounts` array on `ContainerConfig`; **container path always forced under `/workspace/extra/`**, host path must pre-exist and match an allowlist root | Enforced by code | `src/modules/mount-security/index.ts:276-438`, `src/cli/resources/groups.ts:555-606` |
+| (b) env vars | No generic per-group env key on `ContainerConfig` (exhaustive type); only `mcpServers.<name>.env`, scoped to that one server, capped at 32 entries. SDK-level `settingSources` as a second env channel is not ruled out. | Enforced by code (no-generic-key claim); not-settled-from-source (whether SDK `settingSources` offers a parallel env path) | `src/container-config.ts:28-33,239-255`, `src/cli/resources/groups.ts:423-458`, `src/modules/self-mod/request.ts:79` |
+| (c) `$HOME` | `/home/node` — image default (`USER node` in `node:22-slim`) and explicit override on uid-mapped runs | Enforced by code | `container/Dockerfile:13,128,134`, `src/container-runner.ts:686-700` |
+| (d) `.mcp.json` in group folder | **UNRESOLVED.** Nanoclaw's own explicit channel is `container.json`'s `mcpServers`, not `.mcp.json` (enforced by code). But the same SDK call also sets `settingSources: ['project','user','local']` with `cwd=/workspace/agent`, a second, independent channel the published SDK source confirms is real and forwarded to the underlying CLI — whether it actually loads/auto-approves a `.mcp.json` dropped at `/workspace/agent/.mcp.json` in nanoclaw's headless, bypass-permissions configuration is not settled from source available to this task (the file-reading logic lives in a separate, uninspected compiled CLI binary) | Not-settled-from-source | `container/agent-runner/src/providers/claude.ts:565,574`, `container/agent-runner/src/index.ts:46,125`, `container/agent-runner/src/config.ts:12,33-49`, `src/container-config.ts:358-373`, `src/container-runner.ts:503-516`, npm-published `@anthropic-ai/claude-agent-sdk@0.3.238` `sdk.mjs` |
 
-**Net effect on Phase B:** (b) and (d) as originally assumed are wrong and
-must be redesigned — there is no per-group `.mcp.json` file, and env
-injection is per-MCP-server, not per-group. (a) is real but does not support
-mounting at an arbitrary absolute container path (it always lands under
-`/workspace/extra/`), which matters if the design insists on the literal path
-`~/.config/hevy-mcp.env`. None of the four answers required patching the
-fork's container-spawn code to *learn* the facts — but (a)'s path-prefixing
-and (b)'s per-server-only scoping mean Phase B's original plan (a bind-mounted
-env file at a literal home-relative path, plus three MCP servers via a
-`.mcp.json`) cannot be realized unmodified through upstream's supported
-surface, and should either target the supported shapes above (relative
-`/workspace/extra/...` mount, per-server `env`, `container.json`'s
-`mcpServers`) or fall back to patching the fork's container-spawn code as the
-brief anticipated.
+**Net effect on Phase B:** (a) and (b)'s no-generic-env-key finding stand as
+hard constraints — bind mounts always land under `/workspace/extra/`, and
+`ContainerConfig` has no room for an arbitrary per-group env var. (c) is
+settled: `$HOME=/home/node`. (d) is the one open question that actually
+matters most for Phase B's design, since it decides whether the three MCP
+servers can ship as a plain `.mcp.json` (materially simpler) or must go
+through `container.json`'s `mcpServers` (via `ncl groups config
+add-mcp-server`, confirmed supported). Phase B should either run the
+concrete experiment described in (d) before committing to a design, or
+default to the confirmed-working `container.json` path and treat a working
+`.mcp.json` as a possible future simplification rather than a load-bearing
+assumption. Separately, for the Hevy API key specifically, the per-server
+`mcpServers.<name>.env` field (see (b)) already solves that need directly —
+no bind-mounted env file is required at all, regardless of how (d) resolves.
