@@ -56,9 +56,10 @@ clean-install HOSTNAME:
     cd ~/nixos-config && sudo nixos-install --flake .#{{HOSTNAME}}
 
 
-# Install host remotely nixos-anywhere. Seeds SSH host key
-# EXTRA dir mirroring target's /), so agenix decrypts on first boot.
-# Usage: just install-nanoclaw 10.0.60.51 /home/nh/.local/state/n100-nanoclaw-extra
+# Install a host remotely with nixos-anywhere. EXTRA is a directory mirroring
+# the target's filesystem root; seeding /etc/ssh/ssh_host_ed25519_key there lets
+# agenix decrypt on the very first boot, avoiding an install-then-rekey pass.
+# Usage: just install-nanoclaw 10.0.60.51
 install-nanoclaw IP EXTRA="/home/nh/.local/state/n100-nanoclaw-extra":
     nix run github:nix-community/nixos-anywhere -- \
         --extra-files {{EXTRA}} \

@@ -761,18 +761,20 @@ and `passwordauthentication no`.
 Proves the host is maintainable the same way the rest of the fleet is.
 
 ```bash
-cd /home/nh/.config/nixos-config
-nixos-rebuild switch --flake .#n100-nanoclaw \
-  --target-host nh@10.0.60.51 --use-remote-sudo
+cd /home/nh/.config/nixos-config && just deploy n100-nanoclaw
 ```
 
 Expected: a successful `nixos-rebuild switch` against the remote host.
 
-An explicit `nh@10.0.60.51` is used rather than `just deploy
-n100-nanoclaw`, because that recipe passes `--target-host {{SYSTEM}}` — the
-bare hostname — which resolves only if tailnet MagicDNS serves it. Once
-you have confirmed the name resolves, `just deploy n100-nanoclaw` is the
-form to use day to day.
+MagicDNS has been confirmed to resolve the bare hostname
+(`n100-nanoclaw.barking-morpho.ts.net` → `100.101.27.10`), so the
+fleet-standard `just deploy n100-nanoclaw` is the right command to use. Note
+that the `deploy` recipe already carries `--ask-sudo-password`; an earlier
+explicit `nixos-rebuild switch --flake .#n100-nanoclaw --target-host
+nh@10.0.60.51 --use-remote-sudo` form omitted that flag, which — not the
+host's configuration — is why the first attempt failed on the sudo prompt.
+Keep the explicit `--target-host nh@10.0.60.51` form in mind only as a
+fallback for if MagicDNS is ever unavailable.
 
 - [ ] **Step 7: Record the results and commit**
 
