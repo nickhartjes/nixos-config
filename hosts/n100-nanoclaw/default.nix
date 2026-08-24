@@ -16,6 +16,7 @@
     ../../components/nixos/hardware
     ../../components/nixos/virtualization
     inputs.home-manager.nixosModules.home-manager
+    ./secrets.nix
   ];
 
   # home-manager wiring kept available even though no HM user modules load.

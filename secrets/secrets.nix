@@ -3,6 +3,7 @@ let
   framework-13 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPh1wLUOuMwH9tCGCRnEJ4lPqex1Ss2aaag6TKc/3hlD nick@hartj.es";
   framework-13-2 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILLBdQCyD8xsKKy5UIUfKS7l+Fl5RQ9yIMR3wGOfL90+ nick@hartj.es";
   velomo-alpha = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFeRh4DdyxTgGmDYgAaYY8yT5M0MSbRz1yGPi4P/jzWS root@velomo-alpha";
+  n100-nanoclaw = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDtWggZjgd5P93BkTrNUwaeyattrF4ZUgRvHC36fJNOF root@n100-nanoclaw";
 
   # framework-13's SSH *host* key (/etc/ssh/ssh_host_ed25519_key.pub). This is
   # the identity agenix uses at activation time -- it lives on /, which is
@@ -14,6 +15,7 @@ let
 
   systems = [framework-13-host];
   velomoSystems = [velomo-alpha];
+  nanoclawSystems = [n100-nanoclaw];
 in {
   "secret1.age".publicKeys = [framework-13 framework-13-2] ++ systems;
 
@@ -86,4 +88,18 @@ in {
   # BACKUP_S3_{BUCKET,ENDPOINT,REGION,KEY,KEY_SECRET,URI_STYLE,VERIFY_TLS}
   # Create: cd secrets && agenix -e velomo-alpha/logto-app.env.age
   "velomo-alpha/logto-app.env.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
+
+  # Telegram bot token for the nanoclaw channel. Contents:
+  #   TELEGRAM_BOT_TOKEN=...
+  # Read by systemd.services.nanoclaw via EnvironmentFile.
+  "n100-nanoclaw/telegram-bot-token.env.age".publicKeys = [framework-13 framework-13-2] ++ nanoclawSystems;
+
+  # Hevy API key (export HEVY_API_KEY=...) for the hevy MCP server. Same
+  # pattern as framework-13/hevy-api-key: decrypted to a file the hevy
+  # stdio server sources. Must be bind-mounted into the agent container.
+  "n100-nanoclaw/hevy-api-key.age".publicKeys = [framework-13 framework-13-2] ++ nanoclawSystems;
+
+  # SSH private key used to push the Obsidian vault. Registered on
+  # github.com/nickhartjes/obsidian as a deploy key with write access.
+  "n100-nanoclaw/obsidian-deploy-key.age".publicKeys = [framework-13 framework-13-2] ++ nanoclawSystems;
 }
