@@ -103,6 +103,13 @@ in {
   # github.com/nickhartjes/obsidian as a deploy key with write access.
   "n100-nanoclaw/obsidian-deploy-key.age".publicKeys = [framework-13 framework-13-2] ++ nanoclawSystems;
 
+  # Claude Code OAuth token (ANTHROPIC_AUTH_TOKEN=sk-ant-oat01-...) minted by
+  # `claude setup-token`. nanoclaw's default path stores this in OneCLI's cloud
+  # vault; we bypass that with a `direct` gateway provider and deliver the token
+  # by mount-by-reference instead, so it stays on our own infrastructure.
+  # Single line, no wrapping -- an embedded newline silently breaks the token.
+  "n100-nanoclaw/anthropic-token.env.age".publicKeys = [framework-13 framework-13-2] ++ nanoclawSystems;
+
   # SSH private key giving the host clone/push access to the private
   # nickhartjes/nanoclaw mirror (upstream nanoclaw can't be private as a
   # fork, so it's mirrored into a private repo). Registered on

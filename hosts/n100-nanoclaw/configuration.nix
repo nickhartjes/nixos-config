@@ -48,6 +48,33 @@
     nixPath = lib.mapAttrsToList (flakeName: _: "${flakeName}=flake:${flakeName}") flakeInputs;
   };
 
+  # nanoclaw's installer drops a prebuilt, dynamically-linked generic-Linux
+  # binary at ~/.local/bin/onecli (its credential vault). NixOS ships only a
+  # stub /lib64/ld-linux-x86-64.so.2, so such binaries cannot run without
+  # nix-ld providing a real loader and a library path. The installer
+  # misreports this as a PATH problem. Library list mirrors
+  # hosts/common/default.nix, which this host does not import.
+  programs.nix-ld = {
+    enable = true;
+    libraries = with pkgs; [
+      stdenv.cc.cc.lib
+      zlib
+      zstd
+      openssl
+      curl
+      libxml2
+      libxslt
+      libgcrypt
+      icu
+      ncurses
+      readline
+      bzip2
+      xz
+      sqlite
+      libffi
+    ];
+  };
+
   # ---- Identity
   networking.hostName = "n100-nanoclaw";
   time.timeZone = "Europe/Amsterdam";

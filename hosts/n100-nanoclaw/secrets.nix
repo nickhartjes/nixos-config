@@ -26,6 +26,15 @@
     # Deploy key for cloning/pushing the private nickhartjes/nanoclaw
     # mirror of upstream nanoclaw (forks can't be private, so it's
     # mirrored into a separate private repo).
+    # Claude OAuth token, consumed by the agent container via mount-by-reference
+    # (nanoclaw refuses credential VALUES in container env; absolute paths are
+    # the sanctioned channel). owner=nh so the host process can mount it.
+    "n100-nanoclaw/anthropic-token.env" = {
+      file = ../../secrets/n100-nanoclaw/anthropic-token.env.age;
+      path = "/home/nh/.config/nanoclaw-anthropic-token";
+      owner = "nh";
+      mode = "400";
+    };
     "n100-nanoclaw/nanoclaw-deploy-key" = {
       file = ../../secrets/n100-nanoclaw/nanoclaw-deploy-key.age;
       path = "/home/nh/.ssh/id_nanoclaw";
