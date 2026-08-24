@@ -219,6 +219,17 @@
           agenix.nixosModules.default
         ];
       };
+
+      # Headless N100: NixOS + Docker + nanoclaw (Telegram-fronted agent host).
+      n100-nanoclaw = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = {inherit inputs outputs;};
+        modules = [
+          ./hosts/n100-nanoclaw
+          inputs.disko.nixosModules.disko
+          agenix.nixosModules.default
+        ];
+      };
     };
   };
 }
