@@ -102,4 +102,10 @@ in {
   # SSH private key used to push the Obsidian vault. Registered on
   # github.com/nickhartjes/obsidian as a deploy key with write access.
   "n100-nanoclaw/obsidian-deploy-key.age".publicKeys = [framework-13 framework-13-2] ++ nanoclawSystems;
+
+  # SSH private key giving the host clone/push access to the private
+  # nickhartjes/nanoclaw mirror (upstream nanoclaw can't be private as a
+  # fork, so it's mirrored into a private repo). Registered on
+  # github.com/nickhartjes/nanoclaw as a deploy key with write access.
+  "n100-nanoclaw/nanoclaw-deploy-key.age".publicKeys = [framework-13 framework-13-2] ++ nanoclawSystems;
 }

@@ -23,5 +23,14 @@
       owner = "nh";
       mode = "400";
     };
+    # Deploy key for cloning/pushing the private nickhartjes/nanoclaw
+    # mirror of upstream nanoclaw (forks can't be private, so it's
+    # mirrored into a separate private repo).
+    "n100-nanoclaw/nanoclaw-deploy-key" = {
+      file = ../../secrets/n100-nanoclaw/nanoclaw-deploy-key.age;
+      path = "/home/nh/.ssh/id_nanoclaw";
+      owner = "nh";
+      mode = "400";
+    };
   };
 }
