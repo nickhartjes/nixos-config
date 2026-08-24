@@ -271,3 +271,45 @@ default to the confirmed-working `container.json` path and treat a working
 assumption. Separately, for the Hevy API key specifically, the per-server
 `mcpServers.<name>.env` field (see (b)) already solves that need directly —
 no bind-mounted env file is required at all, regardless of how (d) resolves.
+
+---
+
+## Answer (d) — SETTLED BY EXPERIMENT, 2026-08-24
+
+**A group-folder `.mcp.json` is NOT read.** Recorded after running the
+drop-and-restart test this document previously specified.
+
+Method: wrote `groups/ping_test/.mcp.json` declaring one stdio server named
+`probeserver`, removed the existing session container, ran `ncl groups restart`,
+then messaged the agent through the CLI channel and asked it to list its MCP
+servers.
+
+Result: the agent listed only `nanoclaw` (an internally injected server —
+note `container.json`'s `mcpServers` is `{}`, so that one is not configured
+there either). `probeserver` appeared **nowhere**: zero mentions in
+`docker logs`, zero in any session transcript under
+`data/v2-sessions/*/.claude-shared/projects/`.
+
+Why this is a real negative rather than a mount problem: the whole group folder
+is bind-mounted (`groups/ping_test -> /workspace/agent`), and the file was
+confirmed present inside the container at `/workspace/agent/.mcp.json`,
+103 bytes, before the answering container spawned. Had the SDK read it and
+failed to start the server, the failure would have named it.
+
+Residual uncertainty, stated rather than hidden: a single probe cannot
+distinguish "never read" from "read, then silently discarded as invalid".
+That distinction does not change the design, because the supported path is
+known to work.
+
+**Consequence for Phase B2:** configure MCP servers with
+`ncl groups config add-mcp-server --id <group> --name <n>` plus either
+`--command <cmd> [--args <json>] [--env <json>]` or
+`--url <url> [--headers <json>]`. Do not plan around `.mcp.json`.
+
+**Credentials for MCP servers** should use the mount-by-reference pattern
+proven for the Anthropic token, not `--env` — an `--env` value lands in
+`container.json`, which is tracked in the fork's git history. Mount the agenix
+file and have the server's command source it. Note the mount contract learned
+the hard way: `--container` takes a **relative** path, which nanoclaw prefixes
+with `/workspace/extra/`; an absolute path is rejected with "must be relative,
+non-empty, and not contain '..'".
