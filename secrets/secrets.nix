@@ -3,7 +3,16 @@ let
   framework-13 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPh1wLUOuMwH9tCGCRnEJ4lPqex1Ss2aaag6TKc/3hlD nick@hartj.es";
   framework-13-2 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILLBdQCyD8xsKKy5UIUfKS7l+Fl5RQ9yIMR3wGOfL90+ nick@hartj.es";
   velomo-alpha = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFeRh4DdyxTgGmDYgAaYY8yT5M0MSbRz1yGPi4P/jzWS root@velomo-alpha";
-  systems = [framework-13];
+
+  # framework-13's SSH *host* key (/etc/ssh/ssh_host_ed25519_key.pub). This is
+  # the identity agenix uses at activation time -- it lives on /, which is
+  # mounted before activation runs. The framework-13/-2 keys above are nh's
+  # *user* keys under /home, which is NOT mounted yet at that point (only
+  # /persist and /var/log are neededForBoot, see hosts/framework-13/disko-config.nix),
+  # so they can decrypt for `agenix -e` but never at boot.
+  framework-13-host = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINF2qLIp0K5IhC75m7efjriiBqCrwrGFsq/tRC0NRJ3T root@framework-13";
+
+  systems = [framework-13-host];
   velomoSystems = [velomo-alpha];
 in {
   "secret1.age".publicKeys = [framework-13 framework-13-2] ++ systems;
@@ -12,6 +21,11 @@ in {
   # prod observability stack's MCP. Decrypted on framework-13 to nh's home so
   # zsh can source it (see hosts/framework-13/secrets.nix + users/nh.nix).
   "framework-13/grafana-sa-token.age".publicKeys = [framework-13 framework-13-2] ++ systems;
+
+  # Hevy API key (export HEVY_API_KEY=...) for the hevy MCP in the NH Obsidian
+  # vault's .mcp.json. Same flow as the grafana token: decrypted to
+  # ~/.config/hevy-mcp.env and sourced by zsh (users/nh.nix).
+  "framework-13/hevy-api-key.age".publicKeys = [framework-13 framework-13-2] ++ systems;
 
   "nh/ssh-framework-13.age".publicKeys = [framework-13 framework-13-2] ++ systems;
   "nh/ssh-framework-13.pub.age".publicKeys = [framework-13 framework-13-2] ++ systems;

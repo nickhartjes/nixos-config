@@ -93,7 +93,14 @@
     onBattery = "power-saver";
   in {
     description = "Select a power profile based on AC adapter state";
-    wantedBy = ["multi-user.target"];
+
+    # Upstream's PPD unit is `After=multi-user.target` -- it is designed to be
+    # D-Bus-activated late in boot. Hooking this follower into multi-user.target
+    # therefore forms an ordering cycle (a target implicitly gains After= on
+    # everything it Wants=), and systemd breaks it by dropping PPD, leaving the
+    # daemon unactivatable. graphical.target is ordered after both
+    # multi-user.target and the display manager, so the chain resolves.
+    wantedBy = ["graphical.target"];
     after = ["power-profiles-daemon.service"];
     wants = ["power-profiles-daemon.service"];
     serviceConfig = {

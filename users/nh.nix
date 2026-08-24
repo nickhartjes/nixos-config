@@ -217,9 +217,13 @@
     # hosts/framework-13/secrets.nix); this sources it so the grafana MCP in
     # scraper's .mcp.json gets ${GRAFANA_SA_TOKEN}. Guarded so it's a no-op on
     # machines/hosts where the secret isn't provisioned.
+    #
+    # hevy-mcp.env carries HEVY_API_KEY for the hevy MCP in the NH Obsidian
+    # vault's .mcp.json (same agenix flow as the grafana token).
     programs.zsh.initContent = lib.mkOrder 1500 ''
       export ANTHROPIC_BASE_URL="http://127.0.0.1:8787"
       [[ -f ~/.config/velomo-grafana-sa.env ]] && source ~/.config/velomo-grafana-sa.env
+      [[ -f ~/.config/hevy-mcp.env ]] && source ~/.config/hevy-mcp.env
     '';
   };
 }
