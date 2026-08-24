@@ -138,6 +138,13 @@
   systemd.tmpfiles.rules = [
     "d /home/nh/.config 0755 nh users - -"
     "d /home/nh/.ssh 0700 nh users - -"
+    # nanoclaw spawns `/bin/bash` in 24 places (e.g. setup/lib/skill-driver.ts
+    # sets `shell: '/bin/bash'`), and its /add-<channel> skills shell out the
+    # same way. NixOS ships only /bin/sh, so every one dies with ENOENT —
+    # which surfaces as "engine could not apply (spawnSync /bin/bash ENOENT)".
+    # Patching 24 call sites in the fork would conflict on every upstream
+    # merge; one symlink covers all of them and anything added later.
+    "L+ /bin/bash - - - - ${pkgs.bash}/bin/bash"
   ];
 
   # ---- Packages: the nanoclaw toolchain plus basic operator tools.
