@@ -78,6 +78,9 @@
     isNormalUser = true;
     description = "nh";
     home = "/home/nh";
+    # Allow first-time console login if SSH key access fails; remove later if desired.
+    # Same hash as velomo-alpha so both headless hosts share one console fallback.
+    initialHashedPassword = "$y$j9T$SWeufZ9NrHX0.d.w72nc20$1zKkVcJHZfIvS5VMqhdP5RwQ7wQHzbsIi.ArDYRXDK7";
     extraGroups = [
       "wheel"
       "networkmanager"
