@@ -78,10 +78,14 @@ Telegram  ──►  nanoclaw host process (systemd, user nh)
                       ▼
               agent container (Docker, per agent group)
                       │
-                      ├─ .mcp.json  ──►  strava (http, OAuth)
-                      │                  hevy (stdio, API key)
-                      │                  google-health (stdio, OAuth)
-                      └─ mounted: creds volume, Obsidian vault
+                      │   $HOME=/home/node
+                      ├─ MCP config: container.json `mcpServers`, or a
+                      │   group-folder .mcp.json via the SDK's
+                      │   settingSources — UNRESOLVED, see findings doc
+                      │     strava (http, OAuth)
+                      │     hevy (stdio, API key)
+                      │     google-health (stdio, OAuth)
+                      └─ mounts: forced under /workspace/extra/…
 ```
 
 ## Changes
