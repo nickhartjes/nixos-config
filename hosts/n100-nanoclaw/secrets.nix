@@ -41,5 +41,14 @@
       owner = "nh";
       mode = "400";
     };
+    # Deploy key for cloning/pushing the private nickhartjes/training repo
+    # (the Training Obsidian vault, split out so the agent cannot reach the
+    # main vault).
+    "n100-nanoclaw/training-deploy-key" = {
+      file = ../../secrets/n100-nanoclaw/training-deploy-key.age;
+      path = "/home/nh/.ssh/id_training";
+      owner = "nh";
+      mode = "400";
+    };
   };
 }

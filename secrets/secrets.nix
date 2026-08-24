@@ -119,4 +119,10 @@ in {
   # fork, so it's mirrored into a private repo). Registered on
   # github.com/nickhartjes/nanoclaw as a deploy key with write access.
   "n100-nanoclaw/nanoclaw-deploy-key.age".publicKeys = [framework-13 framework-13-2] ++ nanoclawSystems;
+
+  # SSH private key giving the host clone/push access to the private
+  # nickhartjes/training repo (the Training Obsidian vault, split out so
+  # the agent cannot reach the main vault). Registered on
+  # github.com/nickhartjes/training as a deploy key with write access.
+  "n100-nanoclaw/training-deploy-key.age".publicKeys = [framework-13 framework-13-2] ++ nanoclawSystems;
 }
