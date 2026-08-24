@@ -421,7 +421,7 @@ git commit -m "feat(n100-nanoclaw): declare headless NixOS host for nanoclaw"
 
 **Interfaces:**
 - Consumes: `nixosConfigurations.n100-nanoclaw` from Task 2
-- Produces: the host keypair at `/tmp/n100-nanoclaw-extra/etc/ssh/ssh_host_ed25519_key`, consumed by Task 4's `--extra-files`. Also produces three decrypted runtime paths Phase B depends on: the Telegram env file under `/run/agenix`, `/home/nh/.config/hevy-mcp.env`, and `/home/nh/.ssh/id_obsidian`.
+- Produces: the host keypair at `/home/nh/.local/state/n100-nanoclaw-extra/etc/ssh/ssh_host_ed25519_key`, consumed by Task 4's `--extra-files`. Also produces three decrypted runtime paths Phase B depends on: the Telegram env file under `/run/agenix`, `/home/nh/.config/hevy-mcp.env`, and `/home/nh/.ssh/id_obsidian`.
 
 **Critical:** `agenix -e` overrides `EDITOR` to `cp -- /dev/stdin` whenever stdin is not a TTY (`[ -t 0 ] || EDITOR='cp -- /dev/stdin'` in its wrapper). An `EDITOR="cp /tmp/staged"` trick is silently discarded and yields an **empty** `.age` file with exit code 0. Always pipe plaintext on stdin. A secret must also be registered in `secrets/secrets.nix` *before* `agenix -e` will touch it, or it errors with "attribute missing".
 
@@ -431,15 +431,20 @@ The `chmod 600` is mandatory — nixos-anywhere's docs note sshd rejects a
 host key with looser permissions.
 
 ```bash
-mkdir -p /tmp/n100-nanoclaw-extra/etc/ssh
+mkdir -p /home/nh/.local/state/n100-nanoclaw-extra/etc/ssh
 ssh-keygen -t ed25519 -N "" -C root@n100-nanoclaw \
-  -f /tmp/n100-nanoclaw-extra/etc/ssh/ssh_host_ed25519_key
-chmod 600 /tmp/n100-nanoclaw-extra/etc/ssh/ssh_host_ed25519_key
-cat /tmp/n100-nanoclaw-extra/etc/ssh/ssh_host_ed25519_key.pub
+  -f /home/nh/.local/state/n100-nanoclaw-extra/etc/ssh/ssh_host_ed25519_key
+chmod 600 /home/nh/.local/state/n100-nanoclaw-extra/etc/ssh/ssh_host_ed25519_key
+cat /home/nh/.local/state/n100-nanoclaw-extra/etc/ssh/ssh_host_ed25519_key.pub
 ```
 
-Keep that public key for Step 2. Do not delete `/tmp/n100-nanoclaw-extra`
-before Task 4 completes.
+Keep that public key for Step 2. Do **not** delete
+`/home/nh/.local/state/n100-nanoclaw-extra` before Task 4 completes, and
+shred it after. It lives under `$HOME`, not `/tmp`, on purpose: `/` on
+framework-13 is btrfs on cryptroot with an impermanence-style subvol layout,
+so a reboot between Task 3 and Task 4 could destroy the private key — which
+would leave all three `.age` files encrypted to a recipient that no longer
+exists, forcing a full rekey.
 
 - [ ] **Step 2: Register the host and its secrets in `secrets/secrets.nix`**
 
@@ -614,8 +619,8 @@ Matches the existing `nix run github:...` style used by `deadcode`,
 ```make
 # Install a host remotely with nixos-anywhere. Seeds the SSH host key from
 # EXTRA (a dir mirroring the target's /), so agenix decrypts on first boot.
-# Usage: just install-nanoclaw 10.0.60.51 /tmp/n100-nanoclaw-extra
-install-nanoclaw IP EXTRA="/tmp/n100-nanoclaw-extra":
+# Usage: just install-nanoclaw 10.0.60.51 /home/nh/.local/state/n100-nanoclaw-extra
+install-nanoclaw IP EXTRA="/home/nh/.local/state/n100-nanoclaw-extra":
     nix run github:nix-community/nixos-anywhere -- \
       --extra-files {{EXTRA}} \
       --flake .#n100-nanoclaw \
@@ -640,8 +645,8 @@ partition** — that would mean this is not the machine that was inspected.
 - [ ] **Step 3: Confirm the extra-files tree is intact**
 
 ```bash
-ls -la /tmp/n100-nanoclaw-extra/etc/ssh/
-stat -c '%a %n' /tmp/n100-nanoclaw-extra/etc/ssh/ssh_host_ed25519_key
+ls -la /home/nh/.local/state/n100-nanoclaw-extra/etc/ssh/
+stat -c '%a %n' /home/nh/.local/state/n100-nanoclaw-extra/etc/ssh/ssh_host_ed25519_key
 ```
 
 Expected: both key files present, mode `600` on the private key.
@@ -757,10 +762,17 @@ Proves the host is maintainable the same way the rest of the fleet is.
 
 ```bash
 cd /home/nh/.config/nixos-config
-just deploy n100-nanoclaw
+nixos-rebuild switch --flake .#n100-nanoclaw \
+  --target-host nh@10.0.60.51 --use-remote-sudo
 ```
 
 Expected: a successful `nixos-rebuild switch` against the remote host.
+
+An explicit `nh@10.0.60.51` is used rather than `just deploy
+n100-nanoclaw`, because that recipe passes `--target-host {{SYSTEM}}` — the
+bare hostname — which resolves only if tailnet MagicDNS serves it. Once
+you have confirmed the name resolves, `just deploy n100-nanoclaw` is the
+form to use day to day.
 
 - [ ] **Step 7: Record the results and commit**
 
