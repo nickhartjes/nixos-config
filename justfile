@@ -54,3 +54,13 @@ clean-install HOSTNAME:
     nix-shell -p git --run "git clone https://github.com/nickhartjes/nixos-config.git ~/nixos-config"
     sudo nix --experimental-features "nix-command flakes" run github:nix-community/disko/latest -- --mode destroy,format,mount ~/nixos-config/hosts/{{HOSTNAME}}/disko-config.nix
     cd ~/nixos-config && sudo nixos-install --flake .#{{HOSTNAME}}
+
+
+# Install host remotely nixos-anywhere. Seeds SSH host key
+# EXTRA dir mirroring target's /), so agenix decrypts on first boot.
+# Usage: just install-nanoclaw 10.0.60.51 /home/nh/.local/state/n100-nanoclaw-extra
+install-nanoclaw IP EXTRA="/home/nh/.local/state/n100-nanoclaw-extra":
+    nix run github:nix-community/nixos-anywhere -- \
+        --extra-files {{EXTRA}} \
+        --flake .#n100-nanoclaw \
+        root@{{IP}}
