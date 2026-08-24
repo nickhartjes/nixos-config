@@ -701,13 +701,26 @@ ssh nh@10.0.60.51 'sudo ls -la /run/agenix/n100-nanoclaw/'
 ssh nh@10.0.60.51 'stat -c "%a %U %n" /home/nh/.config/hevy-mcp.env /home/nh/.ssh/id_obsidian'
 ```
 
-Expected: **one** entry under `/run/agenix/n100-nanoclaw/` —
-`telegram-bot-token.env`. The other two set an explicit `path`, so agenix
-places them there instead of under `/run/agenix`, which is why they are
-checked separately by the `stat` above. Both must be mode `400`, owner `nh`.
-Three entries under `/run/agenix` would mean the `path` attributes were
-dropped; zero entries means the host key was not seeded and `--extra-files`
-failed.
+Expected: **three** entries under `/run/agenix/n100-nanoclaw/` —
+`hevy-api-key`, `obsidian-deploy-key`, and `telegram-bot-token.env`. agenix
+always decrypts every secret to the real file under `/run/agenix.d/<gen>/`
+(symlinked from `/run/agenix/n100-nanoclaw/<name>`); a custom `path =`
+override does **not** relocate the decrypted file out of
+`/run/agenix/n100-nanoclaw/` — it adds a *second* symlink, at the given
+`path`, that also points back into `/run/agenix.d/<gen>/n100-nanoclaw/<name>`.
+So `/home/nh/.config/hevy-mcp.env` and `/home/nh/.ssh/id_obsidian` are
+symlinks alongside the real entries, not replacements for them. Confirm
+with `stat -L` (following the symlink) that the two path-declared secrets
+resolve to mode `400`, owner `nh`. Zero entries under
+`/run/agenix/n100-nanoclaw/` means the host key was not seeded and
+`--extra-files` failed. Observed on this install:
+
+```
+/run/agenix/n100-nanoclaw/hevy-api-key            400 nh    57 B
+/run/agenix/n100-nanoclaw/obsidian-deploy-key     400 nh   419 B
+/run/agenix/n100-nanoclaw/telegram-bot-token.env  400 root  66 B
+/home/nh/.config/hevy-mcp.env -> /run/agenix.d/1/n100-nanoclaw/hevy-api-key
+```
 
 - [ ] **Step 2: Verify Docker works as `nh` without sudo**
 

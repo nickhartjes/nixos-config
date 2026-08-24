@@ -1,7 +1,16 @@
 # n100-nanoclaw: NixOS host running nanoclaw with health MCP servers
 
 **Date:** 2026-08-24
-**Status:** Draft — awaiting review
+**Status:** Phase A implemented and verified. Phase B (below) not started.
+
+**Scope split:**
+- **Phase A** — host, Docker, toolchain, secrets, verification. Done; see
+  `docs/superpowers/plans/2026-08-24-n100-nanoclaw-install.md` and its
+  verification record.
+- **Phase B** — the nanoclaw service itself, MCP wiring, vault sync. Not
+  started. The "MCP wiring" section below is design intent only, and has been
+  corrected to match `docs/superpowers/specs/2026-08-24-nanoclaw-container-findings.md`,
+  which is the authority on what upstream nanoclaw actually supports.
 
 ## Goal
 
@@ -168,27 +177,57 @@ repo as a **deploy key with write access**.
 
 ## MCP wiring
 
+**Authority for this section:**
+`docs/superpowers/specs/2026-08-24-nanoclaw-container-findings.md` verifies
+these claims against upstream nanoclaw source (file/line citations); the
+design below has been corrected to match it, not the other way around.
+Re-check that document before implementing Phase B — the findings note the
+upstream commit is a moving target.
+
 The Claude Agent SDK runs *inside* the agent container, so MCP servers
-must work there — not on the host.
+must work there — not on the host. The container's `$HOME` is `/home/node`
+(settled: baked into the `node:22-slim` image's `USER node`, and explicitly
+set by nanoclaw's own container-spawn code when running under a mapped uid).
 
-`groups/<group>/.mcp.json` in the nanoclaw checkout carries the same
-three servers as the vault's own `.mcp.json`:
+MCP servers are configured per-group via `container.json`'s `mcpServers`
+field (materialized by nanoclaw from the DB, editable with
+`ncl groups config add-mcp-server`), not via a plain `.mcp.json` dropped in
+the group folder — **whether a `.mcp.json` at `groups/<folder>/.mcp.json`
+(which lands at `/workspace/agent/.mcp.json`) is also picked up by the SDK's
+`settingSources: ['project','user','local']` option is UNRESOLVED.** The
+findings doc confirms the option is real and forwarded to the underlying
+`claude` CLI subprocess, but the actual file-reading/auto-approval logic
+lives in that compiled binary and was not inspected. Do not assume either
+way; settle it with the drop-and-restart experiment the findings doc
+describes (drop a minimal `.mcp.json` into an existing group folder,
+`ncl groups restart`, check for the probe server in the agent's tool list)
+before designing around it.
 
-```json
-{
-  "google-health": { "type": "stdio", "command": "npx", "args": ["-y", "google-health-mcp-unofficial"] },
-  "hevy":          { "type": "stdio", "command": "sh", "args": ["-c", ". \"$HOME/.config/hevy-mcp.env\" && exec npx -y hevy-mcp"] },
-  "strava":        { "type": "http", "url": "https://mcp.strava.com/mcp" }
-}
+Google Health and Strava need no host-side file at all
+(`google-health` runs via `npx`; `strava` is a plain `http` MCP entry), so
+both can go directly into `container.json`'s `mcpServers` with
+`ncl groups config add-mcp-server`.
+
+**The hevy API key does not need a bind-mounted `~/.config/hevy-mcp.env`.**
+There is no per-group env mechanism — `ContainerConfig` is an exhaustive
+TypeScript type with no room for one — but there *is* a per-MCP-server `env`
+field (`mcpServers.<name>.env`, capped at 32 entries), which is the
+supported way to deliver `HEVY_API_KEY`:
+
+```
+ncl groups config add-mcp-server --id <group-id> --name hevy \
+  --command npx --args '["-y","hevy-mcp"]' \
+  --env '{"HEVY_API_KEY":"<value from agenix-decrypted hevy-api-key>"}'
 ```
 
-Per-group scoping is a benefit: only the training group sees health data.
-
-**The hevy env file must be mounted, not merely decrypted.** agenix writes
-it to `/home/nh/.config/hevy-mcp.env` on the *host*, but the `.mcp.json`
-entry above resolves `$HOME` inside the *container*. The agent container
-must bind-mount that file read-only at the container user's
-`~/.config/hevy-mcp.env`, or the hevy server starts with no API key.
+If a file on disk is preferred instead of a DB-stored env value, `additionalMounts`
+does support bind-mounting the agenix-decrypted `hevy-mcp.env` file into the
+container — but **the container path is always forced under
+`/workspace/extra/…`**; there is no way to land it at a literal
+`/home/node/.config/hevy-mcp.env`. In that case the hevy MCP command must
+source it from `/workspace/extra/hevy-mcp.env` explicitly (e.g.
+`sh -c '. /workspace/extra/hevy-mcp.env && exec npx -y hevy-mcp'`), not rely
+on `$HOME` resolving to a mounted-over `.config`.
 
 **Persistent credentials volume.** Both OAuth tokens and the Claude
 subscription credential live in dotfile state a throwaway container would

@@ -10,6 +10,9 @@
   # Deliberately NOT lanzaboote (framework-13 needs it; this host does not).
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  # /boot is 512 MiB and each generation costs ~56 MiB (43 MiB of that initrd),
+  # so cap retained entries well under what would fill the ESP.
+  boot.loader.systemd-boot.configurationLimit = 5;
 
   # ---- Nixpkgs. allowUnfree is required for claude-code.
   nixpkgs = {
@@ -28,6 +31,10 @@
   in {
     settings = {
       experimental-features = "nix-command flakes";
+      # Matches hosts/velomo-alpha. nh is already root-equivalent on this
+      # host via the docker group, so this isn't a hard security boundary —
+      # the password-sudo requirement below is about fleet parity, not
+      # gatekeeping nix builds.
       trusted-users = ["root" "@wheel"];
       auto-optimise-store = true;
     };
@@ -93,6 +100,18 @@
     ];
     shell = pkgs.bash;
   };
+
+  # agenix creates the parent directories for its `path =` overrides (see
+  # secrets.nix) with mkdir -p as root during activation, which leaves
+  # /home/nh/.config and /home/nh/.ssh owned root:root and unwritable by nh.
+  # framework-13 never hits this because both dirs already exist there. Without
+  # these rules nh cannot create ~/.ssh/known_hosts, which makes the obsidian
+  # deploy key unusable non-interactively. tmpfiles runs after activation
+  # scripts, so it corrects the ownership agenix leaves behind.
+  systemd.tmpfiles.rules = [
+    "d /home/nh/.config 0755 nh users - -"
+    "d /home/nh/.ssh 0700 nh users - -"
+  ];
 
   # ---- Packages: the nanoclaw toolchain plus basic operator tools.
   # Upstream asks for pnpm 10+; nixpkgs ships 11.21.0.

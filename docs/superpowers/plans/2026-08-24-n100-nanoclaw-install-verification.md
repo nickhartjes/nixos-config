@@ -146,7 +146,7 @@ PasswordAuthentication no
 hardening (`PermitRootLogin no`, `PasswordAuthentication no`) are both active on the
 running host, matching the Nix source.
 
-## Step 6: Remote rebuild — PARTIAL
+## Step 6: Remote rebuild — PASS
 
 ```
 $ nixos-rebuild switch --flake .#n100-nanoclaw --target-host nh@10.0.60.51 --use-remote-sudo
@@ -162,13 +162,29 @@ error: while running command with remote sudo, did you forget to use --ask-eleva
 Command 'ssh ... nh@10.0.60.51 -- sudo /bin/sh -c '"'"'exec /usr/bin/env -i PATH="${PATH-}" "$@"'"'"'' sh nix-env -p /nix/var/nix/profiles/system --set /nix/store/vpvx4h96bq9pxw0fm4w4nhwhxrb5yz2n-nixos-system-n100-nanoclaw-26.11.20260822.2c423e0' returned non-zero exit status 1.
 ```
 
-**Verdict: PARTIAL, not failed.** Flake evaluation and the closure copy to the remote
-host both succeeded without issue. Only the final activation step
-(`nix-env --set` via remote `sudo`) stopped, because it needs an interactive sudo
-password. The host was **not yet** switched to the new generation; it remains on
-whatever generation was active from the original install. This is awaiting one
-interactive run (`just deploy n100-nanoclaw`, which already carries
-`--ask-sudo-password` — see below), not a fix.
+This first attempt failed only because it was run non-interactively
+(`--use-remote-sudo` with no TTY, so sudo had nothing to read a password
+from) — it does not indicate the recipe is broken. `--ask-sudo-password` is
+a documented `nixos-rebuild` alias for `--elevate=sudo --ask-elevate-password`,
+which does prompt interactively; the `justfile`'s `deploy` recipe already
+carries it (see the "Sudo policy" section below).
+
+The user then ran `just deploy n100-nanoclaw` interactively and supplied the
+sudo password; activation succeeded:
+
+```
+$ ssh nh@10.0.60.51 'readlink /run/current-system; nixos-rebuild list-generations | tail -3'
+/nix/store/3shjkjw0m8r9iz1fqrjvlskynw2zd6rz-nixos-system-n100-nanoclaw-26.11.20260822.2c423e0
+...
+2   2026-08-24 ...   26.11.20260822.2c423e0                          (current)
+```
+
+**Verdict: PASS.** Flake evaluation, the closure copy to the remote host, and the
+final `nix-env --set` activation all succeeded. The host's current system is
+`3shjkjw0m8r9iz1fqrjvlskynw2zd6rz-nixos-system-n100-nanoclaw-26.11.20260822.2c423e0`,
+generation 2, active. The only failure was the first, non-interactive attempt
+supplying an empty password over a pipe with no TTY — the `just deploy` recipe
+itself was never broken.
 
 ## Sudo policy: deliberate parity with `velomo-alpha`, not a defect
 
@@ -199,8 +215,8 @@ of this verification.
 
 This does mean Steps 4–6 could not be driven unattended over plain SSH from this task;
 Steps 4 and 5 were instead confirmed via the tailnet and an interactive console session
-respectively, and Step 6 still needs one interactive `--ask-sudo-password` run to
-complete activation.
+respectively, and Step 6 was completed by the user running `just deploy n100-nanoclaw`
+interactively and supplying the sudo password.
 
 ## Summary
 
@@ -211,9 +227,9 @@ complete activation.
 | 3 | Toolchain versions | PASS |
 | 4 | Tailscale `up --ssh` | PASS |
 | 5 | Firewall + sshd hardening | PASS |
-| 6 | Remote rebuild via `--use-remote-sudo` | PARTIAL — awaiting one interactive activation run |
+| 6 | Remote rebuild via `--use-remote-sudo` | PASS — completed via interactive `just deploy n100-nanoclaw` |
 
-Phase B can proceed: Steps 1–5 are fully confirmed. Step 6 only needs one interactive
-`just deploy n100-nanoclaw` run (it already carries `--ask-sudo-password`) to switch
-the host to the latest generation — the fleet's day-to-day deploy path is expected to
-work exactly as it does for `velomo-alpha`.
+Phase B can proceed: all six checks are fully confirmed. The host's current system is
+`3shjkjw0m8r9iz1fqrjvlskynw2zd6rz-nixos-system-n100-nanoclaw-26.11.20260822.2c423e0`,
+generation 2, active — the fleet's day-to-day deploy path works exactly as it does for
+`velomo-alpha`, provided it is run interactively so sudo can prompt for a password.
