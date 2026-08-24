@@ -99,7 +99,11 @@ headless-Docker-host pattern.
   the four repo overlays and `allowUnfree`; the standard `nix` daemon
   block (flakes, weekly GC, auto-optimise); hostname `n100-nanoclaw`;
   `time.timeZone = "Europe/Amsterdam"`; NetworkManager; Tailscale with
-  the `tailscale-autoconnect` oneshot copied from velomo-alpha; OpenSSH
+  Tailscale enabled but authorised once by hand with `tailscale up --ssh`
+  (velomo-alpha's `tailscale-autoconnect` oneshot is deliberately not
+  copied: it needs a tailscale-authkey secret, and this host already
+  requires a hands-on session for `claude login` and the OAuth flows);
+  OpenSSH
   with `PermitRootLogin = "no"` and `PasswordAuthentication = false`;
   firewall allowing only TCP 22 with `tailscale0` trusted. User `nh`
   defined **inline** (not importing `users/nh.nix`, which assumes
