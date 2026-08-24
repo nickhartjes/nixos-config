@@ -5,7 +5,17 @@
   inputs,
   outputs,
   ...
-}: {
+}: let
+  # nanoclaw's installer names its systemd --user unit
+  # "nanoclaw-v2-<8 hex chars>"; the hex suffix is generated fresh by the
+  # installer (it's not derived from anything stable on this host) and is
+  # NOT guaranteed to survive a reinstall. This value was read off the live
+  # host on 2026-08-24. If nanoclaw is ever reinstalled, find the new name
+  # with `systemctl --user list-units 'nanoclaw-v2-*'` (as nh) and update
+  # this constant — otherwise the drop-in below silently targets a unit
+  # that no longer exists and the PATH crash-loop this fixes comes back.
+  nanoclawUnitName = "nanoclaw-v2-3b88d860";
+in {
   # ---- Bootloader: UEFI with Secure Boot disabled, so plain systemd-boot.
   # Deliberately NOT lanzaboote (framework-13 needs it; this host does not).
   boot.loader.systemd-boot.enable = true;
@@ -145,7 +155,84 @@
     # Patching 24 call sites in the fork would conflict on every upstream
     # merge; one symlink covers all of them and anything added later.
     "L+ /bin/bash - - - - ${pkgs.bash}/bin/bash"
+    "d /home/nh/.config/nanoclaw 0755 nh users - -"
+    # nanoclaw refuses every additional container mount unless the host path
+    # is listed in mount-allowlist.json (matched against the *resolved*
+    # realPath). Without it, credentials (the Anthropic auth token, the Hevy
+    # MCP key, google-health-mcp's OAuth tokens, the training-vault deploy
+    # key) are silently rejected and never reach agent containers.
+    #
+    # This is a one-time seed via tmpfiles' `C` type, not a fully managed
+    # file: `C` copies the argument path only if the destination doesn't
+    # already exist, so a from-scratch install boots with a working
+    # allowlist but this module never fights `ncl` or a by-hand edit adding
+    # a mount later. A read-only symlink into the store was considered and
+    # rejected — operators edit this file at runtime (jq or by hand), and a
+    # store symlink would turn every such edit into an EROFS failure, which
+    # is worse than the missing-mount bug being fixed here. Content mirrors
+    # what was live on the host on 2026-08-24; re-sync the seed in
+    # environment.etc below if a permanent mount is added later and you want
+    # a bare-metal reinstall to come back up with it already present.
+    "C /home/nh/.config/nanoclaw/mount-allowlist.json 0644 nh users - /etc/nanoclaw/mount-allowlist.seed.json"
   ];
+
+  # Seed content for the tmpfiles `C` rule above.
+  environment.etc."nanoclaw/mount-allowlist.seed.json".text = ''
+    {
+      "allowedRoots": [
+        {
+          "path": "/home/nh/.config/nanoclaw-anthropic-token",
+          "allowReadWrite": false,
+          "description": "Anthropic auth token, mounted by reference for the direct gateway provider"
+        },
+        {
+          "path": "/home/nh/.config/hevy-mcp.env",
+          "allowReadWrite": false,
+          "description": "Hevy API key (agenix) for the hevy MCP server"
+        },
+        {
+          "path": "/home/nh/.google-health-mcp",
+          "allowReadWrite": true,
+          "description": "google-health-mcp OAuth config + tokens; rw so token refresh persists"
+        },
+        {
+          "path": "/home/nh/.ssh/id_training",
+          "allowReadWrite": false,
+          "description": "deploy key for the private training vault repo"
+        }
+      ],
+      "blockedPatterns": []
+    }
+  '';
+
+  # ---- nanoclaw systemd --user unit: fix its PATH.
+  #
+  # nanoclaw's installer writes
+  # ~/.config/systemd/user/${nanoclawUnitName}.service itself, with
+  # `Environment=PATH=/usr/local/bin:/usr/bin:/bin:/home/nh/.local/bin` baked
+  # in for a generic Linux distro. NixOS puts docker, git, bun and node
+  # nowhere on that PATH, so nanoclaw's ensureDockerRunning() can't find the
+  # `docker` binary and the service crash-loops with "Container runtime
+  # failed to start".
+  #
+  # Mechanism: overrideStrategy = "asDropin" makes NixOS write only a
+  # drop-in (/etc/systemd/user/${nanoclawUnitName}.service.d/overrides.conf)
+  # instead of a full replacement unit, so it overrides just PATH and leaves
+  # everything else the installer writes (ExecStart, WorkingDirectory, log
+  # paths, restart policy, ...) untouched. That's what makes this survive
+  # the installer rewriting its unit on every nanoclaw upgrade — the
+  # alternative (editing the generated unit file directly) would be undone
+  # on the next reinstall. This mirrors the hand-applied fix that was live
+  # on this host before this file existed, at
+  # ~/.config/systemd/user/${nanoclawUnitName}.service.d/10-nixos-path.conf.
+  #
+  # The unit *name* itself still has to be known (see nanoclawUnitName
+  # above) — there's no name-independent way to attach a drop-in to one
+  # specific unit.
+  systemd.user.services.${nanoclawUnitName} = {
+    overrideStrategy = "asDropin";
+    serviceConfig.Environment = "PATH=/run/current-system/sw/bin:/home/nh/.local/bin:/usr/bin:/bin";
+  };
 
   # ---- Packages: the nanoclaw toolchain plus basic operator tools.
   # Upstream asks for pnpm 10+; nixpkgs ships 11.21.0.
