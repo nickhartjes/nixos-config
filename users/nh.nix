@@ -169,8 +169,15 @@
       repo-log = "tail -f ~/.local/state/repo-manager.log";
     };
 
-    # uv installs tool executables (e.g. headroom) here.
-    home.sessionPath = ["$HOME/.local/bin"];
+    home.sessionPath = [
+      # uv installs tool executables (e.g. headroom) here.
+      "$HOME/.local/bin"
+      # CLI shims from self-updating apps (LM Studio's `lms`, JetBrains Toolbox
+      # launchers). Their installers append these to ~/.bashrc/.profile, which
+      # zsh never reads.
+      "$HOME/.lmstudio/bin"
+      "$HOME/.local/share/JetBrains/Toolbox/scripts"
+    ];
 
     # Headroom context-compression CLI. Installed via `uv tool` rather than
     # mise's pipx backend, which silently drops the [all] extras (mcp/proxy/

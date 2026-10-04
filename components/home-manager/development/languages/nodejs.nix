@@ -35,5 +35,9 @@
     home.file.".npmrc".text = ''
       prefix = ''${HOME}/.npm-packages
     '';
+
+    # The npm prefix above lives outside the nix store, so its bin directory has
+    # to join PATH explicitly or `npm install -g` binaries stay unreachable.
+    home.sessionPath = ["$HOME/.npm-packages/bin"];
   };
 }

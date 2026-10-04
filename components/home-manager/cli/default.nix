@@ -21,6 +21,14 @@
     options = ["--cmd cd"];
   };
 
+  # Per-project dev shells: `use flake` in an .envrc loads the devShell on cd,
+  # with nix-direnv caching it so it survives garbage collection.
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+    silent = true;
+  };
+
   # programs.eza = {
   #   enable = true;
   #   enableFishIntegration = true;

@@ -49,10 +49,9 @@
     ##################
     settings = {
       experimental-features = ["nix-command" "flakes"];
-      trusted-users = [
-        # Set users that are allowed to use the flake command
-        "root"
-      ];
+      # Trusted users can change daemon settings (substituters, sandbox) — this
+      # is root-equivalent, but wheel already has sudo so it adds nothing.
+      trusted-users = ["root" "@wheel"];
     };
     gc = {
       # Automatic garbage collection
