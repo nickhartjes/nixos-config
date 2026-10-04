@@ -27,7 +27,6 @@
 
     # Exclude some default GNOME applications
     environment.gnome.excludePackages = with pkgs; [
-      gnome-photos
       gnome-tour
       gedit
       cheese

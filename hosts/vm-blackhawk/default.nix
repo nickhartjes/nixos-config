@@ -41,7 +41,7 @@
   components = {
     desktop = {
       plasma.enable = true;
-      cinnamon.enable = true;
+      cinnamon.enable = false;
     };
     display = {
       gdm.enable = false;

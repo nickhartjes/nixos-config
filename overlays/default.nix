@@ -22,7 +22,6 @@
           });
         })
       ];
-    n8n = import ./mods/n8n.nix {inherit prev;};
     bambu-studio = prev.appimageTools.wrapType2 rec {
       name = "BambuStudio";
       pname = "bambu-studio";
