@@ -48,9 +48,12 @@
     };
   };
 in {
-  imports = [
-    inputs.noctalia.homeModules.default
-  ];
+  # The noctalia flake used to ship its own home-manager module, which disabled
+  # the upstream one via `disabledModules = [ "programs/noctalia.nix" ]`.
+  # home-manager has since moved its module to `programs/noctalia/` (a
+  # directory), so that path no longer matches and both modules declare
+  # `programs.noctalia.*`. Upstream's module is a superset of the flake's, so we
+  # use it directly and only take the package from the flake.
 
   options.components.features.desktop.noctalia = {
     enable = lib.mkEnableOption "Noctalia shell configuration";

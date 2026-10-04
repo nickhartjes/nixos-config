@@ -48,7 +48,7 @@
     ## Nix settings
     ##################
     settings = {
-      experimental-features = "nix-command flakes";
+      experimental-features = ["nix-command" "flakes"];
       trusted-users = [
         # Set users that are allowed to use the flake command
         "root"
@@ -67,7 +67,7 @@
     };
 
     registry = lib.mapAttrs (_: flake: {inherit flake;}) flakeInputs;
-    nixPath = lib.mapAttrsToList (flakeName: _: "${flakeName}=flake:${flakeName}") flakeInputs;
+    settings.nix-path = lib.mapAttrsToList (flakeName: _: "${flakeName}=flake:${flakeName}") flakeInputs;
   };
 
   # Enable nix-ld for running dynamically linked executables (e.g., VS Code

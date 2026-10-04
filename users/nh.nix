@@ -71,8 +71,13 @@
     # and master, checked 2026-06-03) marks as EOL. Lives here, not at the
     # host level, because home-manager.useGlobalPkgs is off — HM has its own
     # nixpkgs.config. Drop once bitwarden-desktop moves to electron_40+.
+    #
+    # cypress 15.19.0 bundles electron 37.6.0, EOL since 2025-10-04 (checked
+    # 2026-09-07). Installed by components/home-manager/development/languages/
+    # nodejs.nix. Drop once cypress in nixpkgs bumps past electron 37.
     nixpkgs.config.permittedInsecurePackages = [
       "electron-39.8.10"
+      "cypress-15.19.0"
     ];
 
     # TEMP (2026-07-26): pandas-stubs test collection breaks under pytest 9,
@@ -125,7 +130,9 @@
         # nixpkgs split discord into a wrapper + unwrapped derivation; the
         # predicate sees the inner name, so both have to be listed.
         "discord-unwrapped"
-        "idea"
+        # nixpkgs renamed jetbrains.idea -> intellij-idea (alias added
+        # 2026-08-15); the predicate sees the new pname.
+        "intellij-idea"
         "jetbrains-toolbox"
         "lmstudio"
         "lutris"

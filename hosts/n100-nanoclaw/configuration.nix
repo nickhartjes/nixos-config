@@ -40,7 +40,7 @@ in {
     flakeInputs = lib.filterAttrs (_: lib.isType "flake") inputs;
   in {
     settings = {
-      experimental-features = "nix-command flakes";
+      experimental-features = ["nix-command" "flakes"];
       # Matches hosts/velomo-alpha. nh is already root-equivalent on this
       # host via the docker group, so this isn't a hard security boundary —
       # the password-sudo requirement below is about fleet parity, not

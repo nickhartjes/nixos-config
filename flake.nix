@@ -43,6 +43,18 @@
       flake = false; # Indicates this is not a flake
     };
 
+    # Claude Code skill sources, consumed by
+    # components/home-manager/application/ai/claude-code.nix. Pinned here
+    # rather than installed as plugins so updates go through flake.lock.
+    juspay-skills = {
+      url = "github:juspay/skills";
+      flake = false;
+    };
+    nixos-management-skill = {
+      url = "github:michalzubkowicz/nixos-management-skill";
+      flake = false;
+    };
+
     # Nix-darwin for managing macOS configurations (not used in this flake)
     lanzaboote = {
       url = "github:nix-community/lanzaboote";
