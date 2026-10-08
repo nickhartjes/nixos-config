@@ -130,10 +130,10 @@ in {
 
   bindl = noctaliaBindls ++ dmsBindls;
 
-  windowrule = [
-    "isnamedscratchpad:1,width:1280,height:800,appid:foot-scratchpad"
-    "force_fakemaximize:1,appid:chromium"
-    "force_fakemaximize:1,appid:firefox"
+  window_rule = [
+    "is_named_scratchpad:1,width:1280,height:800,app_id:foot-scratchpad"
+    "force_fake_maximize:1,app_id:chromium"
+    "force_fake_maximize:1,app_id:firefox"
   ];
 
   mousebind = [

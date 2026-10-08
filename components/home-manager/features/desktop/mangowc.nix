@@ -61,7 +61,7 @@ in {
           ];
 
           # Autostart
-          exec-once =
+          exec_once =
             [
               "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
               "${pkgs.swaybg}/bin/swaybg -i ~/.config/wallpaper -m fill"
@@ -79,7 +79,7 @@ in {
             ];
 
           # Output configuration
-          monitorrule = [
+          monitor_rule = [
             "name:DP-.*,width:5120,height:1440,refresh:120,x:0,y:0,scale:1"
             "name:eDP-1,scale:1.5,x:5120,y:0"
           ];
@@ -96,16 +96,16 @@ in {
 
           # Border & corner radius (Catppuccin Mocha colors)
           border_radius = 8;
-          borderpx = 3;
-          focuscolor = "0x89b4faff";
-          bordercolor = "0x313244ff";
-          scratchpadcolor = "0x94e2d5ff";
+          border_px = 3;
+          focus_color = "0x89b4faff";
+          border_color = "0x313244ff";
+          scratchpad_color = "0x94e2d5ff";
 
           # Gaps
-          gappih = 6;
-          gappiv = 6;
-          gappoh = 10;
-          gappov = 10;
+          gap_inner_horizontal = 6;
+          gap_inner_vertical = 6;
+          gap_outer_horizontal = 10;
+          gap_outer_vertical = 10;
 
           # Window opacity
           unfocused_opacity = 0.92;
@@ -128,7 +128,7 @@ in {
           scroller_proportion_preset = "0.33,0.5,0.67,0.8,1.0";
 
           # Layouts - set all tags to scroller
-          tagrule = [
+          tag_rule = [
             "id:1,layout_name:scroller"
             "id:2,layout_name:scroller"
             "id:3,layout_name:scroller"
@@ -143,9 +143,9 @@ in {
         // keybindings;
 
       # Keep autostart_sh non-empty so the mango hm-module generates the file
-      # with systemd/dbus activation. Programs are launched via exec-once in config.conf.
+      # with systemd/dbus activation. Programs are launched via exec_once in config.conf.
       autostart_sh = ''
-        # Programs are started via exec-once in config.conf
+        # Programs are started via exec_once in config.conf
       '';
     };
 
