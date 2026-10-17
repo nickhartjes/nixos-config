@@ -117,14 +117,18 @@
     SUBSYSTEM=="power_supply", KERNEL=="ACAD", ACTION=="change", RUN+="${pkgs.systemd}/bin/systemctl --no-block restart power-profile-auto.service"
   '';
 
-  # Additional hibernation and power optimizations
+  # Automatic hibernation is off: on kernel 7.2.10 every hibernate was rolled
+  # back by a wakeup event, and the next boot then hung restoring the leftover
+  # image at "Resume from hibernation". Manual `systemctl hibernate` still works;
+  # switch these back to (suspend-then-)hibernate once a manual hibernate
+  # survives a reboot on a newer kernel.
   services.logind.settings.Login = {
-    HandleLidSwitch = "suspend-then-hibernate";
-    HandlePowerKey = "hibernate";
+    HandleLidSwitch = "suspend";
+    HandlePowerKey = "suspend";
     HandlePowerKeyLongPress = "poweroff";
-    HandleSuspendKey = "suspend-then-hibernate";
+    HandleSuspendKey = "suspend";
     HandleHibernateKey = "hibernate";
-    IdleAction = "suspend-then-hibernate";
+    IdleAction = "suspend";
     IdleActionSec = "2h";
   };
 
@@ -290,15 +294,5 @@
     "fw-temp" = "sensors";
     "fw-s2idle" = "sudo amd-s2idle"; # AMD suspend diagnostics
     "fw-freq" = "cpufreq-info";
-  };
-
-  systemd.services."networkmanager-resume" = {
-    description = "Restart NetworkManager and reload iwlwifi after resume";
-    wantedBy = ["sleep.target"];
-    after = ["sleep.target"];
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = "${pkgs.systemd}/bin/modprobe -r iwlwifi; ${pkgs.systemd}/bin/modprobe iwlwifi; ${pkgs.systemd}/bin/systemctl restart NetworkManager";
-    };
   };
 }
