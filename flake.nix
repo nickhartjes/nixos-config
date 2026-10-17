@@ -99,6 +99,21 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # ArtCraft creative suite (PhotoCraft, VectorCraft, ...). Unofficial community
+    # packaging of upstream's prebuilt Linux tarballs; pinned via flake.lock, so
+    # review its diff before `nix flake update artcraft`.
+    artcraft = {
+      url = "github:devitek/artcraft-nixos";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # oh-my-pi (omp) - terminal coding agent; upstream flake builds from source
+    # (Rust + Bun), so a follows on nixpkgs means no binary cache hits.
+    oh-my-pi = {
+      url = "github:can1357/oh-my-pi";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # lazyjust - terminal UI for the just command runner
     lazyjust = {
       url = "github:nickhartjes/lazyjust";

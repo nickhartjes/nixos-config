@@ -45,4 +45,7 @@
       };
     };
   };
+
+  # oh-my-pi coding agent (flake input `oh-my-pi`), installs the `omp` CLI.
+  programs.omp.enable = true;
 }

@@ -62,4 +62,7 @@
       mission-center.enable = true;
     };
   };
+
+  # ArtCraft creative suite (flake input `artcraft`); defaults to every app.
+  programs.artcraft.enable = true;
 }
