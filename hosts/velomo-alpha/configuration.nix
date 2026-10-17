@@ -48,8 +48,21 @@
   # ---- Networking ----
   networking.networkmanager.enable = true;
 
+  # Host DNS must NOT depend on Tailscale. With MagicDNS taking over
+  # /etc/resolv.conf and no global nameservers pushed by the tailnet, tailscaled
+  # has no upstream ("dns: resolver: forward: no upstream resolvers set,
+  # returning SERVFAIL") and every non-tailnet lookup fails. That silently
+  # stopped all scraper crawls from 2026-09-09 (name resolution errors).
+  # Static public resolvers keep the crawler working even if tailnet DNS
+  # config changes. Side effect: *.ts.net names do not resolve on this host.
+  networking.nameservers = ["1.1.1.1" "9.9.9.9"];
+
   # ---- Tailscale ----
-  services.tailscale.enable = true;
+  services.tailscale = {
+    enable = true;
+    # Do not let tailscaled rewrite /etc/resolv.conf (see networking.nameservers).
+    extraSetFlags = ["--accept-dns=false"];
+  };
 
   systemd.services.tailscale-autoconnect = {
     description = "Authenticate Tailscale on first boot";
@@ -65,6 +78,7 @@
       fi
       ${pkgs.tailscale}/bin/tailscale up \
         --authkey "file:${config.age.secrets."velomo-alpha/tailscale-authkey".path}" \
+        --accept-dns=false \
         --ssh
     '';
   };
