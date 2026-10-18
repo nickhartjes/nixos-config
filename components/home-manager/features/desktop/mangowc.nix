@@ -126,6 +126,9 @@ in {
           scroller_focus_center = 0;
           scroller_prefer_overspread = 1;
           scroller_proportion_preset = "0.33,0.5,0.67,0.8,1.0";
+          # A lone window fills the width instead of sitting centred at 0.5
+          scroller_ignore_proportion_single = 0;
+          scroller_default_proportion_single = 1.0;
 
           # Layouts - set all tags to scroller
           tag_rule = [
