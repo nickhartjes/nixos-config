@@ -1,8 +1,8 @@
 ## 1. Stylix input and scheme
 
-- [ ] 1.1 Add the `stylix` input (`github:nix-community/stylix`, `inputs.nixpkgs.follows = "nixpkgs"`) and `inputs.stylix.nixosModules.stylix` to framework-13's modules, then run `nix flake lock`; verify `config.stylix.enable` exists on framework-13 and `options ? stylix` is false on vm-desktop
-- [ ] 1.2 List the real target names: `nix eval --json .#nixosConfigurations.framework-13.config.home-manager.users.nh.stylix.targets --apply builtins.attrNames` (and at NixOS level); record which of ghostty, alacritty, foot, kitty, wezterm, neovim, vscode, k9s, btop, lazygit, gtk, niri, kde, qt exist
-- [ ] 1.3 Create `components/nixos/system/stylix.nix` (`components.system.stylix.enable`) setting `enable`, `autoEnable = false`, `base16Scheme` = tokyo-night-dark.yaml, `polarity = "dark"`, Comic Code monospace font, `sizes.terminal = 10`; enable it for framework-13; verify `config.lib.stylix.colors.base00` is `1a1b26` (case-insensitive) and that the HM integration is active for nh even though `useGlobalPkgs` is off
+- [x] 1.1 Add the `stylix` input (`github:nix-community/stylix`, `inputs.nixpkgs.follows = "nixpkgs"`) and `inputs.stylix.nixosModules.stylix` to framework-13's modules, then run `nix flake lock`; verify `config.stylix.enable` exists on framework-13 and `options ? stylix` is false on vm-desktop
+- [x] 1.2 List the real target names: `nix eval --json .#nixosConfigurations.framework-13.config.home-manager.users.nh.stylix.targets --apply builtins.attrNames` (and at NixOS level); record which of ghostty, alacritty, foot, kitty, wezterm, neovim, vscode, k9s, btop, lazygit, gtk, niri, kde, qt exist
+- [x] 1.3 Create `components/nixos/system/stylix.nix` (`components.system.stylix.enable`) setting `enable`, `autoEnable = false`, `base16Scheme` = tokyo-night-dark.yaml, `polarity = "dark"`, Comic Code monospace font, `sizes.terminal = 10`; enable it for framework-13; verify `config.lib.stylix.colors.base00` is `1a1b26` (case-insensitive) and that the HM integration is active for nh even though `useGlobalPkgs` is off
 
 ## 2. Application targets
 

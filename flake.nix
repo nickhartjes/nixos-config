@@ -22,6 +22,12 @@
     # Unstable Nixpkgs (rolling release, for bleeding-edge packages)
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
+    # Stylix: one color scheme for all themed surfaces (framework-13 only)
+    stylix = {
+      url = "github:nix-community/stylix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Agenix for managing secrets
     agenix.url = "github:ryantm/agenix";
 
@@ -198,6 +204,7 @@
           # sync with the mango HM module.
           {disabledModules = ["programs/wayland/mango.nix"];}
           inputs.dms.nixosModules.dank-material-shell # Dank Material Shell module
+          inputs.stylix.nixosModules.stylix # Stylix theming module
         ];
       };
 

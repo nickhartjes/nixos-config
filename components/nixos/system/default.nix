@@ -4,5 +4,6 @@
     ./yubikey.nix
     ./gaming.nix
     ./tailscale.nix
+    ./stylix.nix
   ];
 }
