@@ -16,7 +16,10 @@ in {
       enable = true;
       # Targets are opted into per application, nothing is themed implicitly.
       autoEnable = false;
-      base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyo-night-dark.yaml";
+      # The "terminal" variant has real red/yellow accents; its own background
+      # differs from Tokyo Night's, so base00 is pinned below.
+      base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyo-night-terminal-dark.yaml";
+      override.base00 = "1a1b26";
       polarity = "dark";
       fonts = {
         monospace = {

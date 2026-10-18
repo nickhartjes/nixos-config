@@ -26,11 +26,9 @@ in {
 
             # vscode-extensions.anthropic.claude-code  # temporarily disabled: stale hash in nixpkgs unstable
           ]
+          ++ [vscode-extensions.catppuccin.catppuccin-vsc-icons]
           # Stylix's vscode target owns the color theme when enabled.
-          ++ optionals (!stylixOn) [
-            vscode-extensions.catppuccin.catppuccin-vsc
-            vscode-extensions.catppuccin.catppuccin-vsc-icons
-          ];
+          ++ optionals (!stylixOn) [vscode-extensions.catppuccin.catppuccin-vsc];
       };
     };
 

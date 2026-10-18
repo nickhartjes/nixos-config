@@ -6,13 +6,13 @@
 
 **Architecture:** Add the Stylix flake input and import its NixOS module on framework-13 only. It auto-injects into Home Manager. Stylix owns colors, not fonts or wallpaper: fonts are pinned to today's values, and wallpaper stays with the wallpapers component and the shells. DMS and Noctalia keep their own theming. Plasma keeps plasma-manager, because Stylix's KDE/Qt targets would fight it.
 
-**Tech Stack:** github:nix-community/stylix, base16 scheme `tokyo-night-dark.yaml` from `pkgs.base16-schemes`.
+**Tech Stack:** github:nix-community/stylix, base16 scheme `tokyo-night-terminal-dark.yaml` (+ `override.base00 = "1a1b26"`) from `pkgs.base16-schemes`.
 
 **Spec:** Omarchy gap analysis, 2026-10-18 session (gap #2 "One theme across all apps"); user chose Tokyo Night.
 
 ## Global Constraints
 
-- Scheme: `"${pkgs.base16-schemes}/share/themes/tokyo-night-dark.yaml"`, polarity `dark`.
+- Scheme: `"${pkgs.base16-schemes}/share/themes/tokyo-night-terminal-dark.yaml"` with `stylix.override.base00 = "1a1b26"`, polarity `dark`. Accent base0D is `#7AA2F7`. GTK and btop targets are skipped.
 - Fonts must not change: monospace `ComicCodeLigatures Nerd Font` (package: `pkgs/fonts-custom`), terminal size `10` (ghostty's current `font-size = 10`). Alacritty is currently 7; record that and set `programs.alacritty.settings.font.size = lib.mkForce 7` rather than let Stylix move it.
 - Stylix must not set the wallpaper: `stylix.targets.<wm>` wallpaper handling off (wallpapers component + swaybg/DMS own it).
 - Disabled targets: `kde`, `qt` (plasma-manager), and any target for DMS/Noctalia if one exists.
@@ -77,6 +77,6 @@
 - [ ] **Step 1: Failing check** — generated `mango/config.conf` contains `focus_color = 0x89b4faff` (Catppuccin blue).
 - [ ] **Step 2: mango** — `focus_color = "0x${c.base0D}ff"; border_color = "0x${c.base02}ff"; scratchpad_color = "0x${c.base0C}ff";` where `c = config.lib.stylix.colors`, guarded with `lib.optionalAttrs (config ? lib.stylix)` so hosts without Stylix keep the Catppuccin defaults.
 - [ ] **Step 3: niri** — same mapping for active/inactive border and focus ring (base0D active, base02 inactive).
-- [ ] **Step 4: Verify** — generated mango config shows `focus_color = 0x2ac3deff` (base0D of `tokyo-night-dark.yaml` is `#2AC3DE`; case may differ); full framework-13 build passes (mango and niri validate their configs at build time); vm-desktop still evaluates.
+- [ ] **Step 4: Verify** — generated mango config shows `focus_color = 0x7aa2f7ff` (base0D is `#7AA2F7`; case may differ); full framework-13 build passes (mango and niri validate their configs at build time); vm-desktop still evaluates.
 - [ ] **Step 5: Commit** `feat(stylix): derive mango and niri border colors from the scheme`.
 - [ ] **Step 6: Visual check with the user** after rebuild: ghostty, nvim, btop, lazygit, a GTK app (Nautilus/pavucontrol), mango borders, niri borders, Plasma session unchanged.

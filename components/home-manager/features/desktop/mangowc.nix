@@ -10,8 +10,6 @@
   noctalia = cmd: "${noctaliaBin} ipc call ${cmd}";
   dmsBin = "${inputs.dms.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/dms";
   dms = cmd: "${dmsBin} ipc call ${cmd}";
-  stylixOn = config.components.features.desktop.stylix.enable;
-  stylixColors = config.lib.stylix.colors;
   hasShell = cfg.enableNoctalia || cfg.enableDMS;
   lockCmd =
     if cfg.enableDMS
@@ -110,21 +108,12 @@ in {
           shadows_size = 10;
           shadows_blur = 15;
 
-          # Border & corner radius (Catppuccin Mocha colors unless Stylix is on)
+          # Border & corner radius (Catppuccin Mocha colors)
           border_radius = 8;
           border_px = 3;
-          focus_color =
-            if stylixOn
-            then "0x${stylixColors.base0D}ff"
-            else "0x89b4faff";
-          border_color =
-            if stylixOn
-            then "0x${stylixColors.base02}ff"
-            else "0x313244ff";
-          scratchpad_color =
-            if stylixOn
-            then "0x${stylixColors.base0C}ff"
-            else "0x94e2d5ff";
+          focus_color = "0x89b4faff";
+          border_color = "0x313244ff";
+          scratchpad_color = "0x94e2d5ff";
 
           # Gaps
           gap_inner_horizontal = 6;
