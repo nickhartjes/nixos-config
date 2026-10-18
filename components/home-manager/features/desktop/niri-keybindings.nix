@@ -10,8 +10,14 @@ in
   {
     # Application launchers
     "Mod+Return".action.spawn = [terminal];
+    "Mod+Return".hotkey-overlay.title = "Open terminal";
     "Mod+D".action.spawn = ["${pkgs.wofi}/bin/wofi" "--show" "drun"];
+    "Mod+D".hotkey-overlay.title = "App launcher (wofi)";
     "Mod+B".action.spawn = ["chromium"];
+    "Mod+B".hotkey-overlay.title = "Open browser";
+
+    # Keybinding cheat sheet
+    "Mod+Shift+Slash".action.show-hotkey-overlay = [];
 
     # Window management
     "Mod+Q".action.close-window = [];
@@ -86,13 +92,21 @@ in
   # Noctalia keybindings (when enabled)
   // lib.optionalAttrs enableNoctalia {
     "Mod+Space".action.spawn = noctalia "panel-toggle launcher";
+    "Mod+Space".hotkey-overlay.title = "Launcher";
     "Mod+P".action.spawn = noctalia "panel-toggle session";
+    "Mod+P".hotkey-overlay.title = "Session menu";
     "Mod+O".action.toggle-overview = [];
+    "Mod+O".hotkey-overlay.title = "Overview";
     "Mod+Ctrl+L".action.spawn = noctalia "session lock";
+    "Mod+Ctrl+L".hotkey-overlay.title = "Lock screen";
     "Mod+V".action.spawn = noctalia "panel-toggle clipboard";
+    "Mod+V".hotkey-overlay.title = "Clipboard history";
     "Mod+E".action.spawn = noctalia "panel-toggle launcher /emo";
+    "Mod+E".hotkey-overlay.title = "Emoji picker";
     "Mod+Tab".action.spawn = noctalia "window-switcher hold";
+    "Mod+Tab".hotkey-overlay.title = "Window switcher";
     "Mod+N".action.spawn = noctalia "panel-toggle control-center";
+    "Mod+N".hotkey-overlay.title = "Control center";
     "XF86AudioRaiseVolume".action.spawn = noctalia "volume-up";
     "XF86AudioLowerVolume".action.spawn = noctalia "volume-down";
     "XF86AudioMute".action.spawn = noctalia "volume-mute";

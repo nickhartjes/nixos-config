@@ -11,6 +11,12 @@
   dmsBin = "${inputs.dms.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/dms";
   dms = cmd: "${dmsBin} ipc call ${cmd}";
   hasShell = cfg.enableNoctalia || cfg.enableDMS;
+  keybindings = import ./mangowc-keybindings.nix {
+    inherit pkgs noctalia dms hasShell lib;
+    enableNoctalia = cfg.enableNoctalia;
+    enableDMS = cfg.enableDMS;
+  };
+  bindTypes = ["bind" "bindl"];
   swaylock = "${pkgs.swaylock}/bin/swaylock -f";
   # swayidle runs this through sh -c. If the shell isn't running the IPC call
   # fails and swaylock locks instead.
@@ -48,13 +54,7 @@ in {
     wayland.windowManager.mango = {
       enable = true;
 
-      settings = let
-        keybindings = import ./mangowc-keybindings.nix {
-          inherit pkgs noctalia dms hasShell lib;
-          enableNoctalia = cfg.enableNoctalia;
-          enableDMS = cfg.enableDMS;
-        };
-      in
+      settings =
         {
           # Input configuration
           xkb_rules_layout = "us";
@@ -160,7 +160,17 @@ in {
             "id:9,layout_name:scroller"
           ];
         }
-        // keybindings;
+        // removeAttrs keybindings bindTypes;
+
+      # Binds are written as raw lines so a described bind gets its `# desc`
+      # comment directly above it, which DMS's keybind viewer shows.
+      extraConfig = lib.concatMapStrings (type:
+        lib.concatMapStrings (b:
+          if builtins.isAttrs b
+          then "# ${b.desc}\n${type} = ${b.bind}\n"
+          else "${type} = ${b}\n")
+        (keybindings.${type} or []))
+      bindTypes;
 
       # Keep autostart_sh non-empty so the mango hm-module generates the file
       # with systemd/dbus activation. Programs are launched via exec_once in config.conf.
