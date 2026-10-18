@@ -1,5 +1,5 @@
 # Development tools configuration for user nh
-{
+{osConfig, ...}: {
   components.development = {
     mise = {
       enable = true;
@@ -24,6 +24,10 @@
       kubernetes.enable = true;
       aws.enable = true;
       k9s.enable = true;
+      # Only where a Docker daemon runs, system-wide or rootless (per-user).
+      lazydocker.enable =
+        osConfig.virtualisation.docker.enable
+        || osConfig.virtualisation.docker.rootless.enable;
     };
     languages = {
       nodejs = {

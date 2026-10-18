@@ -5,5 +5,6 @@
     ./kubernetes.nix
     ./aws.nix
     ./k9s.nix
+    ./lazydocker.nix
   ];
 }
