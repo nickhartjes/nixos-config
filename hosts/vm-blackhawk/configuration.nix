@@ -83,9 +83,6 @@
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
-  #security.sudo.wheelNeedsPassword = false;
-
-  security.sudo.extraConfig = "nixos ALL=(ALL) NOPASSWD: ALL";
 
   # networking.firewall.enable = false;
 

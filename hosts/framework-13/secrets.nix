@@ -12,10 +12,6 @@
     # them -- their host keys are not recipients -- so override here, not there.
     identityPaths = lib.mkForce ["/etc/ssh/ssh_host_ed25519_key"];
     secrets = {
-      secret1 = {
-        file = ../../secrets/secret1.age;
-        path = "/home/nh/.secret1";
-      };
       # Grafana MCP service-account token. Decrypted to the path nh's zsh sources
       # (users/nh.nix), so the grafana MCP in scraper's .mcp.json gets
       # GRAFANA_SA_TOKEN. owner=nh so the user's shell can read it.

@@ -10,8 +10,8 @@
   ];
 
   users.users.nh = {
-    # $ nix-shell -p mkpasswd --run 'mkpasswd <password>'
-    initialHashedPassword = "$y$j9T$SWeufZ9NrHX0.d.w72nc20$1zKkVcJHZfIvS5VMqhdP5RwQ7wQHzbsIi.ArDYRXDK7";
+    # No password in the repo: it is public. On a fresh install set one with
+    # `nixos-enter --root /mnt -c 'passwd nh'` before rebooting.
     isNormalUser = true;
 
     ignoreShellProgramCheck = true;
@@ -20,22 +20,24 @@
     home = "/home/nh";
 
     description = "nh";
-    extraGroups = [
-      "wheel"
-      "networkmanager"
-      "libvirtd"
-      "flatpak"
-      "audio"
-      "video"
-      "plugdev"
-      "input"
-      "kvm"
-      "qemu-libvirtd"
-      "docker"
-      "podman"
-    ];
+    # docker, podman and libvirtd are root-equivalent, so only join them on
+    # hosts that actually run the service.
+    extraGroups =
+      [
+        "wheel"
+        "networkmanager"
+        "audio"
+        "video"
+        "plugdev"
+        "input"
+      ]
+      ++ lib.optionals config.virtualisation.libvirtd.enable ["libvirtd" "kvm"]
+      ++ lib.optional config.virtualisation.docker.enable "docker"
+      ++ lib.optional config.virtualisation.podman.enable "podman";
     openssh.authorizedKeys.keys = [
-      "sh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII8Fzq/ktI9g9FYsADc8NkaYDhHuXIPPPxwRjXT7Gcwk info@nickhartjes.nl"
+      # framework-13 user keys, kept in sync with secrets/secrets.nix
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPh1wLUOuMwH9tCGCRnEJ4lPqex1Ss2aaag6TKc/3hlD nick@hartj.es"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILLBdQCyD8xsKKy5UIUfKS7l+Fl5RQ9yIMR3wGOfL90+ nick@hartj.es"
     ];
     packages = [
       inputs.home-manager.packages.${pkgs.stdenv.hostPlatform.system}.default

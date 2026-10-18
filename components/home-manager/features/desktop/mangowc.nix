@@ -11,6 +11,18 @@
   dmsBin = "${inputs.dms.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/dms";
   dms = cmd: "${dmsBin} ipc call ${cmd}";
   hasShell = cfg.enableNoctalia || cfg.enableDMS;
+  lockCmd =
+    if cfg.enableDMS
+    then dms "lock lock"
+    else if cfg.enableNoctalia
+    then noctalia "lockScreen lock"
+    else "${pkgs.swaylock}/bin/swaylock -f";
+  # Wrapped in a script: mango rejects config lines over 255 bytes.
+  idleLock = pkgs.writeShellScript "mango-idle-lock" ''
+    exec ${pkgs.swayidle}/bin/swayidle -w \
+      timeout 600 '${lockCmd}' \
+      before-sleep '${lockCmd}'
+  '';
 in {
   imports = [
     inputs.mango.hmModules.mango
@@ -67,6 +79,8 @@ in {
               "${pkgs.swaybg}/bin/swaybg -i ~/.config/wallpaper -m fill"
               "${pkgs.xwayland-satellite}/bin/xwayland-satellite"
               "${pkgs.networkmanagerapplet}/bin/nm-applet"
+              # Lock after 10 min idle and before every suspend (lid, logind idle).
+              "${idleLock}"
             ]
             ++ lib.optionals cfg.enableNoctalia [
               noctaliaBin

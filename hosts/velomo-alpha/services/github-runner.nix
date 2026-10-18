@@ -9,12 +9,7 @@
   # actions (actions/checkout@v6) run fine. We force all JS actions onto the
   # bundled Node 24 via FORCE_JAVASCRIPT_ACTIONS_TO_NODE24 (set per runner in
   # serviceOverrides below) — the opt-in GitHub documents ahead of the June
-  # 2026 Node-20 removal. permittedInsecurePackages is kept harmless in case
-  # anything still resolves node20.
-  nixpkgs.config.permittedInsecurePackages = [
-    "nodejs-20.20.2"
-    "nodejs-slim-20.20.2"
-  ];
+  # 2026 Node-20 removal.
 
 
   # Self-hosted GitHub Actions runner for the Dealdodo/scraper repo.

@@ -19,9 +19,6 @@
     # Main Nixpkgs (unstable channel)
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    # Stable Nixpkgs (specific version, e.g., for certain packages or modules)
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.05";
-
     # Unstable Nixpkgs (rolling release, for bleeding-edge packages)
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
@@ -37,12 +34,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Example of a non-flake input (e.g., for dotfiles)
-    dotfiles = {
-      url = "git+https://github.com/nickhartjes/dotfiles-flake-demo.git";
-      flake = false; # Indicates this is not a flake
-    };
-
     # Claude Code skill sources, consumed by
     # components/home-manager/application/ai/claude-code.nix. Pinned here
     # rather than installed as plugins so updates go through flake.lock.
@@ -55,14 +46,8 @@
       flake = false;
     };
 
-    # Nix-darwin for managing macOS configurations (not used in this flake)
     lanzaboote = {
       url = "github:nix-community/lanzaboote";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    auto-cpufreq = {
-      url = "github:AdnanHodzic/auto-cpufreq";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -71,9 +56,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
-
-    # Microcode updates for Intel and AMD CPUs
-    ucodenix.url = "github:e-tho/ucodenix";
 
     # Noctalia shell for Wayland compositors
     noctalia = {
@@ -124,17 +106,13 @@
   # --- Outputs ---
   # Defines what this flake provides (packages, NixOS configurations, etc.)
   outputs = {
-    auto-cpufreq, # Auto CPU frequency scaling
     self, # A reference to this flake's own outputs
     agenix, # Agenix input
     home-manager, # Home Manager input
-    nix-darwin, # Nix-darwin input (though not used in the current systems list)
     nixpkgs, # Nixpkgs input
-    nixpkgs-stable, # Nixpkgs stable input
     nixos-hardware,
     plasma-manager,
     lanzaboote,
-    ucodenix,
     noctalia, # Noctalia shell input
     niri, # Niri compositor input
     mango, # MangoWC compositor input
@@ -213,8 +191,6 @@
           agenix.nixosModules.default # Agenix module
           nixos-hardware.nixosModules.framework-amd-ai-300-series # NixOS hardware module for framework-13
           inputs.lanzaboote.nixosModules.lanzaboote
-          inputs.ucodenix.nixosModules.default
-          auto-cpufreq.nixosModules.default
           inputs.niri.nixosModules.niri # Niri compositor module
           inputs.mango.nixosModules.mango # MangoWC compositor module
           # nixpkgs now ships its own programs.mango module, which collides with the
@@ -222,17 +198,6 @@
           # sync with the mango HM module.
           {disabledModules = ["programs/wayland/mango.nix"];}
           inputs.dms.nixosModules.dank-material-shell # Dank Material Shell module
-        ];
-      };
-
-      # NixOS configuration for 'm3-hermes-hetzner'
-      m3-hermes-hetzner = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux"; # Specify the system architecture
-        specialArgs = {inherit inputs outputs;}; # Pass inputs and flake outputs to the modules
-        modules = [
-          ./hosts/m3-kratos # Host-specific configuration
-          inputs.disko.nixosModules.disko # Disko module
-          agenix.nixosModules.default # Agenix module
         ];
       };
 

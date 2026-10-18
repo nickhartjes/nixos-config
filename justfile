@@ -3,9 +3,14 @@
 default:
     @just --list
 
-# Deploy system configuration
+# Deploy system configuration. Remote sudo authenticates via the forwarded SSH
+# agent (security.pam.sshAgentAuth), so no password prompt.
 deploy SYSTEM:
-    nixos-rebuild switch --flake .#{{SYSTEM}} --target-host {{SYSTEM}} --use-remote-sudo --ask-sudo-password
+    NIX_SSHOPTS="-o ForwardAgent=yes" nixos-rebuild switch --flake .#{{SYSTEM}} --target-host {{SYSTEM}} --elevate=sudo
+
+# Deploy with a sudo password prompt, for hosts without sshAgentAuth yet
+deploy-password SYSTEM:
+    NIX_SSHOPTS="-o ForwardAgent=yes" nixos-rebuild switch --flake .#{{SYSTEM}} --target-host {{SYSTEM}} --elevate=sudo --ask-sudo-password
 
 # Deploy velomo-alpha (production host: doco-cd, zot registry, beszel, scraper-app stack)
 deploy-velomo:

@@ -8,6 +8,8 @@
 }: {
   # ---- Bootloader ----
   boot.loader.systemd-boot.enable = true;
+  # The boot-menu editor allows init=/bin/sh, i.e. root from the console.
+  boot.loader.systemd-boot.editor = false;
   boot.loader.efi.canTouchEfiVariables = true;
 
   # ---- Nixpkgs (from common, minus what we don't need) ----
@@ -15,7 +17,6 @@
     overlays = [
       outputs.overlays.additions
       outputs.overlays.modifications
-      outputs.overlays.stable-packages
       outputs.overlays.unstable-packages
     ];
     config.allowUnfree = true;
@@ -89,8 +90,15 @@
     settings = {
       PermitRootLogin = "no";
       PasswordAuthentication = false;
+      # With UsePAM, keyboard-interactive still accepts the account password.
+      KbdInteractiveAuthentication = false;
     };
   };
+
+  # sudo authenticates against the forwarded SSH agent, checked against the
+  # root-owned /etc/ssh/authorized_keys.d/nh. No password needed for deploys,
+  # and processes on this host without your agent (e.g. agents) can't sudo.
+  security.pam.sshAgentAuth.enable = true;
 
   # ---- User: inline nh definition (see spec: Server-vs-Workstation User Split) ----
   # NOTE: do NOT import users/nh.nix here. The workstation tree assumes
@@ -99,8 +107,8 @@
     isNormalUser = true;
     description = "nh";
     home = "/home/nh";
-    # Allow first-time console login if SSH key access fails; remove later if desired.
-    initialHashedPassword = "$y$j9T$SWeufZ9NrHX0.d.w72nc20$1zKkVcJHZfIvS5VMqhdP5RwQ7wQHzbsIi.ArDYRXDK7";
+    # No password in the repo: it is public. Set the console fallback with
+    # `passwd` on the host (or `nixos-enter` at install time).
     extraGroups = [
       "wheel"
       "networkmanager"

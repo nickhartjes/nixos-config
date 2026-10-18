@@ -47,6 +47,8 @@
   boot.lanzaboote = {
     enable = true;
     pkiBundle = "/var/lib/sbctl";
+    # The boot-menu editor lets anyone at the keyboard change the kernel cmdline.
+    settings.editor = false;
   };
 
   # Track the latest mainline kernel. We were previously pinned to 6.12 LTS for
@@ -236,9 +238,6 @@
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
-  #security.sudo.wheelNeedsPassword = false;
-
-  security.sudo.extraConfig = "nh ALL=(ALL) NOPASSWD: ALL";
 
   # networking.firewall.enable = false;
 
@@ -253,10 +252,9 @@
   system = {
     autoUpgrade = {
       enable = true;
-      flake = "path:/home/nh/.config/nixos-config";
-      flags = [
-        "--commit-lock-file"
-      ];
+      # Only pushed commits get deployed; the local checkout is writable by nh
+      # and may hold half-finished work.
+      flake = "github:nickhartjes/nixos-config";
       dates = "weekly";
     };
   };

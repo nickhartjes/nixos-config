@@ -17,8 +17,6 @@ let
   velomoSystems = [velomo-alpha];
   nanoclawSystems = [n100-nanoclaw];
 in {
-  "secret1.age".publicKeys = [framework-13 framework-13-2] ++ systems;
-
   # Grafana service-account token (export GRAFANA_SA_TOKEN=...) for the Velomo
   # prod observability stack's MCP. Decrypted on framework-13 to nh's home so
   # zsh can source it (see hosts/framework-13/secrets.nix + users/nh.nix).

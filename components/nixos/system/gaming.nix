@@ -16,9 +16,11 @@ in {
     # Gaming optimizations
     programs.steam = {
       enable = true;
-      remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
-      dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
-      localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
+      # No firewall holes: these would be open on every network, public Wi-Fi
+      # included. Enable per host if Remote Play / LAN transfers are needed.
+      remotePlay.openFirewall = false;
+      dedicatedServer.openFirewall = false;
+      localNetworkGameTransfers.openFirewall = false;
     };
 
     # GameMode for better gaming performance

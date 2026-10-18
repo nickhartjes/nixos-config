@@ -22,7 +22,6 @@
       # Add overlays your own flake exports (from overlays and pkgs dir):
       outputs.overlays.additions
       outputs.overlays.modifications
-      outputs.overlays.stable-packages
       outputs.overlays.unstable-packages
 
       # You can also add overlays exported from other flakes:
@@ -49,9 +48,9 @@
     ##################
     settings = {
       experimental-features = ["nix-command" "flakes"];
-      # Trusted users can change daemon settings (substituters, sandbox) — this
-      # is root-equivalent, but wheel already has sudo so it adds nothing.
-      trusted-users = ["root" "@wheel"];
+      # Trusted users can change daemon settings (substituters, sandbox), which
+      # is root-equivalent without a sudo password. Keep it to root.
+      trusted-users = ["root"];
     };
     gc = {
       # Automatic garbage collection

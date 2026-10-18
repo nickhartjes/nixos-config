@@ -1,5 +1,6 @@
 {
   config,
+  options,
   lib,
   pkgs,
   ...
@@ -8,7 +9,7 @@
     enable = lib.mkEnableOption "Niri scrollable tiling Wayland compositor";
   };
 
-  config = lib.mkIf config.components.desktop.niri.enable {
+  config = lib.mkIf config.components.desktop.niri.enable ({
     programs.niri.enable = true;
 
     # TEMP (2026-08-14): niri-flake's own niri derivation does
@@ -26,5 +27,10 @@
       wlr.enable = true;
       extraPortals = [pkgs.xdg-desktop-portal-gtk];
     };
-  };
+  }
+  # niri comes from nixpkgs (above), so don't trust niri.cachix.org. The option
+  # only exists on hosts that import inputs.niri.nixosModules.niri.
+  // lib.optionalAttrs (options ? niri-flake) {
+    niri-flake.cache.enable = false;
+  });
 }
