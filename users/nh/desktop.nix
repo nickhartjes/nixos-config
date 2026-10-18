@@ -1,5 +1,5 @@
 # Desktop, terminal, and CLI configuration for user nh
-{
+{osConfig, ...}: {
   components = {
     cli = {
       bat.enable = false;
@@ -27,9 +27,11 @@
         mangowc.enableNoctalia = false;
         mangowc.enableDMS = true;
         dms.enable = true;
-        niri.enable = false;
-        niri.enableNoctalia = false;
-        noctalia.enable = false;
+        # Follow the host: the niri HM config needs inputs.niri.nixosModules.niri,
+        # which only hosts that enable niri system-wide (framework-13) import.
+        niri.enable = osConfig.components.desktop.niri.enable;
+        niri.enableNoctalia = true;
+        noctalia.enable = true;
         sway.enable = false;
         wallpapers.enable = true;
         wallpapers.default = "aishot-2697.jpg";

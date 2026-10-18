@@ -85,20 +85,17 @@ in
   }
   # Noctalia keybindings (when enabled)
   // lib.optionalAttrs enableNoctalia {
-    "Mod+Space".action.spawn = noctalia "launcher toggle";
-    "Mod+P".action.spawn = noctalia "sessionMenu toggle";
-    "Mod+O".action.spawn = noctalia "overview toggle";
-    "Mod+Ctrl+L".action.spawn = noctalia "lockScreen lock";
-    "Mod+V".action.spawn = noctalia "launcher clipboard";
-    "Mod+E".action.spawn = noctalia "launcher emoji";
-    "Mod+Tab".action.spawn = noctalia "launcher windows";
-    "Mod+N".action.spawn = noctalia "controlCenter toggle";
-    "Mod+C".action.spawn = noctalia "calendar toggle";
-    "Mod+Shift+Escape".action.spawn = noctalia "systemMonitor toggle";
-    "Mod+Shift+D".action.spawn = noctalia "launcher command";
-    "XF86AudioRaiseVolume".action.spawn = noctalia "volume increase";
-    "XF86AudioLowerVolume".action.spawn = noctalia "volume decrease";
-    "XF86AudioMute".action.spawn = noctalia "volume muteOutput";
-    "XF86MonBrightnessUp".action.spawn = noctalia "brightness increase";
-    "XF86MonBrightnessDown".action.spawn = noctalia "brightness decrease";
+    "Mod+Space".action.spawn = noctalia "panel-toggle launcher";
+    "Mod+P".action.spawn = noctalia "panel-toggle session";
+    "Mod+O".action.toggle-overview = [];
+    "Mod+Ctrl+L".action.spawn = noctalia "session lock";
+    "Mod+V".action.spawn = noctalia "panel-toggle clipboard";
+    "Mod+E".action.spawn = noctalia "panel-toggle launcher /emo";
+    "Mod+Tab".action.spawn = noctalia "window-switcher hold";
+    "Mod+N".action.spawn = noctalia "panel-toggle control-center";
+    "XF86AudioRaiseVolume".action.spawn = noctalia "volume-up";
+    "XF86AudioLowerVolume".action.spawn = noctalia "volume-down";
+    "XF86AudioMute".action.spawn = noctalia "volume-mute";
+    "XF86MonBrightnessUp".action.spawn = noctalia "brightness-up";
+    "XF86MonBrightnessDown".action.spawn = noctalia "brightness-down";
   }

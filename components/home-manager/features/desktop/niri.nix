@@ -6,9 +6,13 @@
   inputs,
   ...
 }: let
-  # Utility function for Noctalia IPC commands
-  noctaliaBin = "${inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/noctalia-shell";
-  noctalia = cmd: [noctaliaBin "ipc" "call"] ++ (pkgs.lib.splitString " " cmd);
+  # Noctalia v5: binary is `noctalia`, runtime control is `noctalia msg <command>`.
+  noctaliaBin = "${inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/noctalia";
+  noctalia = cmd: [noctaliaBin "msg"] ++ (pkgs.lib.splitString " " cmd);
+  lockCmd =
+    if config.components.features.desktop.niri.enableNoctalia
+    then lib.escapeShellArgs (noctalia "session lock")
+    else "${pkgs.swaylock}/bin/swaylock -f";
 in {
   # Note: Don't import inputs.niri.homeModules.niri here - it's already
   # provided by inputs.niri.nixosModules.niri at the system level
@@ -85,6 +89,18 @@ in {
             [
               {command = ["${pkgs.xwayland-satellite}/bin/xwayland-satellite"];}
               {command = ["${pkgs.networkmanagerapplet}/bin/nm-applet"];}
+              # Lock after 10 min idle and before every suspend (lid, logind idle).
+              {
+                command = [
+                  "${pkgs.swayidle}/bin/swayidle"
+                  "-w"
+                  "timeout"
+                  "600"
+                  lockCmd
+                  "before-sleep"
+                  lockCmd
+                ];
+              }
             ]
             ++ lib.optionals config.components.features.desktop.niri.enableNoctalia [
               {command = [noctaliaBin];}
@@ -92,6 +108,11 @@ in {
             ++ lib.optionals (!config.components.features.desktop.niri.enableNoctalia) [
               {command = ["${pkgs.swaynotificationcenter}/bin/swaync"];}
             ];
+
+          # Noctalia needs this for notification actions / window activation
+          debug = lib.optionalAttrs config.components.features.desktop.niri.enableNoctalia {
+            honor-xdg-activation-with-invalid-serial = [];
+          };
 
           # Prefer server-side decorations
           prefer-no-csd = true;
@@ -118,11 +139,6 @@ in {
           ];
         };
       };
-    };
-
-    # Set DISPLAY for XWayland apps (e.g. IntelliJ, other Java/X11 apps)
-    home.sessionVariables = {
-      DISPLAY = ":0";
     };
 
     # Supporting packages
