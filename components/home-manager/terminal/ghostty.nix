@@ -6,6 +6,7 @@
 }:
 with lib; let
   cfg = config.components.terminal.ghostty;
+  stylixOn = config.components.features.desktop.stylix.enable;
 in {
   options.components.terminal.ghostty.enable = mkEnableOption "enable displaylink";
 
@@ -16,11 +17,12 @@ in {
         enableZshIntegration = true;
         enableFishIntegration = true;
         enableBashIntegration = true;
-        settings = {
-          font-family = "ComicCodeLigatures Nerd Font";
-          theme = "Catppuccin Mocha";
-          font-size = 10;
-        };
+        settings =
+          {
+            font-family = "ComicCodeLigatures Nerd Font";
+            font-size = 10;
+          }
+          // optionalAttrs (!stylixOn) {theme = "Catppuccin Mocha";};
       };
     };
   };

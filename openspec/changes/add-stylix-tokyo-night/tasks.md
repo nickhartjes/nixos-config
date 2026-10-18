@@ -6,9 +6,9 @@
 
 ## 2. Application targets
 
-- [ ] 2.1 Create `components/home-manager/features/desktop/stylix.nix` enabling the targets from 1.2 among: ghostty, alacritty, foot, kitty, wezterm, neovim, vscode, k9s, btop, lazygit, gtk; set `kde.enable = false` and `qt.enable = false`; turn it on for nh only when `osConfig ? stylix && osConfig.stylix.enable`; verify each listed target reports `true` and kde/qt report `false`
-- [ ] 2.2 Remove `theme = "Catppuccin Mocha"` from ghostty.nix, the Catppuccin extensions from vscode.nix, and the Catppuccin skin from k9s.nix, each only if its target is enabled; verify a search shows no Catppuccin left for those apps
-- [ ] 2.3 Pin alacritty's font size with `lib.mkForce 7`; verify ghostty `font-size` is 10 and alacritty `font.size` is 7 in the evaluated HM config
+- [x] 2.1 Create `components/home-manager/features/desktop/stylix.nix` enabling the targets from 1.2 among: ghostty, alacritty, foot, kitty, wezterm, neovim, vscode, k9s, btop, lazygit, gtk; set `kde.enable = false` and `qt.enable = false`; turn it on for nh only when `osConfig ? stylix && osConfig.stylix.enable`; verify each listed target reports `true` and kde/qt report `false`
+- [x] 2.2 Remove `theme = "Catppuccin Mocha"` from ghostty.nix, the Catppuccin extensions from vscode.nix, and the Catppuccin skin from k9s.nix, each only if its target is enabled; verify a search shows no Catppuccin left for those apps
+- [x] 2.3 Pin alacritty's font size with `lib.mkForce 7`; verify ghostty `font-size` is 10 and alacritty `font.size` is 7 in the evaluated HM config
 
 ## 3. Compositor borders
 

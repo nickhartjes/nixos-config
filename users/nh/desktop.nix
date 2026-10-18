@@ -32,6 +32,7 @@
         niri.enable = osConfig.components.desktop.niri.enable;
         niri.enableNoctalia = true;
         noctalia.enable = true;
+        stylix.enable = osConfig ? stylix && osConfig.stylix.enable;
         sway.enable = false;
         wallpapers.enable = true;
         wallpapers.default = "aishot-2697.jpg";

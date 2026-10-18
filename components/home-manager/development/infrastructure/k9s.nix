@@ -137,7 +137,7 @@
         };
       };
 
-      skins = {
+      skins = lib.optionalAttrs (!config.components.features.desktop.stylix.enable) {
         catppuccin = {
           k9s = {
             body = {
