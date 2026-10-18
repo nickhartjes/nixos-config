@@ -9,6 +9,10 @@
   # Noctalia v5: binary is `noctalia`, runtime control is `noctalia msg <command>`.
   noctaliaBin = "${inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/noctalia";
   noctalia = cmd: [noctaliaBin "msg"] ++ (pkgs.lib.splitString " " cmd);
+  # The Stylix niri target also moves cursor settings and swaps the focus ring
+  # for a border, so colors are set by hand instead.
+  stylixOn = config.components.features.desktop.stylix.enable;
+  stylixColors = config.lib.stylix.colors;
   lockCmd =
     if config.components.features.desktop.niri.enableNoctalia
     then lib.escapeShellArgs (noctalia "session lock")
@@ -76,8 +80,14 @@ in {
             focus-ring = {
               enable = true;
               width = 3;
-              active.color = "#1e81b0";
-              inactive.color = "#333333";
+              active.color =
+                if stylixOn
+                then "#${stylixColors.base0D}"
+                else "#1e81b0";
+              inactive.color =
+                if stylixOn
+                then "#${stylixColors.base02}"
+                else "#333333";
             };
             border = {
               enable = false;

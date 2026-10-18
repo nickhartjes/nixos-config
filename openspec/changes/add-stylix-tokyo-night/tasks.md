@@ -12,9 +12,9 @@
 
 ## 3. Compositor borders
 
-- [ ] 3.1 In mangowc.nix, set `focus_color`/`border_color`/`scratchpad_color` from base0D/base02/base0C of `config.lib.stylix.colors`, guarded so hosts without Stylix keep their current values; verify the generated mango config shows `focus_color = 0x2ac3deff` (case-insensitive)
-- [ ] 3.2 For niri, enable the Stylix target if 1.2 found one; otherwise set active/inactive border and focus ring from base0D/base02; verify the build validates the niri config
-- [ ] 3.3 All five nixosConfigurations evaluate and framework-13's toplevel builds
+- [x] 3.1 In mangowc.nix, set `focus_color`/`border_color`/`scratchpad_color` from base0D/base02/base0C of `config.lib.stylix.colors`, guarded so hosts without Stylix keep their current values; verify the generated mango config shows `focus_color = 0x2ac3deff` (case-insensitive)
+- [x] 3.2 For niri, enable the Stylix target if 1.2 found one; otherwise set active/inactive border and focus ring from base0D/base02; verify the build validates the niri config
+- [x] 3.3 All five nixosConfigurations evaluate and framework-13's toplevel builds
 
 ## 4. User check
 
