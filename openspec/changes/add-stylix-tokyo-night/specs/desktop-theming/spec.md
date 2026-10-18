@@ -30,7 +30,7 @@ Applying the scheme SHALL NOT change fonts or font sizes: monospace stays "Comic
 - **THEN** both show the same font family and size as before
 
 ### Requirement: Excluded areas keep their own theming
-Plasma (KDE/Qt), the DMS and Noctalia shells, and wallpapers SHALL NOT be themed or changed by this mechanism.
+Plasma (KDE/Qt), the Noctalia shell, DMS's own settings file, and wallpapers SHALL NOT be themed or changed by this mechanism.
 
 #### Scenario: Plasma session
 - **WHEN** nh logs in to Plasma after the change
@@ -42,3 +42,10 @@ Hosts other than framework-13 SHALL NOT gain the theming mechanism, and their ev
 #### Scenario: VM evaluation
 - **WHEN** vm-desktop is evaluated
 - **THEN** it evaluates successfully without the theming options present
+
+### Requirement: DMS can use the scheme without losing its settings
+On framework-13, a DMS custom theme file derived from the same Tokyo Night palette SHALL be available at `~/.config/DankMaterialShell/themes/stylix.json`, and DMS's own `settings.json` SHALL remain a regular file that DMS can modify.
+
+#### Scenario: Selecting the theme in DMS
+- **WHEN** the user selects Custom theme → `~/.config/DankMaterialShell/themes/stylix.json` in DMS settings
+- **THEN** DMS's primary color is `#7AA2F7` and its background `#1A1B26`, and other DMS settings changed afterwards in the DMS UI are saved

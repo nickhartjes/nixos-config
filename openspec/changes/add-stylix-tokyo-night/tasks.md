@@ -16,6 +16,10 @@
 - [x] 3.2 For niri, set `programs.niri.settings.layout.focus-ring` active/inactive from base0D/base02 in `features/desktop/stylix.nix` behind an `options ? programs.niri` guard (niri.nix stays unchanged); verify the build validates the niri config
 - [x] 3.3 All five nixosConfigurations evaluate and framework-13's toplevel builds
 
+## 3b. DMS theme file
+
+- [x] 3b.1 Generate `~/.config/DankMaterialShell/themes/stylix.json` from `config.lib.stylix.colors` (same mapping as the Stylix DMS target) under the HM Stylix flag, without enabling the `dank-material-shell` target; verify its primary is `#7aa2f7` and background `#1a1b26`, that the path does not exist on disk yet (no clobber), that HM does not manage `DankMaterialShell/settings.json`, and that vm-desktop gets no theme file
+
 ## 4. User check
 
-- [ ] 4.1 After rebuild, select the Stylix color theme once in VS Code, then check visually with the user: ghostty, nvim, lazygit, VS Code, mango borders, niri borders, and an unchanged Plasma session; fonts look the same as before
+- [ ] 4.1 After rebuild, select the Stylix color theme once in VS Code and the Custom theme `themes/stylix.json` once in DMS, then check visually with the user: ghostty, nvim, lazygit, VS Code, mango borders, niri borders, and an unchanged Plasma session; fonts look the same as before

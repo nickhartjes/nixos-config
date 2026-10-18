@@ -70,6 +70,42 @@ in {
           home.file."${config.xdg.configHome}/lazygit/config.yml".force = true;
         }
         // lib.optionalAttrs (options ? stylix) {
+          # DMS theme file only, with the same mapping as Stylix's own DMS
+          # target. That target would make HM own settings.json, which DMS
+          # rewrites from its settings UI; select this file once there instead
+          # (Settings -> Theme -> Custom).
+          xdg.configFile."DankMaterialShell/themes/stylix.json" = lib.mkIf (c != null) {
+            text = let
+              h = c.withHashtag;
+              theme = {
+                name = "Stylix";
+                primary = h.base0D;
+                primaryText = h.base00;
+                primaryContainer = h.base0C;
+                secondary = h.base0E;
+                surface = h.base01;
+                surfaceText = h.base05;
+                surfaceVariant = h.base02;
+                surfaceVariantText = h.base04;
+                surfaceTint = h.base0D;
+                background = h.base00;
+                backgroundText = h.base05;
+                outline = h.base03;
+                surfaceContainer = h.base01;
+                surfaceContainerHigh = h.base02;
+                surfaceContainerHighest = h.base03;
+                error = h.base08;
+                warning = h.base0A;
+                info = h.base0C;
+              };
+            in
+              builtins.toJSON {
+                dark = theme;
+                light = theme;
+              };
+          };
+        }
+        // lib.optionalAttrs (options ? stylix) {
           wayland.windowManager.mango.settings = lib.mkIf (c != null) {
             focus_color = lib.mkForce "0x${c.base0D}ff";
             border_color = lib.mkForce "0x${c.base02}ff";

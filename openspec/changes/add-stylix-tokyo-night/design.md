@@ -6,7 +6,7 @@ Theme settings are scattered: ghostty `theme = "Catppuccin Mocha"`, VS Code Catp
 
 **Goals:** one scheme setting drives every listed surface; no visual change besides colors.
 
-**Non-Goals:** runtime theme switching; theming DMS/Noctalia (they theme themselves, and DMS can follow the wallpaper); Plasma/Qt; fonts; wallpapers.
+**Non-Goals:** runtime theme switching; theming Noctalia; managing DMS's `settings.json`; Plasma/Qt; fonts; wallpapers.
 
 ## Decisions
 
@@ -15,6 +15,7 @@ Theme settings are scattered: ghostty `theme = "Catppuccin Mocha"`, VS Code Catp
 - **`autoEnable = false` with an explicit target list.** Stylix's default themes everything it finds, which would also hit KDE/Qt and fight plasma-manager. An explicit list makes the themed set match the spec exactly.
 - **Fonts pinned to current values** (`fonts.monospace` = Comic Code, `sizes.terminal = 10`, alacritty held at 7 by `stylix.targets.alacritty.fonts.enable = false`, not by `lib.mkForce`). Stylix's default terminal size of 12 would otherwise change every terminal.
 - **Scheme file:** `${pkgs.base16-schemes}/share/themes/tokyo-night-terminal-dark.yaml` plus `stylix.override.base00 = "1a1b26"`. The plain `tokyo-night-dark.yaml` has base08 (red) close to the foreground, so the terminal variant is used for real red/yellow accents, and the override keeps the background `#1A1B26`. Resulting values: base00 `#1A1B26`, base02 `#2F3549`, base08 `#F7768E`, base0A `#E0AF68`, base0C `#7DCFFF`, base0D `#7AA2F7`.
+- **DMS gets a theme file, not the Stylix target.** The Stylix `dank-material-shell` target writes `programs.dank-material-shell.settings`, which makes Home Manager own `~/.config/DankMaterialShell/settings.json` (13 KB, rewritten by DMS's settings UI): activation would clobber it and DMS could no longer save. Instead nh's HM writes `~/.config/DankMaterialShell/themes/stylix.json` with the same palette mapping as that target (primary base0D, background base00, surfaces base01-03, error base08, warning base0A, info base0C), and the user selects it once under DMS Settings → Theme → Custom.
 - **Skipped targets:** GTK (Plasma/DMS/nwg-look own and rewrite those files, and the target changes font/icon/cursor, so it would also clobber unmanaged files) and btop (not HM-managed, rewrites its own `btop.conf`).
 - **VS Code:** `catppuccin-vsc-icons` stays installed (an icon theme, not a color scheme); only the Catppuccin color extension is swapped for Stylix's. `userSettings` is not set, so `settings.json` stays mutable; select the Stylix color theme once in VS Code.
 - **lazygit:** the existing `config.yml` is an empty unmanaged file, so `home.file."${config.xdg.configHome}/lazygit/config.yml".force = true` under the flag.
