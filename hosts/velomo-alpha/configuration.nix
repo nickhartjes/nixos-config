@@ -28,7 +28,11 @@
   in {
     settings = {
       experimental-features = ["nix-command" "flakes"];
-      trusted-users = ["root" "@wheel"];
+      # Not @wheel: a trusted user can set any nix.conf option per call, which
+      # is root. `just deploy` copies closures signed with framework-13's key
+      # (/etc/nix/signing-key there), so nh doesn't need to be trusted.
+      trusted-users = ["root"];
+      extra-trusted-public-keys = ["framework-13-1:yGXpwLATK5IztqdI0ssqoKAgxsrxQ20E3s99X8TQf7w="];
       auto-optimise-store = true;
     };
     gc = {
@@ -62,7 +66,10 @@
   services.tailscale = {
     enable = true;
     # Do not let tailscaled rewrite /etc/resolv.conf (see networking.nameservers).
-    extraSetFlags = ["--accept-dns=false"];
+    # --ssh=false: Tailscale SSH bypasses sshd (PermitRootLogin, keys, sudo).
+    # RunSSH is persisted in tailscaled's prefs, so it has to be cleared with
+    # `tailscale set` on every start, not just left out of `tailscale up`.
+    extraSetFlags = ["--accept-dns=false" "--ssh=false"];
   };
 
   systemd.services.tailscale-autoconnect = {
@@ -79,8 +86,7 @@
       fi
       ${pkgs.tailscale}/bin/tailscale up \
         --authkey "file:${config.age.secrets."velomo-alpha/tailscale-authkey".path}" \
-        --accept-dns=false \
-        --ssh
+        --accept-dns=false
     '';
   };
 
@@ -96,8 +102,10 @@
   };
 
   # sudo authenticates against the forwarded SSH agent, checked against the
-  # root-owned /etc/ssh/authorized_keys.d/nh. No password needed for deploys,
-  # and processes on this host without your agent (e.g. agents) can't sudo.
+  # root-owned /etc/ssh/authorized_keys.d/nh. No password needed for deploys.
+  # While a deploy runs, anything running as nh here can use the forwarded
+  # agent too; framework-13 adds the keys with confirm-on-use (ssh-add -c), so
+  # each signature needs an approval there.
   security.pam.sshAgentAuth.enable = true;
 
   # ---- User: inline nh definition (see spec: Server-vs-Workstation User Split) ----
@@ -112,7 +120,9 @@
     extraGroups = [
       "wheel"
       "networkmanager"
-      "docker"
+      # Not docker: the docker group is root without sudo. doco-cd, the
+      # runners and pg-backup talk to the daemon as root or via their own
+      # group membership; nh uses `sudo docker`.
     ];
     openssh.authorizedKeys.keys = [
       # framework-13 keys — kept in sync with secrets/secrets.nix
@@ -137,12 +147,13 @@
   # ---- Firewall ----
   networking.firewall = {
     enable = true;
-    trustedInterfaces = ["tailscale0"];
+    # tailscale0 is not trusted: every tailnet node (n100-nanoclaw included)
+    # gets only the ports listed here. 22 is open on all interfaces.
     allowedTCPPorts = [22];
-    # 9120: legacy Komodo UI port (kept open in case anything still references
-    # it). 8080: scraper-app's main port (admin UI at /admin). 8090: Beszel hub
-    # UI. Only tailnet members get past this — eth0 stays closed except SSH.
-    interfaces.tailscale0.allowedTCPPorts = [9120 8080 8090];
+    # 3300: Grafana, bound to the tailnet IP only.
+    interfaces.tailscale0.allowedTCPPorts = [3300];
+    # Docker-published ports bypass this firewall (DNAT runs first). The
+    # docker component binds them to 127.0.0.1 unless a mapping names an IP.
   };
 
   # ---- stateVersion: pin to the release the host was first installed against ----

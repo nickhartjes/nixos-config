@@ -14,6 +14,22 @@ in {
     "d ${dataDir} 0750 root root - -"
   ];
 
+  # The /run/agenix bind mount below pins the generation dir the symlink
+  # pointed to when the container started (/run/agenix.d/<N>). Each
+  # activation makes a new generation and deletes the old one, so without a
+  # restart doco-cd sees an empty dir and every deploy fails with "couldn't
+  # find env file". Restart it after agenix has installed the new generation.
+  # try-restart: no-op at boot (unit not running yet) and if it's stopped;
+  # --no-block: don't wait on the container from inside activation.
+  system.activationScripts.doco-cd-remount-agenix = {
+    deps = ["agenix" "agenixChown"];
+    text = ''
+      if [ -d /run/systemd/system ]; then
+        ${config.systemd.package}/bin/systemctl --no-block try-restart docker-doco-cd.service || true
+      fi
+    '';
+  };
+
   virtualisation.oci-containers.backend = "docker";
 
   virtualisation.oci-containers.containers.doco-cd = {
@@ -53,6 +69,8 @@ in {
       # Expose all agenix-decrypted secrets to doco-cd so deployed compose
       # stacks can reference them via env_file: /run/agenix/<host>/<name>
       # without doco-cd needing to know about each one individually.
+      # doco-cd runs as root in the container, so the 0400 root files are
+      # readable here; deployed stacks only see what they mount explicitly.
       "/run/agenix:/run/agenix:ro"
     ];
   };

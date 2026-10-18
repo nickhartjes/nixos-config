@@ -104,9 +104,10 @@
     ];
 
     # The systemd unit uses a dynamic user — grant docker socket access via
-    # SupplementaryGroups instead of chowning.
+    # SupplementaryGroups instead of chowning. velomo-secrets: read
+    # frontend-build.env in the publish job.
     serviceOverrides = {
-      SupplementaryGroups = ["docker"];
+      SupplementaryGroups = ["docker" "velomo-secrets"];
       # Run JS actions on Node 24; the runner's node20 externals are missing.
       Environment = ["FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true"];
     };

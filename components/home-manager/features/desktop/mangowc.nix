@@ -11,12 +11,15 @@
   dmsBin = "${inputs.dms.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/dms";
   dms = cmd: "${dmsBin} ipc call ${cmd}";
   hasShell = cfg.enableNoctalia || cfg.enableDMS;
+  swaylock = "${pkgs.swaylock}/bin/swaylock -f";
+  # swayidle runs this through sh -c. If the shell isn't running the IPC call
+  # fails and swaylock locks instead.
   lockCmd =
     if cfg.enableDMS
-    then dms "lock lock"
+    then "${dms "lock lock"} || ${swaylock}"
     else if cfg.enableNoctalia
-    then noctalia "lockScreen lock"
-    else "${pkgs.swaylock}/bin/swaylock -f";
+    then "${noctalia "lockScreen lock"} || ${swaylock}"
+    else swaylock;
   # Wrapped in a script: mango rejects config lines over 255 bytes.
   idleLock = pkgs.writeShellScript "mango-idle-lock" ''
     exec ${pkgs.swayidle}/bin/swayidle -w \

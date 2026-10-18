@@ -9,10 +9,13 @@
   # Noctalia v5: binary is `noctalia`, runtime control is `noctalia msg <command>`.
   noctaliaBin = "${inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/noctalia";
   noctalia = cmd: [noctaliaBin "msg"] ++ (pkgs.lib.splitString " " cmd);
+  swaylock = "${pkgs.swaylock}/bin/swaylock -f";
+  # swayidle runs this through sh -c. If the shell isn't running (crashed,
+  # not started) the IPC call fails and swaylock locks instead.
   lockCmd =
     if config.components.features.desktop.niri.enableNoctalia
-    then lib.escapeShellArgs (noctalia "session lock")
-    else "${pkgs.swaylock}/bin/swaylock -f";
+    then "${lib.escapeShellArgs (noctalia "session lock")} || ${swaylock}"
+    else swaylock;
 in {
   # Note: Don't import inputs.niri.homeModules.niri here - it's already
   # provided by inputs.niri.nixosModules.niri at the system level

@@ -9,11 +9,8 @@ with lib; let
 in {
   options.components.system.tailscale = {
     enable = mkEnableOption "Enable Tailscale VPN";
-    authKey = mkOption {
-      type = types.str;
-      default = "";
-      description = "Tailscale auth key for automatic login (optional)";
-    };
+    # No authKey option: a string would land in the world-readable store. Use
+    # services.tailscale.authKeyFile with an agenix path (see velomo-alpha).
     hostname = mkOption {
       type = types.str;
       default = "";
@@ -40,8 +37,7 @@ in {
     services.tailscale =
       {
         enable = true;
-        # authKey and hostname are not supported by the NixOS module as of 24.05
-        # Set these via extraConfig if supported in the future
+        # hostname is not wired up; set it via extraConfig if needed.
       }
       // cfg.extraConfig;
 

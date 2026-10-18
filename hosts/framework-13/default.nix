@@ -70,7 +70,10 @@
       displaylink.enable = false;
     };
     virtualization = {
-      docker.enable = true; # Enable all virtualization options
+      docker = {
+        enable = true;
+        rootless = true;
+      };
       podman.enable = false;
       qemu.enable = true;
     };

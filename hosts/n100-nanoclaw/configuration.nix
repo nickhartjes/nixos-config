@@ -42,11 +42,12 @@ in {
   in {
     settings = {
       experimental-features = ["nix-command" "flakes"];
-      # Matches hosts/velomo-alpha. nh is already root-equivalent on this
-      # host via the docker group, so this isn't a hard security boundary —
-      # the password-sudo requirement below is about fleet parity, not
-      # gatekeeping nix builds.
-      trusted-users = ["root" "@wheel"];
+      # Not @wheel, matching velomo-alpha: `just deploy` copies closures
+      # signed with framework-13's key (/etc/nix/signing-key there). nh is
+      # still root-equivalent here via docker (see extraGroups), so this is
+      # fleet parity rather than a hard boundary on this host.
+      trusted-users = ["root"];
+      extra-trusted-public-keys = ["framework-13-1:yGXpwLATK5IztqdI0ssqoKAgxsrxQ20E3s99X8TQf7w="];
       auto-optimise-store = true;
     };
     gc = {
@@ -98,13 +99,18 @@ in {
   # Inlined on purpose: components.system.tailscale drags in trayscale (a GTK4
   # tray GUI) and a graphical-session user unit, which is wrong for a headless
   # host. velomo-alpha inlines it for the same reason.
-  services.tailscale.enable = true;
+  services.tailscale = {
+    enable = true;
+    # Tailscale SSH bypasses sshd (PermitRootLogin, keys, sudo). RunSSH is
+    # persisted from the manual `tailscale up --ssh`, so clear it on every start.
+    extraSetFlags = ["--ssh=false"];
+  };
 
   # DEVIATION FROM SPEC: no tailscale-autoconnect oneshot. The spec calls for
   # velomo-alpha's unit, but that unit reads a tailscale-authkey agenix secret
   # the spec never lists — the spec is self-inconsistent there. Since this host
   # already needs a hands-on session for `claude login` and two OAuth flows, one
-  # `tailscale up --ssh` costs nothing and removes an authkey secret from the
+  # `tailscale up` costs nothing and removes an authkey secret from the
   # design. Revisit if this host is ever rebuilt unattended.
 
   # ---- SSH
@@ -119,8 +125,11 @@ in {
   };
 
   # sudo authenticates against the forwarded SSH agent, checked against the
-  # root-owned /etc/ssh/authorized_keys.d/nh. No password needed for deploys,
-  # and processes on this host without your agent (e.g. agents) can't sudo.
+  # root-owned /etc/ssh/authorized_keys.d/nh. No password needed for deploys.
+  # This is not a boundary against nanoclaw: nh is in docker (root without
+  # sudo), and during a deploy anything running as nh can use the forwarded
+  # agent. framework-13 adds the keys with confirm-on-use (ssh-add -c), so
+  # each signature needs an approval there.
   security.pam.sshAgentAuth.enable = true;
 
   # ---- User nh, defined inline.
@@ -135,6 +144,9 @@ in {
     extraGroups = [
       "wheel"
       "networkmanager"
+      # EXCEPTION: docker is root-equivalent, but nanoclaw runs as nh and
+      # starts its agent containers through the daemon. Remove once nanoclaw
+      # runs as its own user with rootless docker.
       "docker"
     ];
     openssh.authorizedKeys.keys = [
@@ -258,7 +270,7 @@ in {
   # ---- Firewall. nanoclaw needs no inbound ports: it dials out to Telegram.
   networking.firewall = {
     enable = true;
-    trustedInterfaces = ["tailscale0"];
+    # tailscale0 is not trusted: tailnet nodes get only SSH, like the LAN.
     allowedTCPPorts = [22];
   };
 

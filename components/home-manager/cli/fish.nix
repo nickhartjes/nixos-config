@@ -56,7 +56,7 @@ in {
         audit = "sudo lynis audit system";
         ssn = "sudo shutdown now";
         sr = "sudo reboot";
-        myip = "curl http://ipecho.net/plain; echo";
+        myip = "curl https://ifconfig.me; echo";
         speed = "speedtest-cli --simple";
         pbcopy = "wl-copy || xsel --clipboard --input";
         pbpaste = "wl-paste || xsel --clipboard --output";

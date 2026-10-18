@@ -37,11 +37,13 @@ dev-shell:
     nix develop
 
 
+# Tools come from the pinned nixpkgs (nix.registry follows flake.lock) or
+# from this flake's own inputs, never from a remote HEAD.
 deadcode:
-    nix run github:astro/deadnix
+    nix run nixpkgs#deadnix
 
 formatter:
-    nix run github:kamadorueda/alejandra 
+    nix run nixpkgs#alejandra -- .
 
 
 install-flake:
@@ -57,7 +59,7 @@ build-iso:
 clean-install HOSTNAME:
     export NIX_CONFIG="experimental-features = nix-command flakes"
     nix-shell -p git --run "git clone https://github.com/nickhartjes/nixos-config.git ~/nixos-config"
-    sudo nix --experimental-features "nix-command flakes" run github:nix-community/disko/latest -- --mode destroy,format,mount ~/nixos-config/hosts/{{HOSTNAME}}/disko-config.nix
+    sudo nix --experimental-features "nix-command flakes" run --inputs-from ~/nixos-config disko -- --mode destroy,format,mount ~/nixos-config/hosts/{{HOSTNAME}}/disko-config.nix
     cd ~/nixos-config && sudo nixos-install --flake .#{{HOSTNAME}}
 
 
@@ -66,7 +68,7 @@ clean-install HOSTNAME:
 # agenix decrypt on the very first boot, avoiding an install-then-rekey pass.
 # Usage: just install-nanoclaw 10.0.60.51
 install-nanoclaw IP EXTRA="/home/nh/.local/state/n100-nanoclaw-extra":
-    nix run github:nix-community/nixos-anywhere -- \
+    nix run nixpkgs#nixos-anywhere -- \
         --extra-files {{EXTRA}} \
         --flake .#n100-nanoclaw \
         root@{{IP}}

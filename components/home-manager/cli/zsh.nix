@@ -23,30 +23,49 @@ in {
         # already correctly ordered.
         export _ZO_DOCTOR=0
       '';
-      antidote = {
+      # Plugins come from nixpkgs (hash-pinned through flake.lock), not cloned
+      # from GitHub HEAD at shell start. HM sources them at order 900, after
+      # oh-my-zsh's compinit (800); fzf-tab must load before autosuggestions,
+      # so autosuggestions is a plugin here rather than autosuggestion.enable
+      # (which loads at 700).
+      plugins = [
+        {
+          name = "zsh-completions";
+          src = pkgs.zsh-completions;
+        }
+        {
+          name = "powerlevel10k";
+          src = pkgs.zsh-powerlevel10k;
+          file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
+        }
+        {
+          name = "fzf-tab";
+          src = pkgs.zsh-fzf-tab;
+          file = "share/fzf-tab/fzf-tab.plugin.zsh";
+        }
+        {
+          name = "zsh-autosuggestions";
+          src = pkgs.zsh-autosuggestions;
+          file = "share/zsh-autosuggestions/zsh-autosuggestions.zsh";
+        }
+      ];
+      syntaxHighlighting.enable = true;
+
+      # https://github.com/ohmyzsh/ohmyzsh/wiki/Plugins
+      # Not git-auto-fetch: it runs `git fetch` in any repo you cd into, and an
+      # untrusted checkout's .git/config (core.sshCommand, uploadpack) would
+      # run as you.
+      oh-my-zsh = {
         enable = true;
         plugins = [
-          "zsh-users/zsh-autosuggestions"
-          "zsh-users/zsh-completions"
-          "romkatv/powerlevel10k"
-          "Aloxaf/fzf-tab"
-          "zsh-users/zsh-syntax-highlighting"
-          # Optional modern plugin (faster highlighting):
-          # "zdharma-continuum/fast-syntax-highlighting"
-          # Optional advanced autocomplete:
-          # "marlonrichert/zsh-autocomplete"
-
-          # OMZ plugins (antidote syntax)
-          # https://github.com/ohmyzsh/ohmyzsh/wiki/Plugins
-          "ohmyzsh/ohmyzsh path:plugins/aws"
-          "ohmyzsh/ohmyzsh path:plugins/command-not-found"
-          "ohmyzsh/ohmyzsh path:plugins/gh"
-          "ohmyzsh/ohmyzsh path:plugins/git-auto-fetch"
-          "ohmyzsh/ohmyzsh path:plugins/git"
-          "ohmyzsh/ohmyzsh path:plugins/gradle"
-          "ohmyzsh/ohmyzsh path:plugins/kubectl"
-          "ohmyzsh/ohmyzsh path:plugins/kubectx"
-          "ohmyzsh/ohmyzsh path:plugins/vscode"
+          "aws"
+          "command-not-found"
+          "gh"
+          "git"
+          "gradle"
+          "kubectl"
+          "kubectx"
+          "vscode"
         ];
       };
 
@@ -59,7 +78,7 @@ in {
         audit = "sudo lynis audit system";
         ssn = "sudo shutdown now";
         sr = "sudo reboot";
-        myip = "curl http://ipecho.net/plain; echo";
+        myip = "curl https://ifconfig.me; echo";
         speed = "speedtest-cli --simple";
         pbcopy = "wl-copy || xsel --clipboard --input";
         pbpaste = "wl-paste || xsel --clipboard --output";

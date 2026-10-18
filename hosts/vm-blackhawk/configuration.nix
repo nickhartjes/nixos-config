@@ -73,7 +73,13 @@
   # Enable the OpenSSH daemon.
   services.openssh = {
     enable = true;
-    settings.PermitRootLogin = "no";
+    settings = {
+      PermitRootLogin = "no";
+      # nh logs in with keys from users/nh.nix. With UsePAM, keyboard-interactive
+      # would still accept the password.
+      PasswordAuthentication = false;
+      KbdInteractiveAuthentication = false;
+    };
     allowSFTP = true;
   };
 

@@ -29,7 +29,8 @@
         "audio"
         "video"
         "plugdev"
-        "input"
+        # Not input: raw /dev/input access is a keylogger for every process
+        # running as nh, including sudo and lock-screen passwords.
       ]
       ++ lib.optionals config.virtualisation.libvirtd.enable ["libvirtd" "kvm"]
       ++ lib.optional config.virtualisation.docker.enable "docker"
@@ -183,18 +184,10 @@
       "$HOME/.local/share/JetBrains/Toolbox/scripts"
     ];
 
-    # Loads the Grafana MCP service-account token (GRAFANA_SA_TOKEN) for the
-    # Velomo prod observability stack. agenix decrypts the token to
-    # ~/.config/velomo-grafana-sa.env on framework-13 (owner nh; see
-    # hosts/framework-13/secrets.nix); this sources it so the grafana MCP in
-    # scraper's .mcp.json gets ${GRAFANA_SA_TOKEN}. Guarded so it's a no-op on
-    # machines/hosts where the secret isn't provisioned.
-    #
-    # hevy-mcp.env carries HEVY_API_KEY for the hevy MCP in the NH Obsidian
-    # vault's .mcp.json (same agenix flow as the grafana token).
-    programs.zsh.initContent = lib.mkOrder 1500 ''
-      [[ -f ~/.config/velomo-grafana-sa.env ]] && source ~/.config/velomo-grafana-sa.env
-      [[ -f ~/.config/hevy-mcp.env ]] && source ~/.config/hevy-mcp.env
-    '';
+    # The MCP tokens (~/.config/velomo-grafana-sa.env, ~/.config/hevy-mcp.env,
+    # decrypted by hosts/framework-13/secrets.nix) are deliberately not sourced
+    # into the shell: every child process would inherit them. Each .mcp.json
+    # sources its own file in the server command instead:
+    #   "command": "sh", "args": ["-c", ". \"$HOME/.config/hevy-mcp.env\" && exec npx -y hevy-mcp"]
   };
 }

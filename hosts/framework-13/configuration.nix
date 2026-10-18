@@ -234,6 +234,18 @@
 
   programs.zsh.enable = true;
 
+  # Sign every path this host builds, so the servers can drop @wheel from
+  # trusted-users and still accept `just deploy` closures copied as nh. The
+  # key was generated on the host (root 0400) and is not in the repo; its
+  # public half is in the servers' extra-trusted-public-keys.
+  nix.settings.secret-key-files = ["/etc/nix/signing-key"];
+
+  # Fingerprint unlocks the session (login, lock screens) but never grants
+  # root: a lifted print or a sleeping owner's finger shouldn't mean sudo.
+  security.pam.services = lib.genAttrs ["sudo" "polkit-1" "su" "systemd-run0"] (_: {
+    fprintAuth = false;
+  });
+
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
@@ -252,9 +264,10 @@
   system = {
     autoUpgrade = {
       enable = true;
-      # Only pushed commits get deployed; the local checkout is writable by nh
-      # and may hold half-finished work.
-      flake = "github:nickhartjes/nixos-config";
+      # Only the protected stable branch gets deployed, as root, unattended:
+      # the local checkout is writable by nh, and main takes pushes from any
+      # session or token with write access. Fast-forward stable to release.
+      flake = "github:nickhartjes/nixos-config/stable";
       dates = "weekly";
     };
   };

@@ -12,9 +12,8 @@
     # them -- their host keys are not recipients -- so override here, not there.
     identityPaths = lib.mkForce ["/etc/ssh/ssh_host_ed25519_key"];
     secrets = {
-      # Grafana MCP service-account token. Decrypted to the path nh's zsh sources
-      # (users/nh.nix), so the grafana MCP in scraper's .mcp.json gets
-      # GRAFANA_SA_TOKEN. owner=nh so the user's shell can read it.
+      # Grafana MCP service-account token (GRAFANA_SA_TOKEN). The grafana MCP
+      # in scraper's .mcp.json sources it in its own command; see users/nh.nix.
       "framework-13/grafana-sa-token" = {
         file = ../../secrets/framework-13/grafana-sa-token.age;
         path = "/home/nh/.config/velomo-grafana-sa.env";
@@ -22,7 +21,7 @@
         mode = "400";
       };
       # Hevy API key for the hevy MCP in the NH Obsidian vault's .mcp.json.
-      # owner=nh so the user's shell can read it (sourced in users/nh.nix).
+      # The hevy MCP command sources it; it is not exported to the shell.
       "framework-13/hevy-api-key" = {
         file = ../../secrets/framework-13/hevy-api-key.age;
         path = "/home/nh/.config/hevy-mcp.env";

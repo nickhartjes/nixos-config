@@ -1,4 +1,9 @@
 {config, ...}: {
+  # /run/agenix.d is 0751, so each file's own mode decides who can read it.
+  # doco-cd and zot run as root in their containers; compose env_files are
+  # read by doco-cd. So 0400 root is enough for almost everything.
+  users.groups.velomo-secrets.gid = 990;
+
   age.secrets = {
     "velomo-alpha/tailscale-authkey" = {
       file = ../../secrets/velomo-alpha/tailscale-authkey.age;
@@ -8,15 +13,14 @@
     "velomo-alpha/doco-git-token" = {
       file = ../../secrets/velomo-alpha/doco-git-token.age;
       owner = "root";
-      # World-readable so the doco-cd container process (non-root inside) can read it.
-      mode = "444";
+      mode = "400";
     };
-    # htpasswd for zot registry (read by zot container; doco-cd container
-    # itself only needs to invoke compose, not read this file).
+    # htpasswd for zot registry (bind-mounted into the zot container, which
+    # runs as root).
     "velomo-alpha/zot-htpasswd" = {
       file = ../../secrets/velomo-alpha/zot-htpasswd.age;
       owner = "root";
-      mode = "444";
+      mode = "400";
     };
     # Env file containing CLOUDFLARED_TUNNEL_TOKEN=... for the registry tunnel.
     # Loaded via `env_file:` in zot.compose.yaml; doco-cd's compose invocation
@@ -24,7 +28,7 @@
     "velomo-alpha/cloudflared-registry-token.env" = {
       file = ../../secrets/velomo-alpha/cloudflared-registry-token.env.age;
       owner = "root";
-      mode = "444";
+      mode = "400";
     };
     # TUNNEL_TOKEN for the single public-ingress tunnel (reuses the registry
     # tunnel's token) that feeds the Caddy reverse proxy in the auth stack.
@@ -33,24 +37,7 @@
     "velomo-alpha/cloudflared-main-token.env" = {
       file = ../../secrets/velomo-alpha/cloudflared-main-token.env.age;
       owner = "root";
-      mode = "444";
-    };
-    # Authelia core secrets: AUTHELIA_JWT_SECRET, AUTHELIA_SESSION_SECRET,
-    # AUTHELIA_STORAGE_ENCRYPTION_KEY. Loaded via `env_file:` by the authelia
-    # service in infra/compose/auth.compose.yaml.
-    "velomo-alpha/authelia-secrets.env" = {
-      file = ../../secrets/velomo-alpha/authelia-secrets.env.age;
-      owner = "root";
-      mode = "444";
-    };
-    # Authelia file-backed user store, mounted into the authelia container at
-    # /config/users_database.yml (see infra/compose/auth.compose.yaml). 444 so
-    # the non-root authelia container user can read it; /run/agenix is itself
-    # root-only at the directory level, so it isn't truly world-accessible.
-    "velomo-alpha/authelia-users.yml" = {
-      file = ../../secrets/velomo-alpha/authelia-users.yml.age;
-      owner = "root";
-      mode = "444";
+      mode = "400";
     };
     # One-time registration token for the self-hosted GitHub Actions runner.
     # Generate fresh via:
@@ -60,11 +47,9 @@
     "velomo-alpha/github-runner-token" = {
       file = ../../secrets/velomo-alpha/github-runner-token.age;
       owner = "root";
-      # World-readable (within /run/agenix/, which is root-protected at the
-      # directory level). The github-runner service uses a systemd dynamic
-      # user — we can't chown to it because the UID isn't allocated until
-      # the service starts.
-      mode = "444";
+      # The runner module copies tokenFile in a root ExecStartPre ("+"), so
+      # the dynamic user never reads it directly.
+      mode = "400";
     };
     # Env-file for the scraper app stack: DB_PASSWORD, MEILI_MASTER_KEY,
     # ANTHROPIC_API_KEY, plus placeholder Phase-2 vars (RUSTFS_*, BACKUP_*,
@@ -74,7 +59,7 @@
     "velomo-alpha/scraper-app.env" = {
       file = ../../secrets/velomo-alpha/scraper-app.env.age;
       owner = "root";
-      mode = "444";
+      mode = "400";
     };
     # docker config.json for doco-cd to authenticate to zot when pulling
     # registry.velomo.nl/velomo/scraper. Mounted into the doco-cd
@@ -82,7 +67,7 @@
     "velomo-alpha/doco-docker-config.json" = {
       file = ../../secrets/velomo-alpha/doco-docker-config.json.age;
       owner = "root";
-      mode = "444";
+      mode = "400";
     };
     # Env-file for the observability (LGTM) stack: OBS_RUSTFS_ROOT_USER/PASSWORD,
     # OBS_RUSTFS_ACCESS_KEY/SECRET_KEY, GF_SECURITY_ADMIN_PASSWORD. Loaded by
@@ -91,42 +76,43 @@
     "velomo-alpha/observability.env" = {
       file = ../../secrets/velomo-alpha/observability.env.age;
       owner = "root";
-      mode = "444";
+      mode = "400";
     };
     # Slack incoming-webhook URL (bare URL, no key) for Alertmanager. Bind-mounted
     # into the alertmanager container at /etc/alertmanager/slack-url and read via
     # `slack_api_url_file` in infra/observability/alertmanager.prod.yaml.
+    # The alertmanager image runs as nobody (65534, same uid on the host).
     "velomo-alpha/alertmanager-slack-url" = {
       file = ../../secrets/velomo-alpha/alertmanager-slack-url.age;
-      owner = "root";
-      mode = "444";
+      owner = "nobody";
+      mode = "400";
     };
     # GitHub Actions runner registration token for the Dealdodo/frontend repo.
     # Consumed once on first registration by services.github-runners.frontend.
-    # 444 because services.github-runners uses a systemd dynamic user — we
-    # can't chown to a UID that doesn't exist until the unit starts.
+    # Copied in by the runner module's root ExecStartPre, like the scraper token.
     "velomo-alpha/frontend-runner-token" = {
       file = ../../secrets/velomo-alpha/frontend-runner-token.age;
       owner = "root";
-      mode = "444";
+      mode = "400";
     };
     # Build-time env for the frontend CI publish job. Read by the workflow's
     # "Load build env from agenix" step which sources it into $GITHUB_ENV.
-    # 444 for the same dynamic-user reason as the runner token.
+    # The job step runs as the runner's dynamic user, which gets the
+    # velomo-secrets group via SupplementaryGroups (services/github-runner.nix).
     "velomo-alpha/frontend-build.env" = {
       file = ../../secrets/velomo-alpha/frontend-build.env.age;
       owner = "root";
-      mode = "444";
+      group = "velomo-secrets";
+      mode = "440";
     };
     # Runtime env for the frontend stack (Astro app + Fider feedback board +
     # its dedicated Postgres). Single env file shared by all three services
     # in docker-compose.prod.yml. Loaded via env_files in .doco-cd.yaml;
     # doco-cd reads it from /run/agenix (bind-mounted via services/doco.nix).
-    # 444 so the doco-cd container (non-root inside) can read it.
     "velomo-alpha/frontend-app.env" = {
       file = ../../secrets/velomo-alpha/frontend-app.env.age;
       owner = "root";
-      mode = "444";
+      mode = "400";
     };
     # Runtime env for the Logto identity provider stack (logto, logto-db,
     # oauth2-proxy). Contains: LOGTO_DB_PASSWORD, LOGTO_ENDPOINT,
@@ -138,7 +124,7 @@
     "velomo-alpha/logto-app.env" = {
       file = ../../secrets/velomo-alpha/logto-app.env.age;
       owner = "root";
-      mode = "444";
+      mode = "400";
     };
   };
 }

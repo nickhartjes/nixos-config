@@ -29,7 +29,10 @@
     };
 
     # Agenix for managing secrets
-    agenix.url = "github:ryantm/agenix";
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # NixOS profiles to optimize settings for different hardware.
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
