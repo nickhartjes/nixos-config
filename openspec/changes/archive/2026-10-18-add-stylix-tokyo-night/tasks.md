@@ -22,4 +22,4 @@
 
 ## 4. User check
 
-- [ ] 4.1 After rebuild, select the Stylix color theme once in VS Code and the Custom theme `themes/stylix.json` once in DMS, then check visually with the user: ghostty, nvim, lazygit, VS Code, mango borders, niri borders, and an unchanged Plasma session; fonts look the same as before
+- [x] 4.1 After rebuild, select the Stylix color theme once in VS Code and the Custom theme `themes/stylix.json` once in DMS, then check visually with the user: ghostty, nvim, lazygit, VS Code, mango borders, niri borders, and an unchanged Plasma session; fonts look the same as before
