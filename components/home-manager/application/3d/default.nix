@@ -3,5 +3,6 @@
     ./bambu-studio.nix
     ./freecad.nix
     ./openscad.nix
+    ./solidcraft.nix
   ];
 }

@@ -31,6 +31,7 @@
       bambu-studio.enable = false;
       openscad.enable = false;
       freecad.enable = true;
+      solidcraft.enable = true;
     };
     database = {
       dbeaver.enable = true;
