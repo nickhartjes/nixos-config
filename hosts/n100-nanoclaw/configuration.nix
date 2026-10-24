@@ -279,6 +279,13 @@ in {
     enable = true;
     environmentFile = config.age.secrets."n100-nanoclaw/traders-telegram.env".path;
     timer = true;
+    # Nightly 03:15: age-encrypted db + reports, rotated, force-pushed as one commit
+    # to the backups branch of the private data repo.
+    backup = {
+      enable = true;
+      remote = "git@github.com:nickhartjes/traders-data.git";
+      sshCommand = "ssh -i /home/nh/.ssh/id_traders_backup -o IdentitiesOnly=yes";
+    };
   };
   systemd.services.traders-digest.environment.GIT_SSH_COMMAND =
     "ssh -i /home/nh/.ssh/id_traders_data -o IdentitiesOnly=yes";

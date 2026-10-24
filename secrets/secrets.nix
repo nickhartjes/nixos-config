@@ -134,4 +134,8 @@ in {
   # age identity of the traders service; its public key is in traders-data/.age-recipients,
   # so the service user can decrypt imports/*.age without the root-only host key.
   "n100-nanoclaw/traders-age-key.age".publicKeys = [framework-13 framework-13-2] ++ nanoclawSystems;
+
+  # Write deploy key for nickhartjes/traders-data, used only by traders-backup to
+  # force-push the encrypted backup set to the `backups` branch.
+  "n100-nanoclaw/traders-backup-key.age".publicKeys = [framework-13 framework-13-2] ++ nanoclawSystems;
 }

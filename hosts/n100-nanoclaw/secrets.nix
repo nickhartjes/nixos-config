@@ -63,6 +63,13 @@
       owner = "nh";
       mode = "400";
     };
+    # Write deploy key for pushing traders backups (backups branch only).
+    "n100-nanoclaw/traders-backup-key" = {
+      file = ../../secrets/n100-nanoclaw/traders-backup-key.age;
+      path = "/home/nh/.ssh/id_traders_backup";
+      owner = "nh";
+      mode = "400";
+    };
     # age identity for decrypting traders-data imports as nh.
     "n100-nanoclaw/traders-age-key" = {
       file = ../../secrets/n100-nanoclaw/traders-age-key.age;
