@@ -985,7 +985,8 @@
         "noctalia": "noctalia",
         "oh-my-pi": "oh-my-pi",
         "plasma-manager": "plasma-manager",
-        "stylix": "stylix"
+        "stylix": "stylix",
+        "traders": "traders"
       }
     },
     "rust-overlay": {
@@ -1245,6 +1246,22 @@
         "owner": "tinted-theming",
         "repo": "base16-zed",
         "type": "github"
+      }
+    },
+    "traders": {
+      "locked": {
+        "lastModified": 1792838790,
+        "narHash": "sha256-pmOZCJG/EuOPTkT7sqgkS5GUbcLUb9rLCQDs1NtN17M=",
+        "ref": "feat/daily-market-monitor",
+        "rev": "449bd5fa0c26a512f72106e05e37d4f1242c71e9",
+        "revCount": 3,
+        "type": "git",
+        "url": "file:///home/nh/orca/projects/traders"
+      },
+      "original": {
+        "ref": "feat/daily-market-monitor",
+        "type": "git",
+        "url": "file:///home/nh/orca/projects/traders"
       }
     },
     "treefmt-nix": {

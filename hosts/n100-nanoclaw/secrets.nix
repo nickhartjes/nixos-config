@@ -50,5 +50,25 @@
       owner = "nh";
       mode = "400";
     };
+    # traders daily digest: Telegram token + chat id, read as root via EnvironmentFile.
+    "n100-nanoclaw/traders-telegram.env" = {
+      file = ../../secrets/n100-nanoclaw/traders-telegram.env.age;
+      owner = "root";
+      mode = "400";
+    };
+    # Read-only deploy key for pulling nickhartjes/traders-data.
+    "n100-nanoclaw/traders-data-deploy-key" = {
+      file = ../../secrets/n100-nanoclaw/traders-data-deploy-key.age;
+      path = "/home/nh/.ssh/id_traders_data";
+      owner = "nh";
+      mode = "400";
+    };
+    # age identity for decrypting traders-data imports as nh.
+    "n100-nanoclaw/traders-age-key" = {
+      file = ../../secrets/n100-nanoclaw/traders-age-key.age;
+      path = "/home/nh/.config/traders/age.key";
+      owner = "nh";
+      mode = "400";
+    };
   };
 }

@@ -175,6 +175,7 @@ in {
     # merge; one symlink covers all of them and anything added later.
     "L+ /bin/bash - - - - ${pkgs.bash}/bin/bash"
     "d /home/nh/.config/nanoclaw 0755 nh users - -"
+    "d /home/nh/.config/traders 0700 nh users - -"
     # nanoclaw refuses every additional container mount unless the host path
     # is listed in mount-allowlist.json (matched against the *resolved*
     # realPath). Without it, credentials (the Anthropic auth token, the Hevy
@@ -265,7 +266,25 @@ in {
     htop
     neovim
     tailscale
+    # traders: CLI for manual imports/runs, age to decrypt traders-data imports
+    config.services.traders.package
+    age
   ];
+
+  # ---- traders: daily market digest into the nanoclaw Telegram chat.
+  # Data: ~/traders-data (private git, pulled before each run with a read-only
+  # deploy key); state: ~/traders-state. Timer off until the first manual run
+  # has been checked; see the traders repo docs/deploy.md.
+  services.traders = {
+    enable = true;
+    environmentFile = config.age.secrets."n100-nanoclaw/traders-telegram.env".path;
+    timer = false;
+  };
+  systemd.services.traders-digest.environment.GIT_SSH_COMMAND =
+    "ssh -i /home/nh/.ssh/id_traders_data -o IdentitiesOnly=yes";
+  # GitHub's ed25519 host key, from https://api.github.com/meta (2026-10-24).
+  programs.ssh.knownHosts."github.com".publicKey =
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl";
 
   # ---- Firewall. nanoclaw needs no inbound ports: it dials out to Telegram.
   networking.firewall = {

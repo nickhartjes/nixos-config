@@ -121,4 +121,17 @@ in {
   # the agent cannot reach the main vault). Registered on
   # github.com/nickhartjes/training as a deploy key with write access.
   "n100-nanoclaw/training-deploy-key.age".publicKeys = [framework-13 framework-13-2] ++ nanoclawSystems;
+
+  # traders daily digest on n100-nanoclaw. Contents:
+  #   TELEGRAM_BOT_TOKEN=...   (nanoclaw's bot; rotate together with telegram-bot-token.env)
+  #   TELEGRAM_CHAT_ID=...     (the DM chat with the bot)
+  # Read by systemd.services.traders-digest via EnvironmentFile.
+  "n100-nanoclaw/traders-telegram.env.age".publicKeys = [framework-13 framework-13-2] ++ nanoclawSystems;
+
+  # Read-only deploy key for the private nickhartjes/traders-data repo.
+  "n100-nanoclaw/traders-data-deploy-key.age".publicKeys = [framework-13 framework-13-2] ++ nanoclawSystems;
+
+  # age identity of the traders service; its public key is in traders-data/.age-recipients,
+  # so the service user can decrypt imports/*.age without the root-only host key.
+  "n100-nanoclaw/traders-age-key.age".publicKeys = [framework-13 framework-13-2] ++ nanoclawSystems;
 }
