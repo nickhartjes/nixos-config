@@ -273,12 +273,12 @@ in {
 
   # ---- traders: daily market digest into the nanoclaw Telegram chat.
   # Data: ~/traders-data (private git, pulled before each run with a read-only
-  # deploy key); state: ~/traders-state. Timer off until the first manual run
-  # has been checked; see the traders repo docs/deploy.md.
+  # deploy key); state: ~/traders-state. Runs Tue..Sat 07:30 Europe/Amsterdam;
+  # see the traders repo docs/deploy.md.
   services.traders = {
     enable = true;
     environmentFile = config.age.secrets."n100-nanoclaw/traders-telegram.env".path;
-    timer = false;
+    timer = true;
   };
   systemd.services.traders-digest.environment.GIT_SSH_COMMAND =
     "ssh -i /home/nh/.ssh/id_traders_data -o IdentitiesOnly=yes";
