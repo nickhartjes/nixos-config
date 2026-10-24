@@ -145,6 +145,14 @@
   # nixos-hardware already sets rawDeviceName for this exact board.
   hardware.framework.laptop13.audioEnhancement.enable = true;
 
+  # Out-of-tree framework_laptop kmod (nixos-hardware enables it on kernel
+  # >= 6.10). Mainline cros_charge_control, cros_kbd_led_backlight and
+  # cros_ec_hwmon cover charge limit, keyboard backlight and fan readings; the
+  # kmod only adds fan control and a privacy-switch sysfs file, neither used
+  # here. Its nixpkgs package also broke under the new module-signing scheme
+  # (missing .ko.cer, NixOS/nixpkgs#575192).
+  hardware.framework.enableKmod = false;
+
   # Enable the UCodeNix service for CPU microcode updates
   # services.ucodenix = {
   #   enable = true;
