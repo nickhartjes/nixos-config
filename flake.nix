@@ -21,7 +21,7 @@
 
     # traders: daily market digest (n100-nanoclaw). Local checkout, built on
     # framework-13 and copied by `just deploy`; `nix flake update traders` after commits.
-    traders.url = "git+file:///home/nh/orca/projects/traders?ref=feat/daily-market-monitor";
+    traders.url = "git+file:///home/nh/orca/projects/traders?ref=main";
 
     # Unstable Nixpkgs (rolling release, for bleeding-edge packages)
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";

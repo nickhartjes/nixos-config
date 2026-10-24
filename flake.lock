@@ -1250,16 +1250,16 @@
     },
     "traders": {
       "locked": {
-        "lastModified": 1792840300,
-        "narHash": "sha256-0LPLPRhkvAYaj57yK3HghTbwu/3rTZ27zRdDgFqPtqA=",
-        "ref": "feat/daily-market-monitor",
-        "rev": "8c91f65131a65b5cc6b356b4c56fa33839330e03",
-        "revCount": 14,
+        "lastModified": 1792840686,
+        "narHash": "sha256-mKnqMlVu6lV0Wg60V+aPN6tqojA6ct84Xt4SeWrBC5Q=",
+        "ref": "main",
+        "rev": "ddc41bfefd14f7312e6590ed458b3139875eaf77",
+        "revCount": 16,
         "type": "git",
         "url": "file:///home/nh/orca/projects/traders"
       },
       "original": {
-        "ref": "feat/daily-market-monitor",
+        "ref": "main",
         "type": "git",
         "url": "file:///home/nh/orca/projects/traders"
       }
