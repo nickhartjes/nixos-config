@@ -3,9 +3,11 @@
   pkgs,
   noctalia,
   dms,
+  caelestia,
   hasShell,
   enableNoctalia,
   enableDMS,
+  enableCaelestia,
   lib,
 }: let
   # A bind with a description. DMS's keybind viewer shows the `# comment`
@@ -54,6 +56,26 @@
     (d "Mute" "NONE,XF86AudioMute,spawn,${dms "audio mute"}")
     (d "Brightness up" "NONE,XF86MonBrightnessUp,spawn,${dms "brightness increment 5"}")
     (d "Brightness down" "NONE,XF86MonBrightnessDown,spawn,${dms "brightness decrement 5"}")
+  ];
+  # Caelestia's drawer toggles and brightness IPC pick the screen through
+  # Hyprland's focused monitor, which doesn't exist under mango. Toggles fall
+  # back to the first screen; volume/brightness go straight to the tools and
+  # Caelestia's OSD picks up the change.
+  caelestiaBinds = lib.optionals enableCaelestia [
+    (d "Launcher" "SUPER,SPACE,spawn,${caelestia "drawers toggle launcher"}")
+    (d "Session menu" "SUPER,P,spawn,${caelestia "drawers toggle session"}")
+    (d "Lock screen" "CTRL+SUPER,L,spawn,${caelestia "lock lock"}")
+    (d "Notifications" "SUPER,N,spawn,${caelestia "drawers toggle sidebar"}")
+    (d "Dashboard" "SUPER,C,spawn,${caelestia "drawers toggle dashboard"}")
+    (d "Utilities" "SUPER+SHIFT,D,spawn,${caelestia "drawers toggle utilities"}")
+  ];
+
+  caelestiaBindls = lib.optionals enableCaelestia [
+    (d "Volume up" "NONE,XF86AudioRaiseVolume,spawn,${pkgs.wireplumber}/bin/wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 3%+")
+    (d "Volume down" "NONE,XF86AudioLowerVolume,spawn,${pkgs.wireplumber}/bin/wpctl set-volume @DEFAULT_AUDIO_SINK@ 3%-")
+    (d "Mute" "NONE,XF86AudioMute,spawn,${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle")
+    (d "Brightness up" "NONE,XF86MonBrightnessUp,spawn,${pkgs.brightnessctl}/bin/brightnessctl set 5%+")
+    (d "Brightness down" "NONE,XF86MonBrightnessDown,spawn,${pkgs.brightnessctl}/bin/brightnessctl set 5%-")
   ];
 in {
   bind =
@@ -131,9 +153,10 @@ in {
       (d "App launcher (wofi)" "SUPER,D,spawn,${pkgs.wofi}/bin/wofi --show drun")
     ]
     ++ noctaliaBinds
-    ++ dmsBinds;
+    ++ dmsBinds
+    ++ caelestiaBinds;
 
-  bindl = noctaliaBindls ++ dmsBindls;
+  bindl = noctaliaBindls ++ dmsBindls ++ caelestiaBindls;
 
   window_rule = [
     "is_named_scratchpad:1,width:1280,height:800,app_id:foot-scratchpad"

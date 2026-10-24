@@ -10,11 +10,16 @@
   noctalia = cmd: "${noctaliaBin} ipc call ${cmd}";
   dmsBin = "${inputs.dms.packages.${pkgs.stdenv.hostPlatform.system}.default}/bin/dms";
   dms = cmd: "${dmsBin} ipc call ${cmd}";
-  hasShell = cfg.enableNoctalia || cfg.enableDMS;
+  # Same package the caelestia HM module installs. The wrapper passes the
+  # config path, so `caelestia-shell ipc call` reaches the running instance.
+  caelestiaBin = "${config.programs.caelestia.package}/bin/caelestia-shell";
+  caelestia = cmd: "${caelestiaBin} ipc call ${cmd}";
+  hasShell = cfg.enableNoctalia || cfg.enableDMS || cfg.enableCaelestia;
   keybindings = import ./mangowc-keybindings.nix {
-    inherit pkgs noctalia dms hasShell lib;
+    inherit pkgs noctalia dms caelestia hasShell lib;
     enableNoctalia = cfg.enableNoctalia;
     enableDMS = cfg.enableDMS;
+    enableCaelestia = cfg.enableCaelestia;
   };
   bindTypes = ["bind" "bindl"];
   swaylock = "${pkgs.swaylock}/bin/swaylock -f";
@@ -23,6 +28,8 @@
   lockCmd =
     if cfg.enableDMS
     then "${dms "lock lock"} || ${swaylock}"
+    else if cfg.enableCaelestia
+    then "${caelestia "lock lock"} || ${swaylock}"
     else if cfg.enableNoctalia
     then "${noctalia "lockScreen lock"} || ${swaylock}"
     else swaylock;
@@ -41,13 +48,18 @@ in {
     enable = lib.mkEnableOption "MangoWC user configuration";
     enableNoctalia = lib.mkEnableOption "Noctalia shell integration with MangoWC";
     enableDMS = lib.mkEnableOption "Dank Material Shell integration with MangoWC";
+    enableCaelestia = lib.mkEnableOption "Caelestia shell integration with MangoWC";
   };
 
   config = lib.mkIf cfg.enable {
     assertions = [
       {
-        assertion = !(cfg.enableNoctalia && cfg.enableDMS);
-        message = "Cannot enable both Noctalia and Dank Material Shell for MangoWC. Choose one.";
+        assertion = lib.count lib.id [cfg.enableNoctalia cfg.enableDMS cfg.enableCaelestia] <= 1;
+        message = "Enable at most one of Noctalia, Dank Material Shell and Caelestia for MangoWC.";
+      }
+      {
+        assertion = cfg.enableCaelestia -> config.components.features.desktop.caelestia.enable;
+        message = "components.features.desktop.mangowc.enableCaelestia needs components.features.desktop.caelestia.enable.";
       }
     ];
 
@@ -90,6 +102,9 @@ in {
             ]
             ++ lib.optionals cfg.enableDMS [
               "${dmsBin} run --session"
+            ]
+            ++ lib.optionals cfg.enableCaelestia [
+              caelestiaBin
             ]
             ++ lib.optionals (!hasShell) [
               "${pkgs.swaynotificationcenter}/bin/swaync"

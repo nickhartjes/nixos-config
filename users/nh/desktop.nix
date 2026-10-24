@@ -26,6 +26,8 @@
         mangowc.enable = true;
         mangowc.enableNoctalia = false;
         mangowc.enableDMS = true;
+        mangowc.enableCaelestia = false;
+        caelestia.enable = false;
         dms.enable = true;
         # Follow the host: the niri HM config needs inputs.niri.nixosModules.niri,
         # which only hosts that enable niri system-wide (framework-13) import.

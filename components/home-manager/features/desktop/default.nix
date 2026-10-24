@@ -1,5 +1,6 @@
 {
   imports = [
+    ./caelestia.nix
     ./dms.nix
     ./fonts.nix
     ./hyprland.nix

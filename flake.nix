@@ -90,6 +90,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Caelestia shell - Quickshell desktop shell. Written for Hyprland; on
+    # MangoWC the Hyprland-backed widgets (workspaces, active window) stay empty.
+    caelestia-shell = {
+      url = "github:caelestia-dots/shell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # ArtCraft creative suite (PhotoCraft, VectorCraft, ...). Unofficial community
     # packaging of upstream's prebuilt Linux tarballs; pinned via flake.lock, so
     # review its diff before `nix flake update artcraft`.
