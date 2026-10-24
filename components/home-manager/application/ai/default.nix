@@ -5,5 +5,6 @@
     ./alpaca.nix
     ./opencode.nix
     ./lmstudio.nix
+    ./orca.nix
   ];
 }

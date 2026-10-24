@@ -14,6 +14,7 @@
       alpaca.enable = true;
       opencode.enable = true;
       lmstudio.enable = true;
+      orca.enable = true;
     };
     communication = {
       slack.enable = true;
