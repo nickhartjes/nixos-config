@@ -123,7 +123,7 @@ in {
   "n100-nanoclaw/training-deploy-key.age".publicKeys = [framework-13 framework-13-2] ++ nanoclawSystems;
 
   # traders daily digest on n100-nanoclaw. Contents:
-  #   TELEGRAM_BOT_TOKEN=...   (nanoclaw's bot; rotate together with telegram-bot-token.env)
+  #   TELEGRAM_BOT_TOKEN=...   (@N100TraderBot, traders' own bot, separate from nanoclaw's)
   #   TELEGRAM_CHAT_ID=...     (the DM chat with the bot)
   # Read by systemd.services.traders-digest via EnvironmentFile.
   "n100-nanoclaw/traders-telegram.env.age".publicKeys = [framework-13 framework-13-2] ++ nanoclawSystems;
