@@ -9,9 +9,12 @@
   };
 
   config = lib.mkIf config.components.application.communication.signal.enable {
-    home.packages = with pkgs; [
-      signal-desktop
+    # The DB key is encrypted with kwallet6; Electron can't autodetect that
+    # outside Plasma, and the wrong backend fails with SQLITE_NOTADB.
+    home.packages = [
+      (pkgs.signal-desktop.override {
+        commandLineArgs = "--password-store=kwallet6";
+      })
     ];
-
   };
 }
