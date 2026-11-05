@@ -194,7 +194,6 @@
     systemd.user.timers.repo-manager = {
       Unit = {
         Description = "Repository Management Timer";
-        Requires = ["repo-manager.service"];
       };
 
       Timer = {

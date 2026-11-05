@@ -2,7 +2,7 @@
 {
   components.scripts = {
     repoManager = {
-      enable = true;
+      enable = false;
       repositories = {
         users = {
           nh = {
