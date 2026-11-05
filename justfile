@@ -72,3 +72,10 @@ install-nanoclaw IP EXTRA="/home/nh/.local/state/n100-nanoclaw-extra":
         --extra-files {{EXTRA}} \
         --flake .#n100-nanoclaw \
         root@{{IP}}
+
+# Same for the Hetzner Cloud TURN relay. Usage: just install-hetzner-specdeck 2.31.128.103
+install-hetzner-specdeck IP EXTRA="/home/nh/.local/state/hetzner-specdeck-extra":
+    nix run nixpkgs#nixos-anywhere -- \
+        --extra-files {{EXTRA}} \
+        --flake .#hetzner-specdeck \
+        root@{{IP}}

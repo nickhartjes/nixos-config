@@ -4,6 +4,7 @@
     browser = {
       chromium.enable = true;
       firefox.enable = true;
+      librewolf.enable = true;
     };
     music = {
       spotify.enable = true;
@@ -15,6 +16,8 @@
       opencode.enable = true;
       lmstudio.enable = true;
       orca.enable = true;
+      thinkrail.enable = true;
+      specdeck.enable = true;
     };
     communication = {
       slack.enable = true;

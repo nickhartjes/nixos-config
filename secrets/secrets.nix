@@ -3,6 +3,7 @@ let
   framework-13 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPh1wLUOuMwH9tCGCRnEJ4lPqex1Ss2aaag6TKc/3hlD nick@hartj.es";
   framework-13-2 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILLBdQCyD8xsKKy5UIUfKS7l+Fl5RQ9yIMR3wGOfL90+ nick@hartj.es";
   velomo-alpha = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFeRh4DdyxTgGmDYgAaYY8yT5M0MSbRz1yGPi4P/jzWS root@velomo-alpha";
+  hetzner-specdeck = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKSsHyxdNXSokBK5Z5cp1CfGVetfKcjl/L61va3dIs5O root@hetzner-specdeck";
   n100-nanoclaw = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDtWggZjgd5P93BkTrNUwaeyattrF4ZUgRvHC36fJNOF root@n100-nanoclaw";
 
   # framework-13's SSH *host* key (/etc/ssh/ssh_host_ed25519_key.pub). This is
@@ -16,6 +17,7 @@ let
   systems = [framework-13-host];
   velomoSystems = [velomo-alpha];
   nanoclawSystems = [n100-nanoclaw];
+  specdeckSystems = [hetzner-specdeck];
 in {
   # Grafana service-account token (export GRAFANA_SA_TOKEN=...) for the Velomo
   # prod observability stack's MCP. Decrypted on framework-13 to nh's home so
@@ -138,4 +140,10 @@ in {
   # Write deploy key for nickhartjes/traders-data, used only by traders-backup to
   # force-push the encrypted backup set to the `backups` branch.
   "n100-nanoclaw/traders-backup-key.age".publicKeys = [framework-13 framework-13-2] ++ nanoclawSystems;
+
+  # SpecDeck TURN shared secret (raw value, `openssl rand -hex 32`): signalling
+  # signs TURN credentials with it, coturn checks them.
+  "hetzner-specdeck/specdeck-turn-secret.age".publicKeys = [framework-13 framework-13-2] ++ specdeckSystems;
+  # SpecDeck Cloudflare tunnel token (raw value from the dashboard's install command).
+  "hetzner-specdeck/specdeck-tunnel-token.age".publicKeys = [framework-13 framework-13-2] ++ specdeckSystems;
 }

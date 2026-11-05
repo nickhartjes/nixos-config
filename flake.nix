@@ -23,6 +23,13 @@
     # framework-13 and copied by `just deploy`; `nix flake update traders` after commits.
     traders.url = "git+file:///home/nh/orca/projects/traders?ref=main";
 
+    # SpecDeck app (HM) and signalling service source (hetzner-specdeck).
+    # Tracks main on GitHub; `nix flake update specdeck` after a release.
+    specdeck = {
+      url = "github:nickhartjes/specdeck";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Unstable Nixpkgs (rolling release, for bleeding-edge packages)
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
@@ -90,7 +97,7 @@
 
     # Dank Material Shell - desktop shell built with Quickshell
     dms = {
-      url = "github:AvengeMedia/DankMaterialShell";
+      url = "github:duxlabs-dev/dux-shell";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -228,6 +235,17 @@
         specialArgs = {inherit inputs outputs;};
         modules = [
           ./hosts/velomo-alpha
+          inputs.disko.nixosModules.disko
+          agenix.nixosModules.default
+        ];
+      };
+
+      # Hetzner Cloud VM: SpecDeck signalling and TURN relay (coturn).
+      hetzner-specdeck = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = {inherit inputs outputs;};
+        modules = [
+          ./hosts/hetzner-specdeck
           inputs.disko.nixosModules.disko
           agenix.nixosModules.default
         ];

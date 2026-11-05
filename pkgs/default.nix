@@ -3,4 +3,5 @@
   fonts-custom = pkgs.callPackage ./fonts-custom {};
   orca-ide = pkgs.callPackage ./orca-ide {};
   solidcraft = pkgs.callPackage ./solidcraft {};
+  thinkrail = pkgs.callPackage ./thinkrail {};
 }
