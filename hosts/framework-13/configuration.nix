@@ -211,7 +211,17 @@
     powertop
     acpi
     lm_sensors
-    amd-debug-tools # provides amd-s2idle / amd-pstate / amd-bios diagnostics
+    # provides amd-s2idle / amd-pstate / amd-bios diagnostics.
+    # nixpkgs passes "--prefix PATH : …" as one string, which the stricter
+    # makeWrapper now rejects; split it until upstream fixes the package.
+    (amd-debug-tools.overrideAttrs {
+      makeWrapperArgs = [
+        "--prefix"
+        "PATH"
+        ":"
+        (lib.makeBinPath [acpica-tools ethtool libdisplay-info])
+      ];
+    })
     linuxPackages.turbostat
     cpufrequtils
   ];
