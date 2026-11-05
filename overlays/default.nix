@@ -20,6 +20,14 @@
             doCheck = false;
             pythonImportsCheck = [];
           });
+          # TEMP (2026-11-01): wandb 0.31.0 on python3.14 has one flaky
+          # signal/exit-code test that fails in the sandbox, breaking the
+          # spacy -> kokoro -> alpaca chain. Remove after a flake update.
+          wandb = pyprev.wandb.overridePythonAttrs (old: {
+            disabledTests =
+              (old.disabledTests or [])
+              ++ ["test_agent_process_poll_reports_function_system_exit"];
+          });
         })
       ];
     bambu-studio = prev.appimageTools.wrapType2 rec {
