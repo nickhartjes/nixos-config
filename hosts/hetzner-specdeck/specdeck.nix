@@ -14,12 +14,8 @@
   # TCP port is opened. Apps connect to wss://specdeck.hartj.es/signal.
   # turn.hartj.es is a DNS-only record for this host.
   #
-  # Image: the floating major tag, so every 1.x release is picked up. Until
-  # 1.9.0 each release is pushed as both specdeck-signalling and
-  # specdeck-server (same image); specdeck-server exists from 1.7.0 on. Switch
-  # the name below once 1.7.0 is out: after 1.8.x only specdeck-server gets
-  # releases, and this tag would silently stop moving.
-  image = "ghcr.io/nickhartjes/specdeck-signalling:1";
+  # Image: the floating major tag, so every 1.x release is picked up.
+  image = "ghcr.io/nickhartjes/specdeck-server:1";
   port = 8080;
   turnPort = 3478;
   envDir = "/run/specdeck-env";
