@@ -2,74 +2,103 @@
   config,
   pkgs,
   lib,
-  inputs,
   ...
 }: let
-  # SpecDeck's signalling service (matchmaking + TURN credentials), next to
-  # coturn in configuration.nix.
+  # SpecDeck's sharing service (signalling, TURN credentials and the web
+  # viewer), next to coturn in configuration.nix. It runs the release image
+  # from ghcr.io in podman, and podman-auto-update pulls each new release.
   #
-  # Signalling listens on loopback only and is published as
+  # The service listens on loopback only and is published as
   # https://specdeck.hartj.es through a remote-managed Cloudflare tunnel
   # (route specdeck.hartj.es -> http://localhost:8080 in the dashboard), so no
   # TCP port is opened. Apps connect to wss://specdeck.hartj.es/signal.
   # turn.hartj.es is a DNS-only record for this host.
-  signallingPort = 8080;
+  #
+  # Image: the floating major tag, so every 1.x release is picked up. Until
+  # 1.9.0 each release is pushed as both specdeck-signalling and
+  # specdeck-server (same image); specdeck-server exists from 1.7.0 on. Switch
+  # the name below once 1.7.0 is out: after 1.8.x only specdeck-server gets
+  # releases, and this tag would silently stop moving.
+  image = "ghcr.io/nickhartjes/specdeck-signalling:1";
+  port = 8080;
   turnPort = 3478;
-  signalling = pkgs.callPackage ../../pkgs/specdeck-signalling {
-    src = inputs.specdeck;
-    inherit (inputs.specdeck.packages.${pkgs.stdenv.hostPlatform.system}.specdeck) pnpmDeps;
-  };
+  envDir = "/run/specdeck-env";
+
+  # Which release is running: the image's OCI version label, its digest, and
+  # the version the registry has under the tag.
+  specdeck-version = pkgs.writeShellScriptBin "specdeck-version" ''
+    set -euo pipefail
+    podman=${lib.getExe config.virtualisation.podman.package}
+    echo "running: $($podman inspect specdeck-server --format '{{index .Config.Labels "org.opencontainers.image.version"}} {{.ImageDigest}}')"
+    echo "started: $($podman inspect specdeck-server --format '{{.State.StartedAt}}')"
+    $podman auto-update --dry-run --format '{{.Unit}}  {{.Image}}  update available: {{.Updated}}'
+  '';
 in {
-  systemd.services.specdeck-signalling = {
-    description = "SpecDeck signalling service";
-    after = ["network.target"];
-    wantedBy = ["multi-user.target"];
+  virtualisation.podman.enable = true;
+  virtualisation.oci-containers.backend = "podman";
+
+  virtualisation.oci-containers.containers.specdeck-server = {
+    inherit image;
+    # Only reachable through cloudflared on this host.
+    ports = ["127.0.0.1:${toString port}:8080"];
     environment = {
-      SPECDECK_LISTEN = "127.0.0.1:${toString signallingPort}";
       SPECDECK_TURN_URLS = "turn:turn.hartj.es:${toString turnPort}?transport=udp";
       # cloudflared is the one proxy in front; it sets X-Forwarded-For.
       SPECDECK_TRUSTED_PROXIES = "1";
       RUST_LOG = "info";
     };
-    # The binary reads the TURN secret from the environment only.
-    script = ''
-      SPECDECK_TURN_SECRET="$(< "$CREDENTIALS_DIRECTORY/turn-secret")"
-      export SPECDECK_TURN_SECRET
-      exec ${lib.getExe signalling}
-    '';
+    # SPECDECK_TURN_SECRET, written by specdeck-server-env below.
+    environmentFiles = ["${envDir}/turn.env"];
+    # podman-auto-update checks the registry for a new digest under the tag,
+    # pulls it and restarts the unit; a unit that fails to start is rolled
+    # back to the previous image.
+    labels."io.containers.autoupdate" = "registry";
+    extraOptions = [
+      "--cap-drop=all"
+      "--security-opt=no-new-privileges"
+      "--read-only"
+    ];
+  };
+
+  # The binary reads the TURN secret from the environment only, and podman
+  # wants it as an env file. Derived at boot from the agenix secret coturn
+  # also uses, so there is one secret to rotate; tmpfs, root only.
+  systemd.services.specdeck-server-env = {
+    description = "SpecDeck server env file from the TURN secret";
+    before = ["podman-specdeck-server.service"];
+    requiredBy = ["podman-specdeck-server.service"];
     serviceConfig = {
-      LoadCredential = "turn-secret:${config.age.secrets."hetzner-specdeck/specdeck-turn-secret".path}";
-      DynamicUser = true;
-      Restart = "on-failure";
-      CapabilityBoundingSet = "";
-      LockPersonality = true;
-      MemoryDenyWriteExecute = true;
-      NoNewPrivileges = true;
-      PrivateDevices = true;
-      PrivateUsers = true;
-      ProtectClock = true;
-      ProtectControlGroups = true;
-      ProtectHome = true;
-      ProtectHostname = true;
-      ProtectKernelLogs = true;
-      ProtectKernelModules = true;
-      ProtectKernelTunables = true;
-      ProtectProc = "invisible";
-      ProcSubset = "pid";
-      RestrictAddressFamilies = ["AF_INET" "AF_INET6"];
-      RestrictNamespaces = true;
-      RestrictRealtime = true;
-      SystemCallArchitectures = "native";
-      SystemCallFilter = ["@system-service" "~@privileged"];
+      Type = "oneshot";
+      RemainAfterExit = true;
+      RuntimeDirectory = "specdeck-env";
+      RuntimeDirectoryMode = "0700";
+      UMask = "0077";
+    };
+    script = ''
+      printf 'SPECDECK_TURN_SECRET=%s\n' \
+        "$(< ${config.age.secrets."hetzner-specdeck/specdeck-turn-secret".path})" \
+        > ${envDir}/turn.env
+    '';
+  };
+
+  # The podman package ships podman-auto-update.{service,timer} (daily);
+  # enable it and check every 15 minutes, so a release lands within ~15 min.
+  systemd.timers.podman-auto-update = {
+    wantedBy = ["timers.target"];
+    timerConfig = {
+      OnCalendar = ["" "*:0/15"];
+      RandomizedDelaySec = "1min";
     };
   };
+
+  environment.systemPackages = [specdeck-version];
 
   # Remote-managed tunnel: its routes live in the Cloudflare dashboard, so this
   # only needs the token. services.cloudflared only supports locally-managed
   # tunnels (credentials file), hence a plain unit.
   systemd.services.cloudflared-specdeck = {
-    description = "Cloudflare tunnel for SpecDeck signalling";
-    after = ["network-online.target" "specdeck-signalling.service"];
+    description = "Cloudflare tunnel for SpecDeck";
+    after = ["network-online.target" "podman-specdeck-server.service"];
     wants = ["network-online.target"];
     wantedBy = ["multi-user.target"];
     serviceConfig = {

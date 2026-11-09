@@ -23,8 +23,8 @@
     # framework-13 and copied by `just deploy`; `nix flake update traders` after commits.
     traders.url = "git+file:///home/nh/orca/projects/traders?ref=main";
 
-    # SpecDeck app (HM) and signalling service source (hetzner-specdeck).
-    # Tracks main on GitHub; `nix flake update specdeck` after a release.
+    # SpecDeck app (HM). Tracks main on GitHub; `nix flake update specdeck`
+    # after a release. hetzner-specdeck runs the release image instead.
     specdeck = {
       url = "github:nickhartjes/specdeck";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -240,7 +240,7 @@
         ];
       };
 
-      # Hetzner Cloud VM: SpecDeck signalling and TURN relay (coturn).
+      # Hetzner Cloud VM: SpecDeck sharing service (podman) and TURN relay (coturn).
       hetzner-specdeck = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {inherit inputs outputs;};

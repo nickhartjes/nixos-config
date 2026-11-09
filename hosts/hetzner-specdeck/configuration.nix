@@ -6,7 +6,7 @@
   ...
 }: let
   # Hetzner Cloud VM (2 vCPU, 4 GB) in fsn1. Runs SpecDeck's sharing service:
-  # the TURN relay (coturn, below) and signalling behind a Cloudflare tunnel
+  # the TURN relay (coturn, below) and the server behind a Cloudflare tunnel
   # (specdeck.nix). It moved here from n100-nanoclaw, which sits behind
   # DELTA's CGNAT. turn.hartj.es points here (DNS only).
   publicIp = "2.31.128.103";
