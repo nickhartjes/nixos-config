@@ -19,9 +19,9 @@
       passwordFile = config.age.secrets."ja-instituut/ghcr-token".path;
     };
 
-    # CI's key (deploy/README.md, 5). It can only start the update unit.
-    # TODO: paste deploy_key.pub here before the first deploy.
-    deploy.authorizedKeys = [];
+    # CI's key (deploy/README.md, 5; private half in the GitHub environments).
+    # It can only start the update unit.
+    deploy.authorizedKeys = ["ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKZw7y81w1Lea5AYuNRKdb/onmh9BjJ7fb/zXcOoHgF9 github-actions-ja-instituut"];
 
     instances.staging = {
       domain = "ja-instituut.hartj.es";
