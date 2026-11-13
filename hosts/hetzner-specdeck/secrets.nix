@@ -18,8 +18,7 @@
 
     # JA! Instituut (ja-instituut.nix). The registry token is read by podman
     # (root). The staging env file holds the app settings plus the Caddy
-    # password hash and the Litestream key; systemd reads it as root for all
-    # three services. Contents: deploy/README.md in the ja-instituut repo (2).
+    # password hash; systemd reads it as root for both services. Contents: deploy/README.md in the ja-instituut repo (2).
     "ja-instituut/ghcr-token" = {
       file = ../../secrets/ja-instituut/ghcr-token.age;
       owner = "root";
