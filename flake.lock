@@ -540,17 +540,16 @@
       },
       "locked": {
         "dir": "deploy",
-        "lastModified": 1794567468,
-        "narHash": "sha256-F8yA8+ILeJqzeCJ90DFV6qxEtGxOSHH/0io1uF45+dA=",
-        "ref": "nickhartjes/deploy-site",
-        "rev": "c9a6278a40bc20636dce2befae36e94778695711",
-        "revCount": 55,
+        "lastModified": 1794583057,
+        "narHash": "sha256-b+g4W4lF9nhm0mwQ4z7hwRu61fCcH3RLixs6PAvPtG0=",
+        "ref": "refs/heads/main",
+        "rev": "802f618e6c03d7dc323cd5b2c080624d75febbe6",
+        "revCount": 62,
         "type": "git",
         "url": "ssh://git@github.com/nickhartjes/ja-instituut"
       },
       "original": {
         "dir": "deploy",
-        "ref": "nickhartjes/deploy-site",
         "type": "git",
         "url": "ssh://git@github.com/nickhartjes/ja-instituut"
       }

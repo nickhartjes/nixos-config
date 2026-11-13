@@ -27,8 +27,7 @@
     # (hetzner-specdeck). `nix flake update ja-instituut` picks up module changes;
     # site releases don't need it.
     ja-instituut = {
-      # TODO: back to main (drop &ref=...) once the deploy-site PR is merged.
-      url = "git+ssh://git@github.com/nickhartjes/ja-instituut?dir=deploy&ref=nickhartjes/deploy-site";
+      url = "git+ssh://git@github.com/nickhartjes/ja-instituut?dir=deploy";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
