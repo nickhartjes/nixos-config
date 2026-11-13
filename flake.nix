@@ -23,6 +23,14 @@
     # framework-13 and copied by `just deploy`; `nix flake update traders` after commits.
     traders.url = "git+file:///home/nh/orca/projects/traders?ref=main";
 
+    # JA! Instituut website: the NixOS module from the repo's deploy/ flake
+    # (hetzner-specdeck). `nix flake update ja-instituut` picks up module changes;
+    # site releases don't need it.
+    ja-instituut = {
+      url = "git+ssh://git@github.com/nickhartjes/ja-instituut?dir=deploy";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # SpecDeck app (HM). Tracks main on GitHub; `nix flake update specdeck`
     # after a release. hetzner-specdeck runs the release image instead.
     specdeck = {
@@ -248,6 +256,7 @@
           ./hosts/hetzner-specdeck
           inputs.disko.nixosModules.disko
           agenix.nixosModules.default
+          inputs.ja-instituut.nixosModules.default
         ];
       };
 

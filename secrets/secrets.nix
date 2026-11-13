@@ -146,4 +146,9 @@ in {
   "hetzner-specdeck/specdeck-turn-secret.age".publicKeys = [framework-13 framework-13-2] ++ specdeckSystems;
   # SpecDeck Cloudflare tunnel token (raw value from the dashboard's install command).
   "hetzner-specdeck/specdeck-tunnel-token.age".publicKeys = [framework-13 framework-13-2] ++ specdeckSystems;
+  # JA! Instituut website on hetzner-specdeck (hosts/hetzner-specdeck/ja-instituut.nix).
+  # ghcr-token: a GitHub token with only read:packages. staging-env: the
+  # environment file from deploy/README.md (2) in the ja-instituut repo.
+  "ja-instituut/ghcr-token.age".publicKeys = [framework-13 framework-13-2] ++ specdeckSystems;
+  "ja-instituut/staging-env.age".publicKeys = [framework-13 framework-13-2] ++ specdeckSystems;
 }

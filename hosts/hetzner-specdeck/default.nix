@@ -5,5 +5,6 @@
     ./configuration.nix
     ./secrets.nix
     ./specdeck.nix
+    ./ja-instituut.nix
   ];
 }
