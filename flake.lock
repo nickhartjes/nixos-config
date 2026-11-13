@@ -540,11 +540,11 @@
       },
       "locked": {
         "dir": "deploy",
-        "lastModified": 1794583057,
-        "narHash": "sha256-b+g4W4lF9nhm0mwQ4z7hwRu61fCcH3RLixs6PAvPtG0=",
+        "lastModified": 1794585473,
+        "narHash": "sha256-duf0/u8REbkSFYv2243ES43bY22qW9ruWPpGtqvb3s8=",
         "ref": "refs/heads/main",
-        "rev": "802f618e6c03d7dc323cd5b2c080624d75febbe6",
-        "revCount": 62,
+        "rev": "47d08b75fbaf3f899e01bdd2bbc2608c08effba6",
+        "revCount": 67,
         "type": "git",
         "url": "ssh://git@github.com/nickhartjes/ja-instituut"
       },

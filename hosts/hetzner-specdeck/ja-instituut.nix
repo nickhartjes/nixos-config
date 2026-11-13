@@ -1,15 +1,16 @@
 {config, ...}: {
   # JA! Instituut website (github.com/nickhartjes/ja-instituut, deploy/README.md).
   # The module runs each environment as a podman container behind Caddy.
-  # Releases don't touch this file: CI moves the image tag and starts `podman auto-update` as `deploy`.
+  # Releases don't touch this file: CI moves the image tag and, as `deploy`, starts the
+  # environment's update unit (ja-instituut-update-<instance>).
   #
   # DNS (Cloudflare, DNS only, so Caddy can get its own certificate):
   #   ja-instituut.hartj.es  A     2.31.128.103
   #   ja-instituut.hartj.es  AAAA  2a01:4f8:c17:4b8d::1
   #
-  # The podman-auto-update timer in specdeck.nix also sees these containers
-  # (same label). That is harmless: it can only pull a tag CI has already
-  # moved, and CI's health check still decides whether a release succeeded.
+  # The podman-auto-update timer in specdeck.nix does not touch these
+  # containers: they carry no auto-update label, so only their update units
+  # change their image.
   services.ja-instituut = {
     # Read access to the private image: a classic token with only read:packages.
     # Its expiry date goes in the ja-instituut repo's deploy/README.md (4).
