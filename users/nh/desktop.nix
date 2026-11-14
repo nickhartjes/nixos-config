@@ -15,14 +15,14 @@
     };
     terminal = {
       alacritty.enable = true;
-      foot.enable = true;
+      foot.enable = false;
       ghostty.enable = true;
-      kitty.enable = true;
-      wezterm.enable = true;
+      kitty.enable = false;
+      wezterm.enable = false;
     };
     features = {
       desktop = {
-        hyprland.enable = true;
+        hyprland.enable = false;
         mangowc.enable = true;
         mangowc.enableNoctalia = false;
         mangowc.enableDMS = true;
@@ -32,8 +32,8 @@
         # Follow the host: the niri HM config needs inputs.niri.nixosModules.niri,
         # which only hosts that enable niri system-wide (framework-13) import.
         niri.enable = osConfig.components.desktop.niri.enable;
-        niri.enableNoctalia = true;
-        noctalia.enable = true;
+        niri.enableNoctalia = false;
+        noctalia.enable = false;
         stylix.enable = osConfig ? stylix && osConfig.stylix.enable;
         sway.enable = false;
         wallpapers.enable = true;
@@ -47,8 +47,9 @@
   };
 
   # KDE Plasma configuration using plasma-manager
+  # Disabled with the Plasma desktop on framework-13; kept for re-enabling.
   programs.plasma = {
-    enable = true;
+    enable = false;
 
     # Basic workspace configuration
     workspace = {

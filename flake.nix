@@ -226,7 +226,7 @@
           agenix.nixosModules.default # Agenix module
           nixos-hardware.nixosModules.framework-amd-ai-300-series # NixOS hardware module for framework-13
           inputs.lanzaboote.nixosModules.lanzaboote
-          inputs.niri.nixosModules.niri # Niri compositor module
+          # inputs.niri.nixosModules.niri # Niri compositor module (niri disabled; its flake package no longer evaluates, see components/nixos/desktop-manager/niri.nix)
           inputs.mango.nixosModules.mango # MangoWC compositor module
           # nixpkgs now ships its own programs.mango module, which collides with the
           # flake module above; keep the flake one so the compositor package stays in

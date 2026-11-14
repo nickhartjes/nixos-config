@@ -32,7 +32,11 @@
 # Please also change your hostname accordingly:
 #:w
 # networking.hostName = "nixos"; # Define your hostname.
-{lib, ...}: {
+{
+  lib,
+  pkgs,
+  ...
+}: {
   imports = [
     ../common
     ./configuration.nix
@@ -40,7 +44,30 @@
   ];
 
   # Fix conflicting default session definitions
-  services.displayManager.defaultSession = lib.mkForce "plasma";
+  services.displayManager.defaultSession = lib.mkForce "mango";
+
+  # These used to come in via the Plasma module; keep them now Plasma is off.
+  # NetworkManager: Wi-Fi. KWallet: Signal's DB key lives in kwallet6
+  # (see signal.nix), unlocked at login through pam (sddm reuses login's rules).
+  networking.networkmanager.enable = true;
+  security.polkit.enable = true;
+  security.rtkit.enable = true;
+  services.upower.enable = true; # battery status for the DMS shell
+  security.pam.services.login.kwallet = {
+    enable = true;
+    package = pkgs.kdePackages.kwallet-pam;
+  };
+  environment.systemPackages = [pkgs.kdePackages.kwallet];
+
+  # Flatpak: needed for apps only shipped as Flatpak bundles (e.g. n8n's Nod).
+  services.flatpak.enable = true;
+
+  # Default (max-jobs = auto, cores = 0) runs up to 12 builds that each use all
+  # 12 threads, oversubscribing CPU and RAM on local source builds.
+  nix.settings = {
+    max-jobs = 4;
+    cores = 4;
+  };
 
   components = {
     # Enable all desktop environments (Note: may cause conflicts)
@@ -50,9 +77,9 @@
       gnome.enable = false;
       hyprland.enable = false;
       mangowc.enable = true;
-      niri.enable = true;
+      niri.enable = false;
       pantheon.enable = false;
-      plasma.enable = true;
+      plasma.enable = false;
       sway.enable = false;
     };
 
