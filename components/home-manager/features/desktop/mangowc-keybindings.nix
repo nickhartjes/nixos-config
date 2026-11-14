@@ -103,11 +103,12 @@ in {
       "SUPER,UP,focusdir,up"
       "SUPER,RIGHT,focusdir,right"
 
-      # Move windows
-      "SUPER+SHIFT,H,movewin,left"
-      "SUPER+SHIFT,J,movewin,down"
-      "SUPER+SHIFT,K,movewin,up"
-      "SUPER+SHIFT,L,movewin,right"
+      # Move windows (swap with the neighbour; `movewin` takes pixel x,y and
+      # floats the window, so `movewin,left` sends it floating to 0,0)
+      "SUPER+SHIFT,H,exchange_client,left"
+      "SUPER+SHIFT,J,exchange_client,down"
+      "SUPER+SHIFT,K,exchange_client,up"
+      "SUPER+SHIFT,L,exchange_client,right"
 
       # Tags (workspaces)
       "SUPER,1,view,1,0"
