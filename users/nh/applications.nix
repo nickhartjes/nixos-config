@@ -14,6 +14,7 @@
       ollama.enable = true;
       alpaca.enable = false;
       opencode.enable = true;
+      codex.enable = true;
       lmstudio.enable = false;
       orca.enable = true;
       thinkrail.enable = false;

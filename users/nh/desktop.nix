@@ -37,7 +37,7 @@
         stylix.enable = osConfig ? stylix && osConfig.stylix.enable;
         sway.enable = false;
         wallpapers.enable = true;
-        wallpapers.default = "aishot-2697.jpg";
+        wallpapers.default = "artemis2-earthset.jpg";
       };
     };
     desktop = {

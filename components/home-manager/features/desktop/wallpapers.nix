@@ -12,7 +12,7 @@ in {
     default = lib.mkOption {
       type = lib.types.str;
       default = "";
-      description = "Filename of the default wallpaper from assets/wallpapers/ (e.g. 'aishot-2697.jpg')";
+      description = "Filename of the default wallpaper from assets/wallpapers/ (e.g. 'artemis2-earthset.jpg')";
     };
   };
 

@@ -176,6 +176,8 @@ in {
     "L+ /bin/bash - - - - ${pkgs.bash}/bin/bash"
     "d /home/nh/.config/nanoclaw 0755 nh users - -"
     "d /home/nh/.config/traders 0700 nh users - -"
+    # n8n data volume; the image runs as node (uid/gid 1000).
+    "d /var/lib/n8n 0700 1000 1000 - -"
     # nanoclaw refuses every additional container mount unless the host path
     # is listed in mount-allowlist.json (matched against the *resolved*
     # realPath). Without it, credentials (the Anthropic auth token, the Hevy
@@ -292,6 +294,66 @@ in {
   # GitHub's ed25519 host key, from https://api.github.com/meta (2026-10-24).
   programs.ssh.knownHosts."github.com".publicKey =
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl";
+
+  # ---- n8n (workflow automation), next to Nod.
+  # Official image rather than services.n8n: n8n is unfree (Sustainable Use),
+  # so Hydra never caches it and every bump would be a long local pnpm build.
+  # Bound to localhost like Nod and published on the tailnet by
+  # tailscale-serve below: https://n100-nanoclaw.barking-morpho.ts.net:8443.
+  # Webhooks work from tailnet nodes only; internet callers would need Funnel.
+  # Bump: pick a tag from `stable`, then `just deploy n100-nanoclaw`.
+  virtualisation.oci-containers = {
+    backend = "docker"; # docker already runs here for Nod; default is podman
+    containers.n8n = {
+      image = "docker.n8n.io/n8nio/n8n:2.47.7";
+      ports = ["127.0.0.1:5678:5678"];
+      # Workflows, credentials, SQLite db and the auto-generated encryption
+      # key (config) all live here. Back it up as a whole: the credentials
+      # are useless without that key.
+      volumes = ["/var/lib/n8n:/home/node/.n8n"];
+      environment = {
+        GENERIC_TIMEZONE = "Europe/Amsterdam";
+        TZ = "Europe/Amsterdam";
+        N8N_DIAGNOSTICS_ENABLED = "false";
+        N8N_VERSION_NOTIFICATIONS_ENABLED = "false";
+        N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS = "true";
+        N8N_RUNNERS_ENABLED = "true";
+        # Served over HTTPS by tailscale serve; n8n builds editor/webhook URLs
+        # and its secure session cookie from these.
+        N8N_HOST = "n100-nanoclaw.barking-morpho.ts.net";
+        N8N_PROTOCOL = "https";
+        N8N_EDITOR_BASE_URL = "https://n100-nanoclaw.barking-morpho.ts.net:8443/";
+        WEBHOOK_URL = "https://n100-nanoclaw.barking-morpho.ts.net:8443/";
+        N8N_PROXY_HOPS = "1";
+      };
+    };
+  };
+
+  # ---- Tailnet HTTPS for the web apps (tailnet only, not Funnel).
+  # tailscaled terminates TLS with the node's ts.net cert and proxies to the
+  # localhost-bound apps, so the firewall stays SSH-only. Serve config lives in
+  # tailscaled's state; this re-applies it so a reinstall or reset restores it.
+  # Nod's NOD_PUBLIC_URL (~/nod/deployment/self-host/.env) must match :443.
+  systemd.services.tailscale-serve = {
+    description = "Publish Nod and n8n on the tailnet via tailscale serve";
+    after = ["tailscaled.service" "network-online.target"];
+    wants = ["tailscaled.service" "network-online.target"];
+    wantedBy = ["multi-user.target"];
+    path = [pkgs.tailscale];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+    script = ''
+      # tailscaled must be logged in before serve config is accepted.
+      for _ in $(seq 30); do
+        tailscale status >/dev/null 2>&1 && break
+        sleep 2
+      done
+      tailscale serve --bg --https=443 http://127.0.0.1:4310   # Nod
+      tailscale serve --bg --https=8443 http://127.0.0.1:5678  # n8n
+    '';
+  };
 
   # ---- Firewall. nanoclaw needs no inbound ports: it dials out to Telegram.
   networking.firewall = {

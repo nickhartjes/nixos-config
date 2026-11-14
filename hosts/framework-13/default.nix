@@ -48,7 +48,7 @@
 
   # These used to come in via the Plasma module; keep them now Plasma is off.
   # NetworkManager: Wi-Fi. KWallet: Signal's DB key lives in kwallet6
-  # (see signal.nix), unlocked at login through pam (sddm reuses login's rules).
+  # (see signal.nix), unlocked at login through pam (the greeter reuses login's rules).
   networking.networkmanager.enable = true;
   security.polkit.enable = true;
   security.rtkit.enable = true;
@@ -86,9 +86,10 @@
     display = {
       gdm.enable = false; # Keep only one display manager to avoid conflicts
       lightdm.enable = false;
-      sddm.enable = true;
+      sddm.enable = false;
       cosmic-greeter.enable = false;
       greetd.enable = false;
+      dms-greeter.enable = true; # greetd + DMS greeter, themed like the shell
     };
 
     hardware = {

@@ -109,6 +109,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # DMS greeter (greetd login screen matching the shell); split out of dms.
+    dank-greeter = {
+      url = "github:duxlabs-dev/dux-greeter";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Caelestia shell - Quickshell desktop shell. Written for Hyprland; on
     # MangoWC the Hyprland-backed widgets (workspaces, active window) stay empty.
     caelestia-shell = {
@@ -233,6 +239,7 @@
           # sync with the mango HM module.
           {disabledModules = ["programs/wayland/mango.nix"];}
           inputs.dms.nixosModules.dank-material-shell # Dank Material Shell module
+          inputs.dank-greeter.nixosModules.default # DMS greeter (programs.dms-greeter)
           inputs.stylix.nixosModules.stylix # Stylix theming module
         ];
       };
