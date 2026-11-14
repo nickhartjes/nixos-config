@@ -107,8 +107,15 @@
     wants = ["power-profiles-daemon.service"];
     serviceConfig = {
       Type = "oneshot";
+      # ACAD emits "change" uevents in bursts even when nothing was plugged or
+      # unplugged. Only act on a real AC transition (or first run after boot,
+      # when /run is empty), so a profile picked by hand in the shell (DMS)
+      # survives until the adapter state actually flips.
       ExecStart = pkgs.writeShellScript "power-profile-auto" ''
+        state=/run/power-profile-auto.ac
         online=$(cat /sys/class/power_supply/ACAD/online 2>/dev/null || echo 1)
+        [ "$(cat "$state" 2>/dev/null)" = "$online" ] && exit 0
+        echo "$online" > "$state"
         if [ "$online" = "1" ]; then target=${onAC}; else target=${onBattery}; fi
         [ "$(${ppd} get)" = "$target" ] || ${ppd} set "$target"
       '';
