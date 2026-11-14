@@ -9,9 +9,8 @@
   };
 
   config = lib.mkIf config.components.application."3d".bambu-studio.enable {
-    home.packages = with pkgs; [
-      bambu-studio
+    home.packages = [
+      (pkgs.callPackage ../../../../pkgs/bambu-studio {})
     ];
-
   };
 }

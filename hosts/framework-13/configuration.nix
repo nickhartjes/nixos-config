@@ -202,6 +202,9 @@
     LC_TELEPHONE = "nl_NL.UTF-8";
     LC_TIME = "nl_NL.UTF-8";
   };
+  # Bambu Studio's "English" UI language is en_GB and refuses to start in it
+  # without the locale.
+  i18n.extraLocales = ["en_GB.UTF-8/UTF-8"];
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;

@@ -32,7 +32,7 @@
       flameshot.enable = false;
     };
     "3d" = {
-      bambu-studio.enable = false;
+      bambu-studio.enable = true;
       openscad.enable = false;
       freecad.enable = true;
       solidcraft.enable = true;
