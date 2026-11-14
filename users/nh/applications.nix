@@ -12,11 +12,11 @@
     ai = {
       claude-code.enable = true;
       ollama.enable = true;
-      alpaca.enable = true;
+      alpaca.enable = false;
       opencode.enable = true;
-      lmstudio.enable = true;
+      lmstudio.enable = false;
       orca.enable = true;
-      thinkrail.enable = true;
+      thinkrail.enable = false;
       specdeck.enable = true;
     };
     communication = {
@@ -26,9 +26,9 @@
       telegram.enable = true;
     };
     graphics = {
-      gimp.enable = true;
-      inkscape.enable = true;
-      flameshot.enable = true;
+      gimp.enable = false;
+      inkscape.enable = false;
+      flameshot.enable = false;
     };
     "3d" = {
       bambu-studio.enable = false;
@@ -37,14 +37,14 @@
       solidcraft.enable = true;
     };
     database = {
-      dbeaver.enable = true;
-      pgadmin.enable = true;
-      pgmodeler.enable = true;
-      supabase.enable = true;
+      dbeaver.enable = false;
+      pgadmin.enable = false;
+      pgmodeler.enable = false;
+      supabase.enable = false;
     };
     office = {
       libreoffice.enable = true;
-      anytype.enable = true;
+      anytype.enable = false;
     };
     media = {
       kdenlive.enable = true;
@@ -61,7 +61,7 @@
     gaming = {
       steam.enable = true;
       lutris.enable = false;
-      ryubing.enable = true;
+      ryubing.enable = false;
     };
     system = {
       mission-center.enable = true;
