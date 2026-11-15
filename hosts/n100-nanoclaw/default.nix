@@ -10,6 +10,7 @@
     ./hardware-configuration.nix
     ./disko-config.nix
     ./configuration.nix
+    ./n8n-backup.nix
     # Server-relevant components only. desktop-manager is skipped: it needs
     # the mango/niri nixos modules, which a headless host does not load.
     ../../components/nixos/system

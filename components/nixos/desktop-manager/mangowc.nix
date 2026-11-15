@@ -17,6 +17,16 @@
       extraPortals = [pkgs.xdg-desktop-portal-gtk];
     };
 
+    # DMS switches light/dark with `gsettings set org.gnome.desktop.interface
+    # color-scheme/gtk-theme`. Without dconf (GIO backend + service) and the
+    # schemas on XDG_DATA_DIRS that fails ("Failed to sync color-scheme"), so
+    # GTK apps and the settings portal (Firefox, Chromium, Electron,
+    # libadwaita) never see the change.
+    programs.dconf.enable = true;
+    environment.sessionVariables.XDG_DATA_DIRS = [
+      "${pkgs.gsettings-desktop-schemas}/share/gsettings-schemas/${pkgs.gsettings-desktop-schemas.name}"
+    ];
+
     # Dolphin without Plasma: kio-extras for thumbnails/sftp/smb/trash,
     # kio-fuse so non-KDE apps can open remote files, thumbnailers for media.
     environment.systemPackages = with pkgs.kdePackages; [

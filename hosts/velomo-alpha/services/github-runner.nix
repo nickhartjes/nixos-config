@@ -11,7 +11,6 @@
   # serviceOverrides below) — the opt-in GitHub documents ahead of the June
   # 2026 Node-20 removal.
 
-
   # Self-hosted GitHub Actions runner for the Dealdodo/scraper repo.
   #
   # Why: Cloudflare's 100 MB per-request body limit rejects Spring Boot

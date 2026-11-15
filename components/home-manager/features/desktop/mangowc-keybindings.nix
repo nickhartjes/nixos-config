@@ -38,10 +38,8 @@
   dmsBinds = lib.optionals enableDMS [
     (d "Launcher" "SUPER,SPACE,spawn,${dms "spotlight toggle"}")
     (d "Power menu" "SUPER,P,spawn,${dms "powermenu toggle"}")
-    (d "Overview" "SUPER,O,spawn,${dms "hypr toggleOverview"}")
     (d "Lock screen" "CTRL+SUPER,L,spawn,${dms "lock lock"}")
     (d "Clipboard history" "SUPER,V,spawn,${dms "clipboard toggle"}")
-    (d "Overview" "SUPER,TAB,spawn,${dms "hypr toggleOverview"}")
     (d "Notifications" "SUPER,N,spawn,${dms "notifications toggle"}")
     (d "Control center" "SUPER,C,spawn,${dms "control-center toggle"}")
     (d "Process list" "SUPER+SHIFT,ESCAPE,spawn,${dms "processlist toggle"}")
@@ -56,6 +54,10 @@
     (d "Mute" "NONE,XF86AudioMute,spawn,${dms "audio mute"}")
     (d "Brightness up" "NONE,XF86MonBrightnessUp,spawn,${dms "brightness increment 5"}")
     (d "Brightness down" "NONE,XF86MonBrightnessDown,spawn,${dms "brightness decrement 5"}")
+    (d "Mic mute" "NONE,XF86AudioMicMute,spawn,${dms "audio micmute"}")
+    (d "Play/pause" "NONE,XF86AudioPlay,spawn,${dms "mpris playPause"}")
+    (d "Next track" "NONE,XF86AudioNext,spawn,${dms "mpris next"}")
+    (d "Previous track" "NONE,XF86AudioPrev,spawn,${dms "mpris previous"}")
   ];
   # Caelestia's drawer toggles and brightness IPC pick the screen through
   # Hyprland's focused monitor, which doesn't exist under mango. Toggles fall
@@ -85,70 +87,61 @@ in {
       (d "Browser" "SUPER,B,spawn,chromium")
 
       # Window management
-      "SUPER,Q,killclient"
-      "SUPER+SHIFT,E,quit"
-      "SUPER+SHIFT,R,reload_config"
-      "SUPER,T,togglefloating"
-      "SUPER,Z,focuslast"
-      "SUPER+SHIFT,C,centerwin"
-      "SUPER,W,switch_proportion_preset"
+      (d "Close window" "SUPER,Q,killclient")
+      (d "Quit mango" "SUPER+SHIFT,E,quit")
+      (d "Reload config" "SUPER+SHIFT,R,reload_config")
+      (d "Toggle floating" "SUPER,T,togglefloating")
+      (d "Focus last window" "SUPER,Z,focuslast")
+      (d "Center window" "SUPER+SHIFT,C,centerwin")
+      (d "Cycle column width" "SUPER,W,switch_proportion_preset")
 
       # Focus movement
-      "SUPER,H,focusdir,left"
-      "SUPER,J,focusdir,down"
-      "SUPER,K,focusdir,up"
-      "SUPER,L,focusdir,right"
-      "SUPER,LEFT,focusdir,left"
-      "SUPER,DOWN,focusdir,down"
-      "SUPER,UP,focusdir,up"
-      "SUPER,RIGHT,focusdir,right"
+      (d "Focus left" "SUPER,H,focusdir,left")
+      (d "Focus down" "SUPER,J,focusdir,down")
+      (d "Focus up" "SUPER,K,focusdir,up")
+      (d "Focus right" "SUPER,L,focusdir,right")
+      (d "Focus left" "SUPER,LEFT,focusdir,left")
+      (d "Focus down" "SUPER,DOWN,focusdir,down")
+      (d "Focus up" "SUPER,UP,focusdir,up")
+      (d "Focus right" "SUPER,RIGHT,focusdir,right")
 
       # Move windows (swap with the neighbour; `movewin` takes pixel x,y and
       # floats the window, so `movewin,left` sends it floating to 0,0)
-      "SUPER+SHIFT,H,exchange_client,left"
-      "SUPER+SHIFT,J,exchange_client,down"
-      "SUPER+SHIFT,K,exchange_client,up"
-      "SUPER+SHIFT,L,exchange_client,right"
-
-      # Tags (workspaces)
-      "SUPER,1,view,1,0"
-      "SUPER,2,view,2,0"
-      "SUPER,3,view,3,0"
-      "SUPER,4,view,4,0"
-      "SUPER,5,view,5,0"
-      "SUPER,6,view,6,0"
-      "SUPER,7,view,7,0"
-      "SUPER,8,view,8,0"
-      "SUPER,9,view,9,0"
-
-      # Move window to tag
-      "SUPER+SHIFT,1,tag,1,0"
-      "SUPER+SHIFT,2,tag,2,0"
-      "SUPER+SHIFT,3,tag,3,0"
-      "SUPER+SHIFT,4,tag,4,0"
-      "SUPER+SHIFT,5,tag,5,0"
-      "SUPER+SHIFT,6,tag,6,0"
-      "SUPER+SHIFT,7,tag,7,0"
-      "SUPER+SHIFT,8,tag,8,0"
-      "SUPER+SHIFT,9,tag,9,0"
-
+      (d "Swap window left" "SUPER+SHIFT,H,exchange_client,left")
+      (d "Swap window down" "SUPER+SHIFT,J,exchange_client,down")
+      (d "Swap window up" "SUPER+SHIFT,K,exchange_client,up")
+      (d "Swap window right" "SUPER+SHIFT,L,exchange_client,right")
+    ]
+    # Tags (workspaces): view, and move the focused window there
+    ++ lib.concatMap (i: let
+      n = toString i;
+    in [
+      (d "Go to tag ${n}" "SUPER,${n},view,${n},0")
+      (d "Move window to tag ${n}" "SUPER+SHIFT,${n},tag,${n},0")
+    ]) (lib.range 1 9)
+    ++ [
       # Fullscreen
-      "SUPER,F,togglefullscreen"
-      "SUPER,M,togglemaximizescreen"
+      (d "Fullscreen" "SUPER,F,togglefullscreen")
+      (d "Maximize" "SUPER,M,togglemaximizescreen")
 
       # Gap control
-      "SUPER,EQUAL,incgaps,+2"
-      "SUPER,MINUS,incgaps,-2"
-      "SUPER+SHIFT,G,togglegaps"
+      (d "Grow gaps" "SUPER,EQUAL,incgaps,+2")
+      (d "Shrink gaps" "SUPER,MINUS,incgaps,-2")
+      (d "Toggle gaps" "SUPER+SHIFT,G,togglegaps")
 
       # Layout switching
-      "SUPER+SHIFT,SPACE,switch_layout"
+      (d "Next layout" "SUPER+SHIFT,SPACE,switch_layout")
 
       # Scratchpad
       (d "Scratchpad terminal" "SUPER,S,toggle_named_scratchpad,foot-scratchpad,none,${pkgs.foot}/bin/foot --app-id=foot-scratchpad")
 
       # Screenshots
       (d "Screenshot (region)" ''NONE,PRINT,spawn,${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" ~/Pictures/Screenshots/screenshot-$(date +%Y-%m-%d-%H-%M-%S).png'')
+    ]
+    # mango's own overview; DMS's overview IPC only works under Hyprland.
+    # Noctalia has its own overview and uses SUPER+TAB as a window switcher.
+    ++ lib.optionals (!enableNoctalia) [
+      (d "Overview" "SUPER,TAB,toggleoverview")
     ]
     ++ lib.optionals (!hasShell) [
       (d "App launcher (wofi)" "SUPER,D,spawn,${pkgs.wofi}/bin/wofi --show drun")

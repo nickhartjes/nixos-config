@@ -19,9 +19,9 @@
     # Main Nixpkgs (unstable channel)
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    # traders: daily market digest (n100-nanoclaw). Local checkout, built on
-    # framework-13 and copied by `just deploy`; `nix flake update traders` after commits.
-    traders.url = "git+file:///home/nh/orca/projects/traders?ref=main";
+    # Private repository; builders need SSH access. Use --override-input traders
+    # git+file:///path/to/traders for local development.
+    traders.url = "git+ssh://git@github.com/nickhartjes/traders?ref=main";
 
     # JA! Instituut website: the NixOS module from the repo's deploy/ flake
     # (hetzner-specdeck). `nix flake update ja-instituut` picks up module changes;
@@ -109,6 +109,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # dgop: system-monitor backend for DMS's CPU/RAM/process widgets. Not in
+    # nixpkgs, and the dms flake doesn't ship it.
+    dgop = {
+      url = "github:AvengeMedia/dgop";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # DMS greeter (greetd login screen matching the shell); split out of dms.
     dank-greeter = {
       url = "github:duxlabs-dev/dux-greeter";
@@ -181,6 +188,13 @@
     # It iterates over `forAllSystems` and imports packages for each system
     packages =
       forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
+
+    formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
+    devShells = forAllSystems (system: {
+      default = nixpkgs.legacyPackages.${system}.mkShell {
+        packages = with nixpkgs.legacyPackages.${system}; [just alejandra deadnix statix];
+      };
+    });
 
     # Overlays are modifications or additions to Nixpkgs
     overlays = import ./overlays {inherit inputs;}; # Passes inputs to the overlays

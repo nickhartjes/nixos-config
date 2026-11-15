@@ -289,11 +289,9 @@ in {
       sshCommand = "ssh -i /home/nh/.ssh/id_traders_backup -o IdentitiesOnly=yes";
     };
   };
-  systemd.services.traders-digest.environment.GIT_SSH_COMMAND =
-    "ssh -i /home/nh/.ssh/id_traders_data -o IdentitiesOnly=yes";
+  systemd.services.traders-digest.environment.GIT_SSH_COMMAND = "ssh -i /home/nh/.ssh/id_traders_data -o IdentitiesOnly=yes";
   # GitHub's ed25519 host key, from https://api.github.com/meta (2026-10-24).
-  programs.ssh.knownHosts."github.com".publicKey =
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl";
+  programs.ssh.knownHosts."github.com".publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl";
 
   # ---- n8n (workflow automation), next to Nod.
   # Official image rather than services.n8n: n8n is unfree (Sustainable Use),
@@ -339,10 +337,14 @@ in {
     after = ["tailscaled.service" "network-online.target"];
     wants = ["tailscaled.service" "network-online.target"];
     wantedBy = ["multi-user.target"];
+    unitConfig.StartLimitIntervalSec = 0;
     path = [pkgs.tailscale];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
+      Restart = "on-failure";
+      RestartSec = "30s";
+      TimeoutStartSec = "90s";
     };
     script = ''
       # tailscaled must be logged in before serve config is accepted.

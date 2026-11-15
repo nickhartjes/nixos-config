@@ -317,6 +317,26 @@
         "type": "github"
       }
     },
+    "dgop": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1794282582,
+        "narHash": "sha256-7bQCy4e5cgj7ToGZmXjI4ksbmjxzK/Vi/ZUUiSuRhT4=",
+        "owner": "AvengeMedia",
+        "repo": "dgop",
+        "rev": "d91b45a6e1ef52ab3e7791286615759306477647",
+        "type": "github"
+      },
+      "original": {
+        "owner": "AvengeMedia",
+        "repo": "dgop",
+        "type": "github"
+      }
+    },
     "disko": {
       "inputs": {
         "nixpkgs": [
@@ -1105,6 +1125,7 @@
         "artcraft": "artcraft",
         "caelestia-shell": "caelestia-shell",
         "dank-greeter": "dank-greeter",
+        "dgop": "dgop",
         "disko": "disko",
         "dms": "dms",
         "home-manager": "home-manager",
@@ -1414,12 +1435,12 @@
         "rev": "4b5abfff9f0c7ade582dc6d18e14fe6637022194",
         "revCount": 17,
         "type": "git",
-        "url": "file:///home/nh/orca/projects/traders"
+        "url": "ssh://git@github.com/nickhartjes/traders"
       },
       "original": {
         "ref": "main",
         "type": "git",
-        "url": "file:///home/nh/orca/projects/traders"
+        "url": "ssh://git@github.com/nickhartjes/traders"
       }
     },
     "treefmt-nix": {

@@ -13,6 +13,5 @@
       libreoffice
       corefonts # Microsoft core fonts for better compatibility
     ];
-
   };
 }

@@ -5,14 +5,13 @@
 }: let
   cfg = config.components.desktop;
   # Full desktop environments that conflict with each other
-  enabledDEs =
-    lib.count (x: x) [
-      cfg.cinnamon.enable
-      cfg.cosmic.enable
-      cfg.gnome.enable
-      cfg.pantheon.enable
-      cfg.plasma.enable
-    ];
+  enabledDEs = lib.count (x: x) [
+    cfg.cinnamon.enable
+    cfg.cosmic.enable
+    cfg.gnome.enable
+    cfg.pantheon.enable
+    cfg.plasma.enable
+  ];
 in {
   imports = [
     ./cinnamon.nix

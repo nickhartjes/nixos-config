@@ -7,14 +7,16 @@
   dockerBin = "${config.virtualisation.docker.package}/bin/docker";
 
   # One-shot backup for a named container/stanza via pgBackRest.
-  # No-op if the container isn't running (stopped/redeploying stack won't fail the unit).
+  # Missing/stopped containers and Docker errors must count as missed backups.
   mkBackup = container: stanza: type:
     pkgs.writeShellScript "pgbackrest-${stanza}-${type}.sh" ''
       set -euo pipefail
-      if [ "$(${dockerBin} inspect -f '{{.State.Running}}' ${container} 2>/dev/null)" != "true" ]; then
-        echo "${container} not running; skipping ${stanza} ${type} backup"
-        exit 0
+      running=$(${dockerBin} inspect -f '{{.State.Running}}' ${container})
+      if [ "$running" != "true" ]; then
+        echo "${container} not running; ${stanza} ${type} backup failed" >&2
+        exit 1
       fi
+      ${dockerBin} exec -u postgres ${container} pgbackrest --stanza=${stanza} check
       exec ${dockerBin} exec -u postgres ${container} \
         pgbackrest --stanza=${stanza} --type=${type} backup
     '';
@@ -22,9 +24,12 @@
   mkService = container: stanza: type: {
     description = "pgBackRest ${type} backup (${stanza} DB → S3)";
     after = ["docker.service"];
+    wants = ["docker.service"];
+    onFailure = ["pgbackrest-notify@%n.service"];
     serviceConfig = {
       Type = "oneshot";
       ExecStart = mkBackup container stanza type;
+      TimeoutStartSec = "6h";
     };
   };
 in {
@@ -34,9 +39,26 @@ in {
   # scraper-db: full Sunday 01:00, incr Mon-Sat 02:00
   # logto-db:   full Sunday 01:30, incr Mon-Sat 02:30 (30-min offset avoids S3 contention)
   #
-  # NOTE: logto-db backups require Dockerfile.logto-db to have a configured
-  # pgbackrest stanza (pgbackrest.conf, stanza-create). The current Dockerfile
-  # only installs pgbackrest; stanza config is a follow-up task.
+  # The Logto image renders its pgbackrest config and creates its stanza at
+  # startup. `check` above verifies repository access and WAL archiving before
+  # each backup; a successful backup still needs a separate restore drill.
+  systemd.services."pgbackrest-notify@" = {
+    description = "Notify Slack of a failed PostgreSQL backup (%i)";
+    serviceConfig = {
+      Type = "oneshot";
+      LoadCredential = "webhook:${config.age.secrets."velomo-alpha/alertmanager-slack-url".path}";
+    };
+    path = [pkgs.curl pkgs.jq];
+    scriptArgs = "%i";
+    script = ''
+      set -euo pipefail
+      payload=$(jq -n --arg unit "$1" '{text: ("PostgreSQL backup failed on velomo-alpha: " + $unit + ". Inspect journalctl -u " + $unit)}')
+      # Keep the webhook out of argv and the journal.
+      printf 'url = "%s"\n' "$(cat "$CREDENTIALS_DIRECTORY/webhook")" |
+        curl --config - --fail --silent --show-error --retry 3 --max-time 30 \
+          -H 'Content-Type: application/json' --data "$payload"
+    '';
+  };
   systemd.services.pgbackrest-scraper-full = mkService "scraper-db" "scraper" "full";
   systemd.services.pgbackrest-scraper-incr = mkService "scraper-db" "scraper" "incr";
   systemd.services.pgbackrest-logto-full = mkService "logto-db" "logto" "full";

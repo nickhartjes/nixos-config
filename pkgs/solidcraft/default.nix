@@ -3,6 +3,7 @@
 # `nix store prefetch-file <AppImage url>`.
 {
   appimageTools,
+  buildFHSEnv,
   fetchurl,
 }: let
   pname = "solidcraft";
@@ -14,6 +15,15 @@
   };
 
   contents = appimageTools.extract {inherit pname version src;};
+
+  # The AppImage also ships a headless CLI, but AppRun always execs the GUI.
+  # Run it in the same FHS environment wrapType2 uses for the GUI.
+  cli = buildFHSEnv (appimageTools.defaultFhsEnvArgs
+    // {
+      pname = "solidcraft-cli";
+      inherit version;
+      runScript = "${contents}/usr/bin/solidcraft-cli";
+    });
 in
   appimageTools.wrapType2 {
     inherit pname version src;
@@ -22,6 +32,7 @@ in
     extraInstallCommands = ''
       install -Dm444 ${contents}/ai.storyteller.solidcraft.desktop -t $out/share/applications
       cp -r ${contents}/usr/share/icons $out/share/
+      ln -s ${cli}/bin/solidcraft-cli $out/bin/solidcraft-cli
     '';
 
     meta = {

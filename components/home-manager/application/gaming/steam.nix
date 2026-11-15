@@ -15,6 +15,5 @@
       steamguard-cli
       steamtinkerlaunch
     ];
-
   };
 }

@@ -7,7 +7,7 @@
 with lib; let
   cfg = config.components.hardware.displaylink;
   evdi = config.boot.kernelPackages.evdi;
-  displaylink = pkgs.displaylink.override { inherit evdi; };
+  displaylink = pkgs.displaylink.override {inherit evdi;};
 in {
   options.components.hardware.displaylink.enable = mkEnableOption "enable displaylink";
 

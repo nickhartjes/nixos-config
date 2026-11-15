@@ -4,15 +4,14 @@
   ...
 }: let
   cfg = config.components.display;
-  enabledDMs =
-    lib.count (x: x) [
-      cfg.gdm.enable
-      cfg.lightdm.enable
-      cfg.sddm.enable
-      cfg.cosmic-greeter.enable
-      cfg.greetd.enable
-      cfg.dms-greeter.enable
-    ];
+  enabledDMs = lib.count (x: x) [
+    cfg.gdm.enable
+    cfg.lightdm.enable
+    cfg.sddm.enable
+    cfg.cosmic-greeter.enable
+    cfg.greetd.enable
+    cfg.dms-greeter.enable
+  ];
 in {
   imports = [
     ./gdm.nix

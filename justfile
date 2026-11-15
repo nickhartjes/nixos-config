@@ -22,7 +22,8 @@ update:
 
 # Check flake
 check:
-    nix flake check
+    nix flake check --no-build
+    nix fmt -- --check .
 
 # Show flake info
 show:
@@ -43,7 +44,7 @@ deadcode:
     nix run nixpkgs#deadnix
 
 formatter:
-    nix run nixpkgs#alejandra -- .
+    nix fmt -- .
 
 
 install-flake:
@@ -53,7 +54,7 @@ install-flake:
 
 # Build the custom NixOS ISO for installation
 build-iso:
-    nix build ./installation/iso#nixosConfigurations.installationIso.config.system.build.isoImage --out-link installation/iso-result
+    nix build ./installation/iso-minimal#nixosConfigurations.installationIso.config.system.build.isoImage --out-link installation/iso-result
 
 
 clean-install HOSTNAME:

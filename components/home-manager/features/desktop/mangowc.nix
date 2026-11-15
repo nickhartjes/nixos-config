@@ -63,8 +63,19 @@ in {
       }
     ];
 
+    # Bound to mango's session target, not graphical-session.target, so DMS
+    # doesn't also start under niri or another session on the same host.
+    programs.dank-material-shell.systemd = lib.mkIf cfg.enableDMS {
+      enable = true;
+      target = "mango-session.target";
+    };
+
     wayland.windowManager.mango = {
       enable = true;
+
+      # DMS's service needs this to write ~/.config/mango/dms/colors.conf
+      # and reload mango. mkOptionDefault keeps the module's default list.
+      systemd.variables = lib.mkOptionDefault ["MANGO_INSTANCE_SIGNATURE"];
 
       settings =
         {
@@ -91,22 +102,21 @@ in {
           exec_once =
             [
               "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-              "${pkgs.swaybg}/bin/swaybg -i ~/.config/wallpaper -m fill"
               "${pkgs.xwayland-satellite}/bin/xwayland-satellite"
-              "${pkgs.networkmanagerapplet}/bin/nm-applet"
               # Lock after 10 min idle and before every suspend (lid, logind idle).
               "${idleLock}"
             ]
             ++ lib.optionals cfg.enableNoctalia [
               noctaliaBin
             ]
-            ++ lib.optionals cfg.enableDMS [
-              "${dmsBin} run --session"
-            ]
+            # DMS runs as a systemd service (below) so it restarts if it dies.
             ++ lib.optionals cfg.enableCaelestia [
               caelestiaBin
             ]
+            # Every shell draws its own wallpaper, tray and notifications.
             ++ lib.optionals (!hasShell) [
+              "${pkgs.swaybg}/bin/swaybg -i ~/.config/wallpaper -m fill"
+              "${pkgs.networkmanagerapplet}/bin/nm-applet"
               "${pkgs.swaynotificationcenter}/bin/swaync"
             ];
 
@@ -126,12 +136,10 @@ in {
           shadows_size = 10;
           shadows_blur = 15;
 
-          # Border & corner radius (Catppuccin Mocha colors)
+          # Border & corner radius. Colours come from DMS's wallpaper theme
+          # (sourced in extraConfig), or mango's defaults without DMS.
           border_radius = 8;
           border_px = 3;
-          focus_color = "0x89b4faff";
-          border_color = "0x313244ff";
-          scratchpad_color = "0x94e2d5ff";
 
           # Gaps
           gap_inner_horizontal = 6;
@@ -163,23 +171,21 @@ in {
           scroller_default_proportion_single = 1.0;
 
           # Layouts - set all tags to scroller
-          tag_rule = [
-            "id:1,layout_name:scroller"
-            "id:2,layout_name:scroller"
-            "id:3,layout_name:scroller"
-            "id:4,layout_name:scroller"
-            "id:5,layout_name:scroller"
-            "id:6,layout_name:scroller"
-            "id:7,layout_name:scroller"
-            "id:8,layout_name:scroller"
-            "id:9,layout_name:scroller"
-          ];
+          tag_rule = map (i: "id:${toString i},layout_name:scroller") (lib.range 1 9);
         }
         // removeAttrs keybindings bindTypes;
 
       # Binds are written as raw lines so a described bind gets its `# desc`
       # comment directly above it, which DMS's keybind viewer shows.
-      extraConfig = lib.concatMapStrings (type:
+      extraConfig =
+        # DMS regenerates this from the wallpaper and reloads mango. Only the
+        # colours are sourced: DMS's other files there (layout, input,
+        # outputs) would fight the settings above. Optional because DMS
+        # hasn't written it yet on a fresh login.
+        lib.optionalString cfg.enableDMS ''
+          source_optional = ./dms/colors.conf
+        ''
+        + lib.concatMapStrings (type:
         lib.concatMapStrings (b:
           if builtins.isAttrs b
           then "# ${b.desc}\n${type} = ${b.bind}\n"
@@ -201,12 +207,12 @@ in {
         grim
         nwg-look
         slurp
-        swaybg
         wl-clipboard
         wdisplays
         xwayland-satellite
       ]
       ++ lib.optionals (!hasShell) [
+        swaybg
         wofi
         swaynotificationcenter
       ];

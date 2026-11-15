@@ -18,16 +18,18 @@ in {
 
   config = lib.mkIf cfg.enable {
     # Symlink all wallpapers from the nix store to ~/Pictures/wallpapers/
-    home.file = builtins.listToAttrs (map (name: {
-      name = "Pictures/wallpapers/${name}";
-      value = {
-        source = wallpaperDir + "/${name}";
+    home.file =
+      builtins.listToAttrs (map (name: {
+          name = "Pictures/wallpapers/${name}";
+          value = {
+            source = wallpaperDir + "/${name}";
+          };
+        })
+        wallpaperFiles)
+      // lib.optionalAttrs (cfg.default != "") {
+        ".config/wallpaper" = {
+          source = wallpaperDir + "/${cfg.default}";
+        };
       };
-    }) wallpaperFiles)
-    // lib.optionalAttrs (cfg.default != "") {
-      ".config/wallpaper" = {
-        source = wallpaperDir + "/${cfg.default}";
-      };
-    };
   };
 }

@@ -106,7 +106,9 @@ in {
           };
         }
         // lib.optionalAttrs (options ? stylix) {
-          wayland.windowManager.mango.settings = lib.mkIf (c != null) {
+          # With DMS, mango sources DMS's generated colours instead (see
+          # mangowc.nix), so they follow whatever theme DMS is set to.
+          wayland.windowManager.mango.settings = lib.mkIf (c != null && !config.components.features.desktop.mangowc.enableDMS) {
             focus_color = lib.mkForce "0x${c.base0D}ff";
             border_color = lib.mkForce "0x${c.base02}ff";
             scratchpad_color = lib.mkForce "0x${c.base0C}ff";
