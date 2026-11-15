@@ -3,6 +3,7 @@
   pkgs,
   noctalia,
   dms,
+  dmsBin,
   caelestia,
   hasShell,
   enableNoctalia,
@@ -141,10 +142,22 @@ in {
 
       # Scratchpad
       (d "Scratchpad terminal" "SUPER,S,toggle_named_scratchpad,foot-scratchpad,none,${pkgs.foot}/bin/foot --app-id=foot-scratchpad")
-
-      # Screenshots
-      (d "Screenshot (region)" ''NONE,PRINT,spawn,${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" ~/Pictures/Screenshots/screenshot-$(date +%Y-%m-%d-%H-%M-%S).png'')
     ]
+    # DMS's screenshot tool saves and copies to the clipboard; the other shells
+    # get plain grim/slurp.
+    ++ (
+      if enableDMS
+      then let
+        shot = mode: "${dmsBin} screenshot ${mode} -d ~/Pictures/Screenshots";
+      in [
+        (d "Screenshot (region)" "NONE,PRINT,spawn,${shot "region --no-confirm"}")
+        (d "Screenshot (window)" "SHIFT,PRINT,spawn,${shot "window"}")
+        (d "Screenshot (screen)" "CTRL,PRINT,spawn,${shot "full"}")
+      ]
+      else [
+        (d "Screenshot (region)" ''NONE,PRINT,spawn,${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" ~/Pictures/Screenshots/screenshot-$(date +%Y-%m-%d-%H-%M-%S).png'')
+      ]
+    )
     # mango's own overview; DMS's overview IPC only works under Hyprland.
     # Noctalia has its own overview and uses SUPER+TAB as a window switcher.
     ++ lib.optionals (!enableNoctalia) [

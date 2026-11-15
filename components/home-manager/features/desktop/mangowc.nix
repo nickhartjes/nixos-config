@@ -16,7 +16,7 @@
   caelestia = cmd: "${caelestiaBin} ipc call ${cmd}";
   hasShell = cfg.enableNoctalia || cfg.enableDMS || cfg.enableCaelestia;
   keybindings = import ./mangowc-keybindings.nix {
-    inherit pkgs noctalia dms caelestia hasShell lib;
+    inherit pkgs noctalia dms dmsBin caelestia hasShell lib;
     enableNoctalia = cfg.enableNoctalia;
     enableDMS = cfg.enableDMS;
     enableCaelestia = cfg.enableCaelestia;
@@ -103,7 +103,12 @@ in {
             [
               "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
               "${pkgs.xwayland-satellite}/bin/xwayland-satellite"
-              # Lock after 10 min idle and before every suspend (lid, logind idle).
+            ]
+            # Lock after 10 min idle and before every suspend (lid, logind idle).
+            # DMS does this itself (acLockTimeout/batteryLockTimeout and
+            # lockBeforeSuspend in ~/.config/dms/settings.json), so only the
+            # other shells need swayidle.
+            ++ lib.optionals (!cfg.enableDMS) [
               "${idleLock}"
             ]
             ++ lib.optionals cfg.enableNoctalia [
@@ -186,12 +191,12 @@ in {
           source_optional = ./dms/colors.conf
         ''
         + lib.concatMapStrings (type:
-        lib.concatMapStrings (b:
-          if builtins.isAttrs b
-          then "# ${b.desc}\n${type} = ${b.bind}\n"
-          else "${type} = ${b}\n")
-        (keybindings.${type} or []))
-      bindTypes;
+          lib.concatMapStrings (b:
+            if builtins.isAttrs b
+            then "# ${b.desc}\n${type} = ${b.bind}\n"
+            else "${type} = ${b}\n")
+          (keybindings.${type} or []))
+        bindTypes;
 
       # Keep autostart_sh non-empty so the mango hm-module generates the file
       # with systemd/dbus activation. Programs are launched via exec_once in config.conf.
