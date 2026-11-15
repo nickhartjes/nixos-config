@@ -24,11 +24,10 @@
   bindTypes = ["bind" "bindl"];
   swaylock = "${pkgs.swaylock}/bin/swaylock -f";
   # swayidle runs this through sh -c. If the shell isn't running the IPC call
-  # fails and swaylock locks instead.
+  # fails and swaylock locks instead. Not used with DMS, which locks on idle
+  # and before suspend itself.
   lockCmd =
-    if cfg.enableDMS
-    then "${dms "lock lock"} || ${swaylock}"
-    else if cfg.enableCaelestia
+    if cfg.enableCaelestia
     then "${caelestia "lock lock"} || ${swaylock}"
     else if cfg.enableNoctalia
     then "${noctalia "lockScreen lock"} || ${swaylock}"
