@@ -46,6 +46,13 @@
     (d "DMS settings" "SUPER+SHIFT,D,spawn,${dms "settings toggle"}")
     # Keybinding cheat sheet (DMS parses mango's config)
     (d "Keybinding cheat sheet" "SUPER+SHIFT,slash,spawn,${dms "keybinds toggle mangowc"}")
+    (d "Dashboard" "SUPER,D,spawn,${dms "dash toggle overview"}")
+    (d "Notepad" "SUPER,O,spawn,${dms "notepad toggle"}")
+    (d "Color picker" "SUPER+SHIFT,P,spawn,${dms "color-picker toggle"}")
+    (d "Night light" "SUPER+SHIFT,N,spawn,${dms "night toggle"}")
+    (d "Do not disturb" "CTRL+SUPER,N,spawn,${dms "notifications toggleDoNotDisturb"}")
+    (d "Keep awake (idle inhibit)" "SUPER+SHIFT,I,spawn,${dms "inhibit toggle"}")
+    (d "Cycle power profile" "SUPER+SHIFT,B,spawn,${dms "powerprofile cycle"}")
   ];
 
   dmsBindls = lib.optionals enableDMS [
