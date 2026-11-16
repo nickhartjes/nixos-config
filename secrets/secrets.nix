@@ -129,6 +129,9 @@ in {
   #   TELEGRAM_CHAT_ID=...     (the DM chat with the bot)
   # Read by systemd.services.traders-digest via EnvironmentFile.
   "n100-nanoclaw/traders-telegram.env.age".publicKeys = [framework-13 framework-13-2] ++ nanoclawSystems;
+  # Cloudflare Tunnel token for the static site (hosts/n100-nanoclaw/static-site.nix).
+  # Contents: TUNNEL_TOKEN=<token from the Cloudflare dashboard>
+  "n100-nanoclaw/site-tunnel.env.age".publicKeys = [framework-13 framework-13-2] ++ nanoclawSystems;
 
   # Read-only deploy key for the private nickhartjes/traders-data repo.
   "n100-nanoclaw/traders-data-deploy-key.age".publicKeys = [framework-13 framework-13-2] ++ nanoclawSystems;
