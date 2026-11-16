@@ -69,6 +69,16 @@ in {
         key = cfg.gpgSigning.key;
         signByDefault = true;
       };
+
+      # Repos under ~/publish/ use a second identity (name, email, SSH key, no
+      # signing). The included file is an agenix secret (users/nh/secrets.nix);
+      # git ignores a missing include, so this is inert where it is absent.
+      includes = [
+        {
+          condition = "gitdir:~/publish/";
+          path = "~/.config/git/publish";
+        }
+      ];
     };
 
     programs.gpg = lib.mkIf cfg.gpgSigning.enable {

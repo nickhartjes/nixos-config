@@ -33,6 +33,10 @@ in {
   "nh/ssh-framework-13.pub.age".publicKeys = [framework-13 framework-13-2] ++ systems;
   "nh/gpg-private-key.age".publicKeys = [framework-13 framework-13-2] ++ systems;
   "nh/gpg-public-key.age".publicKeys = [framework-13 framework-13-2] ++ systems;
+  # Second SSH identity for publishing (used per repo via core.sshCommand, not loaded into the agent).
+  "nh/ssh-publish.age".publicKeys = [framework-13 framework-13-2] ++ systems;
+  # git config included for repos under ~/publish/ (components/home-manager/development/git.nix).
+  "nh/git-publish.age".publicKeys = [framework-13 framework-13-2] ++ systems;
 
   "velomo-alpha/tailscale-authkey.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
   "velomo-alpha/doco-git-token.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;

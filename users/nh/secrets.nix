@@ -20,6 +20,24 @@
         owner = "nh";
         group = "users";
       };
+      # Second SSH identity for publishing. Private key only: the public half is
+      # derivable (ssh-keygen -y) and deliberately not stored. Not in the agent's
+      # key list (components/home-manager/cli/ssh.nix); repos opt in via core.sshCommand.
+      ssh-publish = {
+        file = ../../secrets/nh/ssh-publish.age;
+        path = "/home/nh/.ssh/id_publish";
+        mode = "400";
+        owner = "nh";
+        group = "users";
+      };
+      # git config for repos under ~/publish/ (see the git component's includes).
+      git-publish = {
+        file = ../../secrets/nh/git-publish.age;
+        path = "/home/nh/.config/git/publish";
+        mode = "400";
+        owner = "nh";
+        group = "users";
+      };
       gpg-private-key = {
         file = ../../secrets/nh/gpg-private-key.age;
         path = "/home/nh/.gnupg/private-key.asc";
