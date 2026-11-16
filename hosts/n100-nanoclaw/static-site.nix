@@ -41,8 +41,11 @@ in {
         location / {
           try_files $uri $uri.html $uri/ =404;
         }
+        # A nested add_header drops every inherited one, so repeat them here.
         location /_astro/ {
           add_header Cache-Control "public, max-age=31536000, immutable";
+          add_header X-Content-Type-Options nosniff always;
+          add_header Referrer-Policy strict-origin-when-cross-origin always;
         }
         add_header X-Content-Type-Options nosniff always;
         add_header Referrer-Policy strict-origin-when-cross-origin always;
