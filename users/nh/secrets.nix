@@ -38,6 +38,14 @@
         owner = "nh";
         group = "users";
       };
+      # API key for a hosted text-to-speech service.
+      tts-key = {
+        file = ../../secrets/nh/tts-key.age;
+        path = "/home/nh/.config/tts/key";
+        mode = "400";
+        owner = "nh";
+        group = "users";
+      };
       gpg-private-key = {
         file = ../../secrets/nh/gpg-private-key.age;
         path = "/home/nh/.gnupg/private-key.asc";
