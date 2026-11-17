@@ -37,6 +37,8 @@ in {
   "nh/ssh-publish.age".publicKeys = [framework-13 framework-13-2] ++ systems;
   # git config included for repos under ~/publish/ (components/home-manager/development/git.nix).
   "nh/git-publish.age".publicKeys = [framework-13 framework-13-2] ++ systems;
+  # OAuth desktop-client JSON for a video upload CLI.
+  "nh/video-upload-client.age".publicKeys = [framework-13 framework-13-2] ++ systems;
   # API key for a hosted text-to-speech service (read via a key file, never the environment of every shell).
   "nh/tts-key.age".publicKeys = [framework-13 framework-13-2] ++ systems;
 

@@ -38,6 +38,13 @@
         owner = "nh";
         group = "users";
       };
+      # OAuth desktop-client JSON for a video upload CLI (default path /run/agenix/video-upload-client).
+      video-upload-client = {
+        file = ../../secrets/nh/video-upload-client.age;
+        mode = "400";
+        owner = "nh";
+        group = "users";
+      };
       # API key for a hosted text-to-speech service.
       tts-key = {
         file = ../../secrets/nh/tts-key.age;
