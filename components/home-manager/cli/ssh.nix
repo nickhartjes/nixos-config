@@ -15,7 +15,8 @@ with lib; let
 
   # ssh-agent starts at default.target, before the compositor exports
   # WAYLAND_DISPLAY, so read the session env when the dialog is needed.
-  askpass = pkgs.writeShellScript "ssh-askpass-session" ''
+  # Installed on PATH so `just deploy` can hand it to its temporary agent.
+  askpass = pkgs.writeShellScriptBin "ssh-askpass-session" ''
     eval "$(${pkgs.systemd}/bin/systemctl --user show-environment \
       | ${pkgs.gnugrep}/bin/grep -E '^(WAYLAND_DISPLAY|DISPLAY|XAUTHORITY)=' \
       | ${pkgs.gnused}/bin/sed 's/^/export /')"
@@ -23,7 +24,7 @@ with lib; let
   '';
 
   askpassEnv = [
-    "SSH_ASKPASS=${askpass}"
+    "SSH_ASKPASS=${askpass}/bin/ssh-askpass-session"
     "SSH_ASKPASS_REQUIRE=force"
   ];
 
@@ -75,9 +76,9 @@ with lib; let
         expanded_key=$(eval echo "${key}")
         if [ -f "$expanded_key" ]; then
           log "Loading SSH key: $expanded_key"
-          # -c: every use of the key, local or forwarded, asks for
-          # confirmation, so a compromised server can't sign silently.
-          if ${pkgs.openssh}/bin/ssh-add -c "$expanded_key" 2>/dev/null; then
+          # No -c: everyday use doesn't prompt. Forwarding during deploys
+          # goes through a separate confirm-on-use agent (see justfile).
+          if ${pkgs.openssh}/bin/ssh-add "$expanded_key" 2>/dev/null; then
             log "Successfully loaded: $expanded_key"
             keys_loaded=$((keys_loaded + 1))
           else
@@ -104,21 +105,23 @@ in {
     services.ssh-agent = {
       enable = true;
     };
-    # The agent runs askpass for the confirm prompt of keys added with -c.
+    # Askpass for passphrase prompts; also used by `just deploy`'s
+    # confirm-on-use agent.
     systemd.user.services.ssh-agent.Service.Environment = askpassEnv;
+    home.packages = [askpass];
 
     programs.ssh = {
       enable = true;
       enableDefaultConfig = false;
       extraConfig = ''
-        AddKeysToAgent confirm
+        AddKeysToAgent yes
         IdentitiesOnly yes
         ServerAliveInterval 60
         ServerAliveCountMax 3
       '';
       settings = {
         "*" = {
-          AddKeysToAgent = "confirm";
+          AddKeysToAgent = "yes";
           IdentitiesOnly = "yes";
           ServerAliveInterval = 60;
           ServerAliveCountMax = 3;

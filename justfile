@@ -4,13 +4,21 @@ default:
     @just --list
 
 # Deploy system configuration. Remote sudo authenticates via the forwarded SSH
-# agent (security.pam.sshAgentAuth), so no password prompt.
-deploy SYSTEM:
-    NIX_SSHOPTS="-o ForwardAgent=yes" nixos-rebuild switch --flake .#{{SYSTEM}} --target-host {{SYSTEM}} --elevate=sudo
+# agent (security.pam.sshAgentAuth), so no password prompt. The forwarded agent
+# is a temporary one holding the key with confirm-on-use (ssh-add -c), so a
+# compromised server can't sign silently; the everyday agent never leaves
+# this machine.
+deploy SYSTEM *ARGS:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    eval "$(SSH_ASKPASS="$(command -v ssh-askpass-session)" SSH_ASKPASS_REQUIRE=force ssh-agent -s)" >/dev/null
+    trap 'ssh-agent -k >/dev/null' EXIT
+    ssh-add -q -c ~/.ssh/id_ed25519
+    NIX_SSHOPTS="-o ForwardAgent=yes -o AddKeysToAgent=no" nixos-rebuild switch --flake .#{{SYSTEM}} --target-host {{SYSTEM}} --elevate=sudo {{ARGS}}
 
 # Deploy with a sudo password prompt, for hosts without sshAgentAuth yet
 deploy-password SYSTEM:
-    NIX_SSHOPTS="-o ForwardAgent=yes" nixos-rebuild switch --flake .#{{SYSTEM}} --target-host {{SYSTEM}} --elevate=sudo --ask-sudo-password
+    just deploy {{SYSTEM}} --ask-sudo-password
 
 # Deploy velomo-alpha (production host: doco-cd, zot registry, beszel, scraper-app stack)
 deploy-velomo:
