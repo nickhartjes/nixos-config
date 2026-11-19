@@ -43,6 +43,16 @@
       imports = [../../components/home-manager/application/ai/t3code.nix];
       home.stateVersion = "26.05";
       home.packages = with pkgs; [codex claude-code gh ripgrep];
+      # Not via components.cli.nh: that hardcodes ~/.config/nixos-config, and
+      # this host keeps the flake in /etc/nixos-config.
+      programs.nh = {
+        enable = true;
+        flake = "/etc/nixos-config";
+        clean = {
+          enable = true;
+          extraArgs = "--keep 5 --keep-since 3d";
+        };
+      };
       components.application.ai.t3code = {
         enable = true;
         server.enable = true;
