@@ -16,12 +16,15 @@
         ln -s "$entry" "$out/"
       fi
     done
-    ln -s ${pkgs.t3code}/bin/t3code-desktop "$out/bin/"
-    makeWrapper ${pkgs.t3code}/bin/t3 "$out/bin/t3" \
-      --set-default T3CODE_CLERK_PUBLISHABLE_KEY pk_live_Y2xlcmsudDMuY29kZXMk \
-      --set-default T3CODE_CLERK_JWT_TEMPLATE t3-relay \
-      --set-default T3CODE_CLERK_CLI_OAUTH_CLIENT_ID hzxSgY2cH10sDU2r \
-      --set-default T3CODE_RELAY_URL https://relay.t3.codes
+    # Both the CLI and the desktop app (whose embedded server owns ~/.t3 when
+    # it runs) need the T3 Connect configuration.
+    for bin in t3 t3code-desktop; do
+      makeWrapper ${pkgs.t3code}/bin/$bin "$out/bin/$bin" \
+        --set-default T3CODE_CLERK_PUBLISHABLE_KEY pk_live_Y2xlcmsudDMuY29kZXMk \
+        --set-default T3CODE_CLERK_JWT_TEMPLATE t3-relay \
+        --set-default T3CODE_CLERK_CLI_OAUTH_CLIENT_ID hzxSgY2cH10sDU2r \
+        --set-default T3CODE_RELAY_URL https://relay.t3.codes
+    done
   '';
 in {
   options.components.application.ai.t3code = {
