@@ -33,6 +33,9 @@
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILLBdQCyD8xsKKy5UIUfKS7l+Fl5RQ9yIMR3wGOfL90+ nick@hartj.es"
     ];
   };
+  # GitHub's ed25519 host key, from https://api.github.com/meta (2026-11-19).
+  # Without it, SSH clones fail with "Host key verification failed".
+  programs.ssh.knownHosts."github.com".publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl";
   programs.git.enable = true;
   programs.nix-ld.enable = true;
 
@@ -42,7 +45,22 @@
     users.nh = {
       imports = [../../components/home-manager/application/ai/t3code.nix];
       home.stateVersion = "26.05";
-      home.packages = with pkgs; [codex claude-code gh ripgrep];
+      home.packages = with pkgs; [codex claude-code ripgrep];
+      # GitHub over HTTPS with gh's token: no private key lives here, and the
+      # Framework's agent is never forwarded (see the deploy recipe in justfile).
+      programs.git = {
+        enable = true;
+        # Same identity as components.development.git on the Framework.
+        settings.user = {
+          name = "Nick Hartjes";
+          email = "nick@hartj.es";
+        };
+      };
+      programs.gh = {
+        enable = true;
+        gitCredentialHelper.enable = true;
+        settings.git_protocol = "https";
+      };
       # Not via components.cli.nh: that hardcodes ~/.config/nixos-config, and
       # this host keeps the flake in /etc/nixos-config.
       programs.nh = {
