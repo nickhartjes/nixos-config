@@ -9,6 +9,11 @@
   description = "NH System Flake Configuration";
 
   inputs = {
+    nixos-wsl = {
+      url = "github:nix-community/NixOS-WSL";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Home Manager for managing user-specific configurations
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -206,6 +211,15 @@
     # NixOS configurations provided by this flake
     # Each attribute in this set is a complete NixOS system configuration
     nixosConfigurations = {
+      wsl-t3 = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          inputs.nixos-wsl.nixosModules.default
+          home-manager.nixosModules.home-manager
+          ./hosts/wsl-t3
+        ];
+      };
+
       # Example structure for a NixOS configuration
       # <hostname> = nixpkgs.lib.nixosSystem {
       #   specialArgs = {inherit inputs outputs;};

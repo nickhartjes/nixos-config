@@ -17,6 +17,7 @@
       codex.enable = true;
       lmstudio.enable = false;
       orca.enable = true;
+      t3code.enable = true;
       thinkrail.enable = false;
       specdeck.enable = true;
     };
