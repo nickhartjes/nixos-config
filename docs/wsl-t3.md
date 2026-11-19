@@ -89,3 +89,42 @@ Connect-koppeling moeten op de doelmachine worden gecontroleerd.
 
 Bronnen: https://github.com/pingdotgg/t3code/blob/main/docs/user/remote-access.md
  en https://github.com/pingdotgg/t3code/blob/main/docs/user/install.md.
+
+## Deploy vanaf de Framework
+
+Deze host draait OpenSSH op de Tailscale-interface, met de Framework SSH-keys.
+Remote sudo gebruikt dezelfde tijdelijke confirm-on-use agent als `just deploy`
+voor de andere hosts. Tailscale SSH staat uit; authenticatie loopt via OpenSSH.
+
+Eenmalig in WSL, nadat deze wijzigingen beschikbaar zijn in de lokale clone:
+
+```sh
+cd /etc/nixos-config
+git pull --ff-only
+sudo nixos-rebuild switch --flake .#wsl-t3
+sudo tailscale up --accept-dns=false
+```
+
+Volg de login-link en voeg WSL toe aan dezelfde tailnet als de Framework. Draai
+Tailscale **binnen WSL**; alleen Tailscale op Windows geeft deze host geen eigen
+Tailscale-adres. De tailnet-policy moet verkeer van de Framework naar WSL op
+TCP-poort 22 toestaan. `--accept-dns=false` laat de door WSL beheerde DNS intact.
+
+Daarna op de Framework, vanuit deze repo:
+
+```sh
+ssh nh@wsl-t3
+just deploy-wsl
+```
+
+Als MagicDNS de naam niet oplost, gebruik het adres uit `tailscale ip -4` in WSL:
+
+```sh
+just deploy-wsl 100.x.y.z
+```
+
+De Framework bouwt de lokale flake, kopieert de Nix-store-resultaten via SSH en
+activeert de configuratie in WSL. Een Git-push of `git pull` op WSL is daarvoor
+niet nodig. De repo-clone in WSL wordt hiermee niet bijgewerkt. Bevestig de
+SSH-key-vragen van de tijdelijke agent op de Framework. Een update van T3 kan
+lopende agenttaken onderbreken. Windows en de WSL-distro moeten actief zijn.

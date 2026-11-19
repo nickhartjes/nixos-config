@@ -24,6 +24,11 @@ deploy-password SYSTEM:
 deploy-velomo:
     just deploy velomo-alpha
 
+# Build on the Framework and activate on WSL over its Tailscale connection.
+# TARGET can be the MagicDNS name or the WSL node's Tailscale IP.
+deploy-wsl TARGET="wsl-t3":
+    just deploy wsl-t3 --target-host nh@{{TARGET}}
+
 # Update flake
 update:
     nix flake update

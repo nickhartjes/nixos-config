@@ -8,7 +8,31 @@
   nix.settings.experimental-features = ["nix-command" "flakes"];
   nixpkgs.config.allowUnfree = true;
 
-  users.users.nh.linger = true;
+  services.tailscale = {
+    enable = true;
+    # Use OpenSSH and the repository's SSH-agent sudo authentication.
+    extraSetFlags = ["--ssh=false"];
+  };
+  services.openssh = {
+    enable = true;
+    openFirewall = false;
+    settings = {
+      PermitRootLogin = "no";
+      PasswordAuthentication = false;
+      KbdInteractiveAuthentication = false;
+    };
+  };
+  networking.firewall.interfaces.tailscale0.allowedTCPPorts = [22];
+  security.pam.sshAgentAuth.enable = true;
+
+  users.users.nh = {
+    linger = true;
+    openssh.authorizedKeys.keys = [
+      # Framework keys, matching the other deployment targets.
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPh1wLUOuMwH9tCGCRnEJ4lPqex1Ss2aaag6TKc/3hlD nick@hartj.es"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILLBdQCyD8xsKKy5UIUfKS7l+Fl5RQ9yIMR3wGOfL90+ nick@hartj.es"
+    ];
+  };
   programs.git.enable = true;
   programs.nix-ld.enable = true;
 
