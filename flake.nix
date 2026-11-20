@@ -216,6 +216,7 @@
         modules = [
           inputs.nixos-wsl.nixosModules.default
           home-manager.nixosModules.home-manager
+          agenix.nixosModules.default
           ./hosts/wsl-t3
         ];
       };

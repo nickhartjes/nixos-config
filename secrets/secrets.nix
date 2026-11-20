@@ -5,6 +5,8 @@ let
   velomo-alpha = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFeRh4DdyxTgGmDYgAaYY8yT5M0MSbRz1yGPi4P/jzWS root@velomo-alpha";
   hetzner-specdeck = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKSsHyxdNXSokBK5Z5cp1CfGVetfKcjl/L61va3dIs5O root@hetzner-specdeck";
   n100-nanoclaw = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDtWggZjgd5P93BkTrNUwaeyattrF4ZUgRvHC36fJNOF root@n100-nanoclaw";
+  # WSL host (desktop): its SSH host key decrypts at activation (hosts/wsl-t3).
+  wsl-t3 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAe8BPipVUetn1npXldrwEzBF5Z/VQJiq2VX3mgByP5S root@wsl-t3";
 
   # framework-13's SSH *host* key (/etc/ssh/ssh_host_ed25519_key.pub). This is
   # the identity agenix uses at activation time -- it lives on /, which is
@@ -40,7 +42,8 @@ in {
   # OAuth desktop-client JSON for a video upload CLI.
   "nh/video-upload-client.age".publicKeys = [framework-13 framework-13-2] ++ systems;
   # API key for a hosted text-to-speech service (read via a key file, never the environment of every shell).
-  "nh/tts-key.age".publicKeys = [framework-13 framework-13-2] ++ systems;
+  # Also decrypted on wsl-t3, where the videos are voiced and rendered.
+  "nh/tts-key.age".publicKeys = [framework-13 framework-13-2 wsl-t3] ++ systems;
 
   "velomo-alpha/tailscale-authkey.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
   "velomo-alpha/doco-git-token.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;

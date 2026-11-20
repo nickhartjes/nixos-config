@@ -39,6 +39,17 @@
   programs.git.enable = true;
   programs.nix-ld.enable = true;
 
+  # Only the text-to-speech key (the videos are voiced here); decrypted with
+  # this host's SSH key, to the same path as on the Framework (users/nh/secrets.nix).
+  age.identityPaths = ["/etc/ssh/ssh_host_ed25519_key"];
+  age.secrets.tts-key = {
+    file = ../../secrets/nh/tts-key.age;
+    path = "/home/nh/.config/tts/key";
+    mode = "400";
+    owner = "nh";
+    group = "users";
+  };
+
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
