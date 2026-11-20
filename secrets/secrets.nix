@@ -40,7 +40,7 @@ in {
   # git config included for repos under ~/publish/ (components/home-manager/development/git.nix).
   "nh/git-publish.age".publicKeys = [framework-13 framework-13-2] ++ systems;
   # OAuth desktop-client JSON for a video upload CLI.
-  "nh/video-upload-client.age".publicKeys = [framework-13 framework-13-2] ++ systems;
+  "nh/video-upload-client.age".publicKeys = [framework-13 framework-13-2 wsl-t3] ++ systems;
   # API key for a hosted text-to-speech service (read via a key file, never the environment of every shell).
   # Also decrypted on wsl-t3, where the videos are voiced and rendered.
   "nh/tts-key.age".publicKeys = [framework-13 framework-13-2 wsl-t3] ++ systems;

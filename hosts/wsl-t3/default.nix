@@ -3,6 +3,9 @@
   # desktop services nor the workstation's secrets and complete application set.
   wsl.enable = true;
   wsl.defaultUser = "nh";
+  # GPU via the Windows driver (/usr/lib/wsl/lib) for Mesa d3d12/dzn.
+  wsl.useWindowsDriver = true;
+  hardware.graphics.enable = true;
   networking.hostName = "wsl-t3";
   system.stateVersion = "26.05";
   nix.settings.experimental-features = ["nix-command" "flakes"];
@@ -25,7 +28,20 @@
   networking.firewall.interfaces.tailscale0.allowedTCPPorts = [22];
   security.pam.sshAgentAuth.enable = true;
 
+  virtualisation.docker.enable = true;
+
+  # Same secret and path as framework-13 (users/nh/secrets.nix); decrypted with
+  # this host's SSH host key, the agenix default when openssh is enabled.
+  age.secrets.video-upload-client = {
+    file = ../../secrets/nh/video-upload-client.age;
+    mode = "400";
+    owner = "nh";
+    group = "users";
+  };
+
   users.users.nh = {
+    # T3 agents run as nh and may build/run project containers.
+    extraGroups = ["docker" "video"];
     linger = true;
     openssh.authorizedKeys.keys = [
       # Framework keys, matching the other deployment targets.

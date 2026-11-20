@@ -128,3 +128,15 @@ activeert de configuratie in WSL. Een Git-push of `git pull` op WSL is daarvoor
 niet nodig. De repo-clone in WSL wordt hiermee niet bijgewerkt. Bevestig de
 SSH-key-vragen van de tijdelijke agent op de Framework. Een update van T3 kan
 lopende agenttaken onderbreken. Windows en de WSL-distro moeten actief zijn.
+
+## Docker voor projecten
+
+Docker Engine en Docker Compose worden op deze host door NixOS beheerd.
+Gebruiker `nh` is lid van de groep `docker`, zodat T3-agents containers kunnen
+bouwen en draaien. Deze groep geeft effectief roottoegang binnen WSL.
+
+Controleer met `docker info` en `docker compose version`. Na het voor het eerst
+toevoegen van de groep moeten bestaande sessies opnieuw starten om de nieuwe
+groepsrechten te krijgen; dat geldt ook voor de systemd-gebruikersmanager waarin
+T3 draait. Bind ontwikkelpoorten bij voorkeur expliciet aan localhost, bijvoorbeeld
+`127.0.0.1:3000:3000` in Compose.
