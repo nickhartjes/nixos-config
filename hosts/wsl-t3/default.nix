@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  lib,
+  pkgs,
+  ...
+}: {
   # Deliberately independent of hosts/common: WSL needs neither bootloader,
   # desktop services nor the workstation's secrets and complete application set.
   wsl.enable = true;
@@ -54,6 +58,31 @@
   programs.ssh.knownHosts."github.com".publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl";
   programs.git.enable = true;
   programs.nix-ld.enable = true;
+  # Shared libraries for the headless Chromium that T3 Code's preview browser downloads
+  # (its `t3 browser setup` expects apt; here nix-ld serves them). Lets the agent open a browser.
+  programs.nix-ld.libraries = with pkgs; [
+    glib
+    nspr
+    nss
+    at-spi2-core # atk, atk-bridge, atspi
+    dbus
+    expat
+    libxcb
+    libxkbcommon
+    systemd # libudev
+    alsa-lib
+    libgbm
+    libdrm
+    pango
+    cairo
+    cups
+    libx11
+    libxcomposite
+    libxdamage
+    libxext
+    libxfixes
+    libxrandr
+  ];
 
   # Only the text-to-speech key (the videos are voiced here); decrypted with
   # this host's SSH key, to the same path as on the Framework (users/nh/secrets.nix).
@@ -65,8 +94,9 @@
     owner = "nh";
     group = "users";
   };
-  # Instagram API system-user token for posting the channel's Reels.
-  age.secrets.instagram-token = {
+  # Instagram API system-user token for posting the channel's Reels; only once the secret exists
+  # (agenix -e nh/instagram-token.age on the Framework), so the host deploys before that too.
+  age.secrets.instagram-token = lib.mkIf (builtins.pathExists ../../secrets/nh/instagram-token.age) {
     file = ../../secrets/nh/instagram-token.age;
     path = "/home/nh/.config/instagram/token";
     mode = "400";
