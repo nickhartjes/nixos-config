@@ -58,6 +58,9 @@
     package = pkgs.kdePackages.kwallet-pam;
   };
   environment.systemPackages = [pkgs.kdePackages.kwallet];
+  # Electron does not autodetect KWallet under Mango; remote connection
+  # credentials must be encrypted before T3 can save its connection catalog.
+  home-manager.users.nh.components.application.ai.t3code.passwordStore = "kwallet6";
 
   # Flatpak: needed for apps only shipped as Flatpak bundles (e.g. n8n's Nod).
   services.flatpak.enable = true;
