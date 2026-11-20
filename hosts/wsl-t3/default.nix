@@ -65,6 +65,14 @@
     owner = "nh";
     group = "users";
   };
+  # Instagram API system-user token for posting the channel's Reels.
+  age.secrets.instagram-token = {
+    file = ../../secrets/nh/instagram-token.age;
+    path = "/home/nh/.config/instagram/token";
+    mode = "400";
+    owner = "nh";
+    group = "users";
+  };
 
   home-manager = {
     useGlobalPkgs = true;
