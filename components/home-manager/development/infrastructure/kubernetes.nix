@@ -13,6 +13,7 @@
       kubectl # Kubernetes CLI
       kubernetes-helm # Kubernetes package manager
       k9s # Terminal UI for Kubernetes
+      (callPackage ../../../../pkgs/k10s {}) # Clickable Kubernetes TUI
       kubectx # Switch between Kubernetes contexts
       kustomize # Configuration management
     ];
