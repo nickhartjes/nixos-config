@@ -163,7 +163,8 @@ in {
           animation_duration_move = 300;
 
           # Cursor
-          cursor_size = 24;
+          cursor_theme = config.home.pointerCursor.name;
+          cursor_size = config.home.pointerCursor.size;
 
           # Scroller tuning
           scroller_default_proportion = 0.5;
@@ -202,6 +203,21 @@ in {
       autostart_sh = ''
         # Programs are started via exec_once in config.conf
       '';
+    };
+
+    # Cursor theme. Without one installed, ~/.icons/default (nwg-look's) points
+    # at breeze_cursors, which nothing provides, so mango and apps fall back to
+    # a tiny built-in cursor. This puts the theme on XCURSOR_PATH and sets
+    # XCURSOR_THEME/SIZE. HM's gtk/x11/~/.icons writers stay off: nwg-look and
+    # DMS own those files, and HM would refuse to overwrite them.
+    home.pointerCursor = {
+      enable = true;
+      package = pkgs.kdePackages.breeze;
+      name = "Breeze_Light"; # white; breeze_cursors is the dark one
+      size = 24;
+      dotIcons.enable = false;
+      gtk.enable = false;
+      x11.enable = false;
     };
 
     # Supporting packages
