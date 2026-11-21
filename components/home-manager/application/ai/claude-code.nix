@@ -12,6 +12,11 @@
 in {
   options.components.application.ai.claude-code = {
     enable = lib.mkEnableOption "Claude Code AI assistant";
+    codeMode.enable = lib.mkEnableOption ''
+      Claude Code's experimental Code Mode (Claude batches tool calls into a
+      JavaScript snippet run by the REPL tool). Needs the native-installer
+      build (~/.local/bin/claude), v2.1.323+, in an interactive terminal session.
+      Note: the JS and its file/web/MCP calls run outside the sandbox'';
   };
 
   config = lib.mkIf config.components.application.ai.claude-code.enable {
@@ -52,6 +57,13 @@ in {
         // {
           nixos-managing = "${inputs.nixos-management-skill}/nixos-managing";
         };
+    };
+
+    # Set as a session variable rather than in ~/.claude/settings.json's `env`
+    # block: Claude Code rewrites settings.json at runtime, so HM shouldn't own
+    # it. Takes effect in new login shells (re-login after switching).
+    home.sessionVariables = lib.mkIf config.components.application.ai.claude-code.codeMode.enable {
+      CLAUDE_CODE_EXPERIMENTAL_CODE_MODE = "1";
     };
 
     # Add claude-code to allowUnfreePredicate if not globally allowed

@@ -10,7 +10,10 @@
       spotify.enable = true;
     };
     ai = {
-      claude-code.enable = true;
+      claude-code = {
+        enable = true;
+        codeMode.enable = true;
+      };
       ollama.enable = true;
       alpaca.enable = false;
       opencode.enable = true;
