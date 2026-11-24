@@ -75,7 +75,7 @@ maak daar samen met je projecten backups van.
 
 ```sh
 cd /etc/nixos-config
-nix flake update nixpkgs
+nix flake update nixpkgs t3code-flake
 sudo nixos-rebuild switch --flake .#wsl-t3
 ```
 

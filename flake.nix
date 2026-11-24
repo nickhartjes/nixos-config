@@ -24,6 +24,11 @@
     # Main Nixpkgs (unstable channel)
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
+    t3code-flake = {
+      url = "github:omarcresp/t3code-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Private repository; builders need SSH access. Use --override-input traders
     # git+file:///path/to/traders for local development.
     traders.url = "git+ssh://git@github.com/nickhartjes/traders?ref=main";
@@ -217,6 +222,7 @@
           inputs.nixos-wsl.nixosModules.default
           home-manager.nixosModules.home-manager
           agenix.nixosModules.default
+          {home-manager.extraSpecialArgs = {inherit inputs;};}
           ./hosts/wsl-t3
         ];
       };

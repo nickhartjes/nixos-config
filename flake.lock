@@ -1182,6 +1182,7 @@
         "plasma-manager": "plasma-manager",
         "specdeck": "specdeck",
         "stylix": "stylix",
+        "t3code-flake": "t3code-flake",
         "traders": "traders"
       }
     },
@@ -1398,6 +1399,26 @@
         "owner": "nix-systems",
         "ref": "future-26.11",
         "repo": "default",
+        "type": "github"
+      }
+    },
+    "t3code-flake": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1795503884,
+        "narHash": "sha256-EoRtnFCt7VCpKFy0xPY82YioGQSmlbDsfVxJyxZ+soE=",
+        "owner": "omarcresp",
+        "repo": "t3code-flake",
+        "rev": "26ad24eeeea31c0cb26a8cc49bcfc2693755d35a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "omarcresp",
+        "repo": "t3code-flake",
         "type": "github"
       }
     },

@@ -1,26 +1,32 @@
 {
   config,
+  inputs,
   lib,
   pkgs,
   ...
 }: let
   cfg = config.components.application.ai.t3code;
+  nightly = inputs.t3code-flake.packages.${pkgs.stdenv.hostPlatform.system}.t3-code-nightly;
   # Public production configuration from upstream v0.1.8 .env.example.
   t3code =
-    pkgs.runCommand "t3code-connect-${pkgs.t3code.version}" {
-      inherit (pkgs.t3code) meta;
+    pkgs.runCommand "t3code-nightly-${nightly.version}" {
+      meta = nightly.meta // {mainProgram = "t3code-desktop";};
       nativeBuildInputs = [pkgs.makeWrapper];
     } ''
-      mkdir -p "$out/bin"
-      for entry in ${pkgs.t3code}/*; do
-        if [ "$(basename "$entry")" != bin ]; then
-          ln -s "$entry" "$out/"
-        fi
-      done
+      mkdir -p "$out/bin" "$out/share/applications"
+      ln -s ${nightly}/share/icons "$out/share/icons"
+      sed 's/^Exec=t3code /Exec=t3code-desktop /' \
+        ${nightly}/share/applications/t3-code-nightly.desktop > "$out/share/applications/t3-code-nightly.desktop"
       # Both the CLI and the desktop app (whose embedded server owns ~/.t3 when
       # it runs) need the T3 Connect configuration.
       for bin in t3 t3code-desktop; do
-        makeWrapper ${pkgs.t3code}/bin/$bin "$out/bin/$bin" \
+        program="$bin"
+        if [ "$bin" = t3code-desktop ]; then
+          program=t3code
+        fi
+        makeWrapper "${nightly}/bin/$program" "$out/bin/$bin" \
+          --prefix PATH : ${lib.makeBinPath [pkgs.codex pkgs.gh pkgs.git]} \
+          --set-default T3CODE_CLOUDFLARED_PATH ${lib.getExe pkgs.cloudflared} \
           --set-default T3CODE_CLERK_PUBLISHABLE_KEY pk_live_Y2xlcmsudDMuY29kZXMk \
           --set-default T3CODE_CLERK_JWT_TEMPLATE t3-relay \
           --set-default T3CODE_CLERK_CLI_OAUTH_CLIENT_ID hzxSgY2cH10sDU2r \
