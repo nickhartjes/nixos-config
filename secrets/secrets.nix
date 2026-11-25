@@ -46,6 +46,10 @@ in {
   "nh/tts-key.age".publicKeys = [framework-13 framework-13-2 wsl-t3] ++ systems;
   # Instagram API system-user token (posts the channel's Reels; never expires). Only wsl-t3 uses it.
   "nh/instagram-token.age".publicKeys = [framework-13 framework-13-2 wsl-t3];
+  # GitHub Actions runner registration token for Dealdodo/velomo-rebuild on wsl-t3 (hosts/wsl-t3/github-runner.nix).
+  # Consumed once on first registration; after that the runner persists its credentials. Re-generate via:
+  #   gh api -X POST /repos/Dealdodo/velomo-rebuild/actions/runners/registration-token --jq .token
+  "wsl-t3/velomo-rebuild-runner-token.age".publicKeys = [framework-13 framework-13-2 wsl-t3];
 
   "velomo-alpha/tailscale-authkey.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;
   "velomo-alpha/doco-git-token.age".publicKeys = [framework-13 framework-13-2] ++ velomoSystems;

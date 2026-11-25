@@ -3,6 +3,8 @@
   pkgs,
   ...
 }: {
+  imports = [./github-runner.nix];
+
   # Deliberately independent of hosts/common: WSL needs neither bootloader,
   # desktop services nor the workstation's secrets and complete application set.
   wsl.enable = true;
