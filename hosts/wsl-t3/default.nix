@@ -51,6 +51,8 @@
       # Framework keys, matching the other deployment targets.
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPh1wLUOuMwH9tCGCRnEJ4lPqex1Ss2aaag6TKc/3hlD nick@hartj.es"
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILLBdQCyD8xsKKy5UIUfKS7l+Fl5RQ9yIMR3wGOfL90+ nick@hartj.es"
+      # Work Mac (over Tailscale).
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIELcTCnaArRJYwztkmz18bybMhYWWNcEXL2ed0AsNJJk nick.hartjes@MC-C9M277H9DV"
     ];
   };
   # GitHub's ed25519 host key, from https://api.github.com/meta (2026-11-19).
