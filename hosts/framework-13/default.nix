@@ -114,6 +114,7 @@
       gaming.enable = true;
       tailscale.enable = true; # Enable Tailscale VPN
       stylix.enable = true; # Tokyo Night color scheme
+      chromiumRuntime.enable = true; # Playwright-downloaded Chromium via nix-ld
     };
   };
 }
