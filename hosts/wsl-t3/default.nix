@@ -86,6 +86,16 @@
     libxext
     libxfixes
     libxrandr
+    # The Android emulator from mise's android-sdk, with a window: it bundles Qt and most
+    # xcb libraries itself, but loads these from the system.
+    libbsd
+    libice
+    libsm
+    libxi
+    libpng
+    libpulseaudio
+    util-linux.lib # libuuid
+    zlib
   ];
 
   # Only the text-to-speech key (the videos are voiced here); decrypted with
