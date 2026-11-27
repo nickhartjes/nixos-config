@@ -115,6 +115,7 @@
       tailscale.enable = true; # Enable Tailscale VPN
       stylix.enable = true; # Tokyo Night color scheme
       chromiumRuntime.enable = true; # Playwright-downloaded Chromium via nix-ld
+      androidEmulatorRuntime.enable = true; # Android emulator from mise's android-sdk via nix-ld
     };
   };
 }

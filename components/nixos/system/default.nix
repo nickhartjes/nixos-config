@@ -6,5 +6,6 @@
     ./tailscale.nix
     ./stylix.nix
     ./chromium-runtime.nix
+    ./android-emulator-runtime.nix
   ];
 }
