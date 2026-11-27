@@ -95,6 +95,7 @@
     libpng
     libpulseaudio
     util-linux.lib # libuuid
+    libxkbfile
     zlib
   ];
 
