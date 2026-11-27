@@ -18,6 +18,7 @@
       alpaca.enable = false;
       opencode.enable = true;
       codex.enable = true;
+      antigravity.enable = true;
       lmstudio.enable = false;
       orca.enable = true;
       t3code.enable = true;

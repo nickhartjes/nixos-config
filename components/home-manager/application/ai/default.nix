@@ -5,6 +5,7 @@
     ./alpaca.nix
     ./opencode.nix
     ./codex.nix
+    ./antigravity.nix
     ./lmstudio.nix
     ./orca.nix
     ./t3code.nix
